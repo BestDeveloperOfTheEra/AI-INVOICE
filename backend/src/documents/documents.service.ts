@@ -1,0 +1,113 @@
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { AiService } from './ai.service';
+import { StorageService } from './storage.service';
+import * as fs from 'fs';
+
+@Injectable()
+export class DocumentsService {
+  constructor(
+    private prisma: PrismaService,
+    private aiService: AiService,
+    private storageService: StorageService
+  ) {}
+
+  async getDocumentsByUser(userId: string) {
+    return this.prisma.documentProcess.findMany({
+      where: { userId },
+      orderBy: { processedAt: 'desc' },
+    });
+  }
+
+  async getDocumentById(id: string, userId: string) {
+    return this.prisma.documentProcess.findFirst({
+      where: { id, userId },
+    });
+  }
+
+  async processDocument(userId: string, file: Express.Multer.File, isSandbox = false) {
+    if (!isSandbox) {
+        // 1. VERY STRICT SUBSCRIPTION / CREDIT VALIDATION
+        const userSub = await this.prisma.userSubscription.findFirst({
+            where: { userId, status: 'active', creditsRemaining: { gt: 0 } }
+        });
+
+        if (!userSub) {
+            throw new BadRequestException("Insufficient credits. Please upgrade your subscription plan.");
+        }
+
+        // 2. Decrement actual Credits Database balance
+        await this.prisma.userSubscription.update({
+            where: { id: userSub.id },
+            data: { creditsRemaining: userSub.creditsRemaining - 1 }
+        });
+    }
+
+    let totalAmount = 0;
+    let extractedData = '';
+    let confidence = 1.0;
+    let gstin = null;
+    let taxBreakdown = { cgst: 0, sgst: 0, igst: 0 };
+    let fileUrl = file.path;
+    let fileKey = null;
+
+    if (!isSandbox) {
+        // 1. Upload to Persistent Storage (Cloudflare R2/S3)
+        try {
+            const uploadResult = await this.storageService.uploadFile(file);
+            fileUrl = uploadResult.url;
+            fileKey = uploadResult.key;
+        } catch (storageError) {
+            console.error("Storage upload failed:", storageError);
+            throw new BadRequestException("Failed to upload document to persistent storage.");
+        }
+
+        // Real AI Extraction
+        const fileContent = fs.readFileSync(file.path, 'utf8'); // Assuming text-based for now
+        const aiResult = await this.aiService.extractInvoiceData(fileContent, file.originalname);
+        
+        extractedData = JSON.stringify(aiResult);
+        totalAmount = aiResult.totalAmount || 0;
+        confidence = aiResult.confidence || 0.5;
+        gstin = aiResult.vendorGstin || null;
+        taxBreakdown = aiResult.taxBreakdown || taxBreakdown;
+
+        // Cleanup local temp file after processing
+        if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+        }
+    } else {
+        // Sandbox Mock
+        totalAmount = Math.random() * 5000 + 100;
+        extractedData = JSON.stringify({
+          invoiceNumber: "SANDBOX-INV-00000",
+          totalAmount: totalAmount.toFixed(2),
+          vendor: "Sandbox Vendor Inc.",
+          date: new Date().toLocaleDateString(),
+          isSandbox: true
+        });
+    }
+
+    // Directly save to DB ensuring user keeps a history of extracted files
+    return this.prisma.documentProcess.create({
+      data: {
+        userId,
+        fileName: file.originalname,
+        fileUrl: fileUrl,
+        fileKey: fileKey,
+        moduleType: 'invoice',
+        status: 'completed',
+        pageCount: 1,
+        creditsUsed: 1,
+        gstin: gstin,
+        cgst: taxBreakdown.cgst,
+        sgst: taxBreakdown.sgst,
+        igst: taxBreakdown.igst,
+        totalAmount: totalAmount,
+        confidence: confidence,
+        extractedData: extractedData,
+        processedAt: new Date()
+      }
+    });
+  }
+}

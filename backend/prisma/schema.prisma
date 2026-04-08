@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  permissions String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+}
+
+model User {
+  id            String             @id @default(uuid())
+  email         String             @unique
+  passwordHash  String?
+  authProvider  String             @default("email")
+  oauthId       String?
+  roleId        String
+  isBlocked     Boolean            @default(false)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  avatarUrl     String?
+  name          String?
+  apiTokens     ApiToken[]
+  documents     DocumentProcess[]
+  orders        Order[]
+  role          Role               @relation(fields: [roleId], references: [id])
+  subscriptions UserSubscription[]
+}
+
+model SubscriptionPlan {
+  id              String             @id @default(uuid())
+  name            String
+  price           Float
+  currency        String             @default("INR")
+  quotaPages      Int
+  moduleType      String
+  billingCycle    String             @default("month")
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  paddleProductId String?
+  users           UserSubscription[]
+}
+
+model UserSubscription {
+  id                       String           @id @default(uuid())
+  userId                   String
+  planId                   String
+  status                   String
+  creditsRemaining         Int
+  startDate                DateTime         @default(now())
+  endDate                  DateTime?
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  lastExpiryReminderSentAt DateTime?
+  plan                     SubscriptionPlan @relation(fields: [planId], references: [id])
+  user                     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  userId        String
+  amount        Float
+  status        String
+  paymentMethod String
+  transactionId String?
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model DocumentProcess {
+  id            String    @id @default(uuid())
+  userId        String
+  fileName      String
+  fileUrl       String
+  fileKey       String?
+  moduleType    String
+  status        String
+  pageCount     Int       @default(0)
+  creditsUsed   Int       @default(0)
+  gstin         String?
+  cgst          Float?
+  sgst          Float?
+  igst          Float?
+  totalAmount   Float?
+  confidence    Float?
+  extractedData String?
+  errorMessage  String?
+  processedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ApiToken {
+  id         String    @id @default(uuid())
+  userId     String
+  name       String
+  tokenHash  String    @unique
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
