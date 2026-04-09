@@ -2,6 +2,10 @@
   "name": "antigravity-monorepo",
   "private": true,
   "description": "Antigravity SaaS Platform Monorepo",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "engines": {
     "node": ">=20"
   }
