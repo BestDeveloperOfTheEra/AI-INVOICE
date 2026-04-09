@@ -33,6 +33,8 @@ services:
       - key: NEXT_PUBLIC_API_URL
         scope: RUN_AND_BUILD_TIME
         value: ${backend.PUBLIC_URL}/api
+    routes:
+      - path: /
 databases:
   - name: document_db
     engine: PG
