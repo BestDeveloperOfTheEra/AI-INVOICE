@@ -1,6 +1,10 @@
-name: antigravity-app
+name: ai-invoice-app
 services:
   - name: backend
+    github:
+      repo: BestDeveloperOfTheEra/AI-INVOICE
+      branch: main
+      deploy_on_push: true
     source_dir: backend
     build_command: npm run build
     run_command: npm run start:prod
@@ -19,10 +23,13 @@ services:
         value: "3001"
     routes:
       - path: /api
-    # Health check is important for App Platform
     health_check:
       http_path: /api/health
   - name: frontend
+    github:
+      repo: BestDeveloperOfTheEra/AI-INVOICE
+      branch: main
+      deploy_on_push: true
     source_dir: frontend
     build_command: npm run build
     run_command: npm run start
@@ -39,4 +46,4 @@ databases:
   - name: document_db
     engine: PG
     version: "16"
-    production: false # Set to true for production tier
+    production: false
