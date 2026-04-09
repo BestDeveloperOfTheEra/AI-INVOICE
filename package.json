@@ -1,0 +1,8 @@
+{
+  "name": "antigravity-monorepo",
+  "private": true,
+  "description": "Antigravity SaaS Platform Monorepo",
+  "engines": {
+    "node": ">=20"
+  }
+}
