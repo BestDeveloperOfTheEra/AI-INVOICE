@@ -1,4 +1,5 @@
 name: ai-invoice-app
+
 services:
   - name: backend
     github:
@@ -25,6 +26,7 @@ services:
       - path: /api
     health_check:
       http_path: /api/health
+
   - name: frontend
     github:
       repo: BestDeveloperOfTheEra/AI-INVOICE
@@ -42,6 +44,7 @@ services:
         value: ${backend.PUBLIC_URL}/api
     routes:
       - path: /
+
 databases:
   - name: document_db
     engine: PG
