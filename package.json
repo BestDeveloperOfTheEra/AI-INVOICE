@@ -12,8 +12,8 @@
   "scripts": {
     "dev:backend": "npm run start:dev --workspace=backend",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "db:generate": "npx prisma generate --schema=backend/prisma/schema.prisma",
-    "db:push": "npx prisma db push --schema=backend/prisma/schema.prisma",
+    "db:generate": "npm run db:generate --workspace=backend",
+    "db:push": "npm run db:push --workspace=backend",
     "build:backend": "npm run db:generate && npm run build --workspace=backend",
     "build:frontend": "npm run build --workspace=frontend",
     "build": "npm run build:backend && npm run build:frontend",
@@ -21,8 +21,5 @@
     "start:frontend": "npm run start --workspace=frontend",
     "start": "npm run start:backend",
     "heroku-postbuild": "npm run build"
-  },
-  "dependencies": {
-    "prisma": "5.22.0"
   }
 }
