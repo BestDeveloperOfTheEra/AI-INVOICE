@@ -20,9 +20,15 @@ export default function ProfilePage() {
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: profileName })
       });
-      if (res.ok) alert('Profile updated successfully!');
-    } catch (err) {
+      if (res.ok) {
+        alert('Profile updated successfully!');
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Failed to update profile');
+      }
+    } catch (err: any) {
       console.error(err);
+      alert('Error updating profile: ' + (err.message || 'Unknown error'));
     } finally {
       setIsSavingProfile(false);
     }
@@ -46,9 +52,13 @@ export default function ProfilePage() {
         const data = await res.json();
         setAvatarUrl(data.avatarUrl);
         alert('Profile image updated!');
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Failed to upload image');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert('Error updating avatar: ' + (err.message || 'Unknown error'));
     } finally {
       setIsUploadingAvatar(false);
       if (avatarInputRef.current) avatarInputRef.current.value = '';

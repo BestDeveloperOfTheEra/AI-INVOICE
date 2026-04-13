@@ -10,12 +10,26 @@ export default function PricingPage() {
   const { openRazorpayCheckout } = useRazorpay();
   const [plans, setPlans] = useState<any[]>([]);
   const [billingCycle, setBillingCycle] = useState<'month' | 'year'>('month');
+  const [isProcessingUpgrade, setIsProcessingUpgrade] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`${API_URL}/subscriptions/plans`)
-      .then(res => res.json())
-      .then(data => setPlans(data))
-      .catch(console.error);
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch plans');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPlans(data);
+        } else {
+          console.error('API returned non-array data:', data);
+          setPlans([]);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching plans:', err);
+        setPlans([]);
+      });
   }, []);
 
   return (
@@ -35,7 +49,7 @@ export default function PricingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8">
-        {plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan) => {
+        {Array.isArray(plans) && plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan) => {
             const currentPlan = plans.find(p => p.name === planName);
             const currentPrice = currentPlan?.price || 0;
             const isCurrent = plan.name === planName;
@@ -65,21 +79,38 @@ export default function PricingPage() {
                     </ul>
                     <button 
                         onClick={() => {
-                            if (isCurrent) return;
+                            if (isCurrent || isProcessingUpgrade) return;
+                            setIsProcessingUpgrade(plan.id);
                             const token = localStorage.getItem('access_token');
                             fetch(`${API_URL}/subscriptions/checkout`, {
                                 method: 'POST',
                                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ planId: plan.id })
-                            }).then(res => res.json()).then(data => { 
+                            })
+                            .then(async res => {
+                                if (!res.ok) {
+                                    const err = await res.json().catch(() => ({}));
+                                    throw new Error(err.message || 'Checkout failed');
+                                }
+                                return res.json();
+                            })
+                            .then(data => { 
                                 if(data.razorpayOrderId) {
                                     openRazorpayCheckout(data);
+                                } else {
+                                    throw new Error('Invalid response from server');
                                 }
-                            });
+                            })
+                            .catch(err => {
+                                console.error('Upgrade error:', err);
+                                alert(`Failed to initiate upgrade: ${err.message}`);
+                            })
+                            .finally(() => setIsProcessingUpgrade(null));
                         }}
-                        className={`w-full py-4 rounded-2xl font-bold transition-all ${isCurrent ? 'bg-green-500/20 text-green-400 cursor-default' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                        disabled={isProcessingUpgrade !== null}
+                        className={`w-full py-4 rounded-2xl font-bold transition-all ${isCurrent ? 'bg-green-500/20 text-green-400 cursor-default' : 'bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-50'}`}
                     >
-                        {isCurrent ? 'Current Plan' : isUpgrade ? 'Upgrade Now' : 'Switch Plan'}
+                        {isCurrent ? 'Current Plan' : isProcessingUpgrade === plan.id ? 'Processing...' : isUpgrade ? 'Upgrade Now' : 'Switch Plan'}
                     </button>
                 </div>
             );

@@ -17,9 +17,18 @@ export default function DeveloperPage() {
           const res = await fetch(`${API_URL}/api-tokens`, {
               headers: { 'Authorization': `Bearer ${token}` }
           });
+          if (!res.ok) throw new Error('Failed to fetch API tokens');
           const data = await res.json();
-          setApiTokens(data);
-      } catch (err) { console.error(err); }
+          if (Array.isArray(data)) {
+              setApiTokens(data);
+          } else {
+              console.error('API returned non-array data:', data);
+              setApiTokens([]);
+          }
+      } catch (err) { 
+          console.error('Error fetching API tokens:', err); 
+          setApiTokens([]);
+      }
   };
 
   useEffect(() => {
@@ -85,7 +94,7 @@ export default function DeveloperPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {apiTokens.length === 0 ? (
+                        {!Array.isArray(apiTokens) || apiTokens.length === 0 ? (
                             <tr>
                                 <td colSpan={4} className="py-8 text-center text-gray-600 text-sm italic">No active API keys found.</td>
                             </tr>

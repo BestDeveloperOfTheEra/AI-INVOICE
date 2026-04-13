@@ -16,14 +16,20 @@ export default function StatsPage() {
     fetch(`${API_URL}/documents`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch statistics');
+        return res.json();
+    })
     .then(data => {
         if (Array.isArray(data)) {
             const history = data.map(doc => JSON.parse(doc.extractedData));
             setExtractedData(history);
         }
     })
-    .catch(console.error)
+    .catch(err => {
+        console.error("Stats fetch error:", err);
+        setExtractedData([]);
+    })
     .finally(() => setIsLoading(false));
   }, []);
 

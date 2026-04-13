@@ -1,0 +1,20 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.4:3000
+- Environments: .env.local
+✓ Ready in 398ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/sandipkaushal/WORKSPACE/Antigravity/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/sandipkaushal/WORKSPACE/Antigravity/frontend/package-lock.json
+
+
+thread 'tokio-runtime-worker' (33137) panicked at turbopack/crates/turbo-tasks-backend/src/backend/operation/mod.rs:894:13:
+Every task must have a task type TaskGuard { task_id: TaskId { id: 335608 }, storage: TaskStorage { leaf_distance: LeafDistance { distance: 0, max_distance_in_buffer: 0 }, aggregation_number: AggregationNumber { base: 0, distance: 0, effective: 0 }, output_dependent: {}, output: None, upper: CounterMap({}), persistent_task_type: None, flags: TaskFlags { .0: 24, invalidator: false, immutable: false, current_session_clean: false, meta_restored: true, data_restored: true, meta_modified: false, data_modified: false, meta_snapshot: false, data_snapshot: false, prefetched: false, stateful: false }, lazy: [] } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

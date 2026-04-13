@@ -77,10 +77,10 @@ export default function DashboardPage() {
               },
               body: formData
             });
-
+            
             if (!res.ok) {
-              const errData = await res.json().catch(() => null);
-              throw new Error(errData?.message || "Upload failed.");
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData?.message || "Upload failed with status: " + res.status);
             }
 
             const data = await res.json();

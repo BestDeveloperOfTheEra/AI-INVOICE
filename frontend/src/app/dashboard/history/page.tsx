@@ -22,7 +22,10 @@ export default function HistoryPage() {
     fetch(`${API_URL}/documents`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch document history');
+        return res.json();
+    })
     .then(data => {
         if (Array.isArray(data)) {
             const history = data.map(doc => {
@@ -49,7 +52,10 @@ export default function HistoryPage() {
             setExtractedData(history);
         }
     })
-    .catch(console.error)
+    .catch(err => {
+        console.error("History fetch error:", err);
+        setExtractedData([]);
+    })
     .finally(() => setIsLoading(false));
   }, []);
 
@@ -58,6 +64,10 @@ export default function HistoryPage() {
     const res = await fetch(`${API_URL}/documents/export/excel`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (!res.ok) {
+        alert("Failed to export Excel report.");
+        return;
+    }
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -73,6 +83,10 @@ export default function HistoryPage() {
     const res = await fetch(`${API_URL}/documents/export/pdf`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (!res.ok) {
+        alert("Failed to export PDF report.");
+        return;
+    }
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -88,6 +102,10 @@ export default function HistoryPage() {
     const res = await fetch(`${API_URL}/documents/export/tally`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (!res.ok) {
+        alert("Failed to export Tally XML.");
+        return;
+    }
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

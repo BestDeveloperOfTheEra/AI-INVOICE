@@ -14,9 +14,22 @@ export default function Pricing() {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('access_token'));
     fetch(`${API_URL}/subscriptions/plans`)
-      .then(res => res.json())
-      .then(data => setPlans(data))
-      .catch(console.error);
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch plans');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPlans(data);
+        } else {
+          console.error('API returned non-array data:', data);
+          setPlans([]);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching plans:', err);
+        setPlans([]);
+      });
   }, []);
 
   const handleSubscribe = async (planId: string) => {
@@ -103,7 +116,7 @@ export default function Pricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto w-full">
-          {plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan, i) => (
+          {Array.isArray(plans) && plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan, i) => (
               <div key={plan.id} className={`p-8 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Starter' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 md:scale-105 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
                 {plan.name === 'Starter' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Most Popular</div>}
                 {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(79,70,229,0.4)] border border-indigo-400/30 z-20 whitespace-nowrap">Enterprise Ready</div>}
