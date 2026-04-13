@@ -20,6 +20,7 @@
     "start:backend": "npm run start:prod --workspace=backend",
     "start:frontend": "npm run start --workspace=frontend",
     "start": "npm run start:backend",
-    "postinstall": "npm run db:generate"
+    "postinstall": "npm run db:generate",
+    "heroku-postbuild": "npm run build"
   }
 }
