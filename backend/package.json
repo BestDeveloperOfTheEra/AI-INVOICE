@@ -42,6 +42,7 @@
     "pdfkit": "^0.18.0",
     "razorpay": "^2.9.6",
     "reflect-metadata": "^0.2.2",
+    "prisma": "5.22.0",
     "rxjs": "^7.8.1",
     "stripe": "^20.4.1"
   },
