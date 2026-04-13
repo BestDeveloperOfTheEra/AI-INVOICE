@@ -12,11 +12,14 @@
   "scripts": {
     "dev:backend": "npm run start:dev --workspace=backend",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "build:backend": "npm run build --workspace=backend",
+    "db:generate": "npm run db:generate --workspace=backend",
+    "db:push": "npm run db:push --workspace=backend",
+    "build:backend": "npm run db:generate --workspace=backend && npm run build --workspace=backend",
     "build:frontend": "npm run build --workspace=frontend",
     "build": "npm run build:backend && npm run build:frontend",
     "start:backend": "npm run start:prod --workspace=backend",
     "start:frontend": "npm run start --workspace=frontend",
-    "start": "npm run start:backend"
+    "start": "npm run start:backend",
+    "postinstall": "npm run db:generate"
   }
 }
