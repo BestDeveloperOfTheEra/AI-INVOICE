@@ -6,7 +6,7 @@ import compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
   app.use((req: any, res: any, next: any) => {
     if (req.headers['content-type']) {
@@ -15,19 +15,19 @@ async function bootstrap() {
     }
     next();
   });
-  
+
   // Security and Performance Middleware
   app.use(helmet());
   app.use(compression());
-  
+
   // Prefix all routes with /api
   app.setGlobalPrefix('api');
-  
+
   // Explicitly configure body-parser to avoid charset issues
   const express = require('express');
   app.use(express.json({ limit: '50mb', type: ['application/json', 'text/plain'] }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-  
+
   // CORS Restricted for production
   app.enableCors({
     origin: process.env.FRONTEND_URL || true, // Restrict this in production
@@ -43,7 +43,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
-  
+
   await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
 }
 bootstrap();
