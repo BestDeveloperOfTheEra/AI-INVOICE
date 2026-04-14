@@ -1,52 +1,65 @@
-name: ai-invoice-app
-
-services:
-  - name: backend
-    github:
-      repo: BestDeveloperOfTheEra/AI-INVOICE
-      branch: main
-      deploy_on_push: true
-    source_dir: backend
-    build_command: npx prisma generate && npm run build
-    run_command: npm run start:prod
-    http_port: 3001
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    envs:
-      - key: DATABASE_URL
-        scope: RUN_TIME
-        value: ${document_db.DATABASE_URL}
-      - key: FRONTEND_URL
-        scope: RUN_TIME
-        value: ${APP_URL}
-      - key: PORT
-        scope: RUN_TIME
-        value: "3001"
-    routes:
-      - path: /api
-    health_check:
-      http_path: /api/health
-
-  - name: frontend
-    github:
-      repo: BestDeveloperOfTheEra/AI-INVOICE
-      branch: main
-      deploy_on_push: true
-    source_dir: frontend
-    build_command: npm run build
-    run_command: npm run start
-    http_port: 3000
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    envs:
-      - key: NEXT_PUBLIC_API_URL
-        scope: RUN_AND_BUILD_TIME
-        value: ${backend.PUBLIC_URL}/api
-    routes:
-      - path: /
-
 databases:
-  - name: document_db
-    engine: PG
-    version: "16"
-    production: false
+- engine: PG
+  name: document-db
+  version: "16"
+ingress:
+  rules:
+  - component:
+      name: backend
+    match:
+      path:
+        prefix: /api
+  - component:
+      name: frontend
+    match:
+      path:
+        prefix: /
+name: ai-invoice-app
+region: blr
+services:
+- build_command: npx prisma generate && npx nest build
+  environment_slug: node-js
+  envs:
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    value: ${document-db.DATABASE_URL}
+  - key: FRONTEND_URL
+    scope: RUN_TIME
+    value: ${frontend.PUBLIC_URL}
+  - key: PORT
+    scope: RUN_TIME
+    value: "3001"
+  - key: NODE_ENV
+    scope: RUN_AND_BUILD_TIME
+    value: production
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: BestDeveloperOfTheEra/AI-INVOICE
+  health_check:
+    http_path: /api/health
+  http_port: 3001
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: backend
+  run_command: npx prisma migrate deploy && npm run start:prod
+  source_dir: backend
+- build_command: npm run build
+  environment_slug: node-js
+  envs:
+  - key: NEXT_PUBLIC_API_URL
+    scope: RUN_AND_BUILD_TIME
+    value: ${backend.PUBLIC_URL}/api
+  - key: NODE_ENV
+    scope: RUN_TIME
+    value: production
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: BestDeveloperOfTheEra/AI-INVOICE
+  http_port: 3000
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: frontend
+  run_command: npm run start
+  source_dir: frontend
