@@ -7,22 +7,28 @@ import { API_URL } from '@/lib/constants';
 export default function Pricing() {
   const router = useRouter();
   const [plans, setPlans] = useState<any[]>([]);
+  console.log('render plans:', plans);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'month' | 'year'>('month');
   const { openRazorpayCheckout } = useRazorpay();
 
   useEffect(() => {
+    console.log('API_URL:', API_URL);
+
     setIsLoggedIn(!!localStorage.getItem('access_token'));
+
     fetch(`${API_URL}/subscriptions/plans`)
-      .then(res => {
+      .then(async res => {
+        console.log('plans status:', res.status, 'url:', res.url);
+        const json = await res.json();
+        console.log('plans data:', json);
+
         if (!res.ok) throw new Error('Failed to fetch plans');
-        return res.json();
-      })
-      .then(data => {
-        if (Array.isArray(data)) {
-          setPlans(data);
+
+        if (Array.isArray(json)) {
+          setPlans(json);
         } else {
-          console.error('API returned non-array data:', data);
+          console.error('API returned non-array data:', json);
           setPlans([]);
         }
       })
@@ -35,34 +41,34 @@ export default function Pricing() {
   const handleSubscribe = async (planId: string) => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-        alert("Please login to purchase a plan.");
-        router.push('/login');
-        return;
+      alert("Please login to purchase a plan.");
+      router.push('/login');
+      return;
     }
 
     try {
-        const res = await fetch(`${API_URL}/subscriptions/checkout`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ planId })
-        });
-        const data = await res.json();
-        
-        if (res.status === 401 || res.status === 403) {
-            router.push('/login');
-            return;
-        }
+      const res = await fetch(`${API_URL}/subscriptions/checkout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ planId })
+      });
+      const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message || "Checkout failed");
-        
-        if (data.razorpayOrderId) {
-            openRazorpayCheckout(data);
-        }
-    } catch(err: any) {
-        alert(err.message);
+      if (res.status === 401 || res.status === 403) {
+        router.push('/login');
+        return;
+      }
+
+      if (!res.ok) throw new Error(data.message || "Checkout failed");
+
+      if (data.razorpayOrderId) {
+        openRazorpayCheckout(data);
+      }
+    } catch (err: any) {
+      alert(err.message);
     }
   }
 
@@ -77,7 +83,7 @@ export default function Pricing() {
           <button onClick={() => router.push('/dashboard?view=documents')} className="text-left px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
             Invoice History
           </button>
-          
+
           <div className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">Settings</div>
           <button onClick={() => router.push('/dashboard?view=profile')} className="text-left px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-colors">
             Update Profile
@@ -97,18 +103,18 @@ export default function Pricing() {
       <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-8 duration-700 pt-12">
         <div className="text-center mb-12 flex flex-col items-center">
           <h1 className="text-5xl font-bold text-white mb-6 tracking-tight">Simple, transparent pricing</h1>
-          
+
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 mb-8 backdrop-blur-md">
             <span className={`text-sm font-medium transition-colors ${billingCycle === 'month' ? 'text-white' : 'text-gray-500'}`}>Monthly Billing</span>
-            <button 
-                onClick={() => setBillingCycle(billingCycle === 'month' ? 'year' : 'month')}
-                className="w-14 h-7 bg-blue-600/20 rounded-full relative p-1 transition-colors hover:bg-blue-600/30 border border-blue-500/20"
+            <button
+              onClick={() => setBillingCycle(billingCycle === 'month' ? 'year' : 'month')}
+              className="w-14 h-7 bg-blue-600/20 rounded-full relative p-1 transition-colors hover:bg-blue-600/30 border border-blue-500/20"
             >
-                <div className={`w-5 h-5 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-transform duration-300 ${billingCycle === 'year' ? 'translate-x-7' : 'translate-x-0'}`}></div>
+              <div className={`w-5 h-5 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-transform duration-300 ${billingCycle === 'year' ? 'translate-x-7' : 'translate-x-0'}`}></div>
             </button>
             <span className={`text-sm font-medium transition-colors ${billingCycle === 'year' ? 'text-white' : 'text-gray-500'}`}>
-                Annually <span className="text-green-400 text-[10px] bg-green-400/10 px-2 py-0.5 rounded-full ml-1 font-bold border border-green-400/20">SAVE 20%</span>
+              Annually <span className="text-green-400 text-[10px] bg-green-400/10 px-2 py-0.5 rounded-full ml-1 font-bold border border-green-400/20">SAVE 20%</span>
             </span>
           </div>
 
@@ -117,71 +123,71 @@ export default function Pricing() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto w-full">
           {Array.isArray(plans) && plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan, i) => (
-              <div key={plan.id} className={`p-8 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Starter' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 md:scale-105 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
-                {plan.name === 'Starter' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Most Popular</div>}
-                {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(79,70,229,0.4)] border border-indigo-400/30 z-20 whitespace-nowrap">Enterprise Ready</div>}
-                
-                <div className="mb-8">
-                    <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{plan.name} Plan</h3>
-                    <p className="text-gray-500 text-xs leading-relaxed">
-                        {plan.name === 'Free' && "Perfect for individual testing and small invoices."}
-                        {plan.name === 'Starter' && "Everything you need for a growing business with GST compliance."}
-                        {plan.name === 'Pro' && "Unlimited / High-volume processing with priority AI extraction."}
-                    </p>
-                </div>
+            <div key={plan.id} className={`p-8 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Starter' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 md:scale-105 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
+              {plan.name === 'Starter' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Most Popular</div>}
+              {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(79,70,229,0.4)] border border-indigo-400/30 z-20 whitespace-nowrap">Enterprise Ready</div>}
 
-                <div className="mb-8 overflow-hidden">
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-white tracking-tighter">₹{plan.price}</span>
-                        <span className="text-gray-500 font-medium text-xs">/{plan.billingCycle === 'year' ? 'year' : 'month'}</span>
-                    </div>
-                    <p className="text-blue-400/80 text-[10px] font-bold uppercase tracking-wider mt-2 bg-blue-400/5 inline-block px-2 py-0.5 rounded-md">
-                        ≈ ₹{(plan.price / (plan.quotaPages || 1)).toFixed(2)} per page
-                    </p>
-                </div>
-
-                <ul className="flex flex-col gap-4 text-gray-300 mb-10 flex-1 border-t border-white/5 pt-8">
-                  <li className="flex items-center gap-3 text-sm">
-                    <span className="text-blue-500 font-bold text-lg">✓</span> 
-                    <span className="font-bold text-white">{plan.quotaPages.toLocaleString()}</span> Invoices {plan.billingCycle === 'year' ? '/yr' : '/mo'}
-                  </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <span className="text-blue-500">✓</span> High-Accuracy OCR Engine
-                  </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <span className="text-blue-500">✓</span> Instant Excel & PDF Export
-                  </li>
-                  {plan.name === 'Free' && (
-                    <li className="flex items-center gap-3 text-sm text-gray-500">
-                        <span className="text-gray-600">×</span> Bulk Upload & Tally Export
-                    </li>
-                  )}
-                  {plan.name !== 'Free' && (
-                    <>
-                        <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
-                            <span className="text-blue-500">✓</span> Bulk Upload & Auto-Processing
-                        </li>
-                        <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
-                            <span className="text-blue-500">✓</span> GST-Ready Excel & Tally Export
-                        </li>
-                    </>
-                  )}
-                  {plan.name === 'Pro' && (
-                    <>
-                        <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-                            <span className="text-indigo-500">✓</span> Priority Processing Queue
-                        </li>
-                        <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-                            <span className="text-indigo-500">✓</span> 24/7 Premium Support
-                        </li>
-                    </>
-                  )}
-                </ul>
-
-                <button onClick={() => handleSubscribe(plan.id)} className={`w-full py-4 rounded-2xl text-white font-bold tracking-tight transition-all active:scale-95 ${plan.name === 'Starter' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_25px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
-                  {plan.name === 'Free' ? 'Get Started' : `Upgrade to ${plan.name}`}
-                </button>
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{plan.name} Plan</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">
+                  {plan.name === 'Free' && "Perfect for individual testing and small invoices."}
+                  {plan.name === 'Starter' && "Everything you need for a growing business with GST compliance."}
+                  {plan.name === 'Pro' && "Unlimited / High-volume processing with priority AI extraction."}
+                </p>
               </div>
+
+              <div className="mb-8 overflow-hidden">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white tracking-tighter">₹{plan.price}</span>
+                  <span className="text-gray-500 font-medium text-xs">/{plan.billingCycle === 'year' ? 'year' : 'month'}</span>
+                </div>
+                <p className="text-blue-400/80 text-[10px] font-bold uppercase tracking-wider mt-2 bg-blue-400/5 inline-block px-2 py-0.5 rounded-md">
+                  ≈ ₹{(plan.price / (plan.quotaPages || 1)).toFixed(2)} per page
+                </p>
+              </div>
+
+              <ul className="flex flex-col gap-4 text-gray-300 mb-10 flex-1 border-t border-white/5 pt-8">
+                <li className="flex items-center gap-3 text-sm">
+                  <span className="text-blue-500 font-bold text-lg">✓</span>
+                  <span className="font-bold text-white">{plan.quotaPages.toLocaleString()}</span> Invoices {plan.billingCycle === 'year' ? '/yr' : '/mo'}
+                </li>
+                <li className="flex items-center gap-3 text-sm">
+                  <span className="text-blue-500">✓</span> High-Accuracy OCR Engine
+                </li>
+                <li className="flex items-center gap-3 text-sm">
+                  <span className="text-blue-500">✓</span> Instant Excel & PDF Export
+                </li>
+                {plan.name === 'Free' && (
+                  <li className="flex items-center gap-3 text-sm text-gray-500">
+                    <span className="text-gray-600">×</span> Bulk Upload & Tally Export
+                  </li>
+                )}
+                {plan.name !== 'Free' && (
+                  <>
+                    <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
+                      <span className="text-blue-500">✓</span> Bulk Upload & Auto-Processing
+                    </li>
+                    <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
+                      <span className="text-blue-500">✓</span> GST-Ready Excel & Tally Export
+                    </li>
+                  </>
+                )}
+                {plan.name === 'Pro' && (
+                  <>
+                    <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
+                      <span className="text-indigo-500">✓</span> Priority Processing Queue
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
+                      <span className="text-indigo-500">✓</span> 24/7 Premium Support
+                    </li>
+                  </>
+                )}
+              </ul>
+
+              <button onClick={() => handleSubscribe(plan.id)} className={`w-full py-4 rounded-2xl text-white font-bold tracking-tight transition-all active:scale-95 ${plan.name === 'Starter' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_25px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
+                {plan.name === 'Free' ? 'Get Started' : `Upgrade to ${plan.name}`}
+              </button>
+            </div>
           ))}
         </div>
       </div>
