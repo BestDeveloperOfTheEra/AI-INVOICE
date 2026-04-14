@@ -21,12 +21,13 @@ export default function Login() {
       const endpoint = isRegistering ? '/auth/register' : '/auth/login';
       const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
         body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
-        throw new Error(isRegistering ? 'Registration failed (email may exist)' : 'Invalid credentials');
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || (isRegistering ? 'Registration failed (email may exist)' : 'Invalid credentials'));
       }
 
       const data = await res.json();

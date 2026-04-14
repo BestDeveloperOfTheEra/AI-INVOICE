@@ -42,7 +42,7 @@ export default function DeveloperPage() {
       try {
           const res = await fetch(`${API_URL}/api-tokens`, {
               method: 'POST',
-              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
               body: JSON.stringify({ name: newKeyName })
           });
           if (res.ok) {

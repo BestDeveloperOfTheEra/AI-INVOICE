@@ -37,9 +37,13 @@ export class SubscriptionsService {
   }
 
   async createCheckoutSession(userId: string, planId: string) {
+    console.log(`[SubscriptionsService] creating checkout session for user: ${userId}, plan: ${planId}`);
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     const plan = await this.prisma.subscriptionPlan.findUnique({ where: { id: planId } });
     
+    if (!user) console.warn(`[SubscriptionsService] User not found: ${userId}`);
+    if (!plan) console.warn(`[SubscriptionsService] Plan not found: ${planId}`);
+
     if (!user || !plan) throw new BadRequestException("Invalid User or Subscription Plan.");
 
     // RAZORPAY ORDER CREATION with metadata (notes)

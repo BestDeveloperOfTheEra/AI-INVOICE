@@ -36,7 +36,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('access_token');
       await fetch('http://127.0.0.1:3001/admin/update-plan', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify(data)
       });
       fetchAdminMetrics(); // refresh data
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
       try {
           const res = await fetch('http://127.0.0.1:3001/admin/delete-plan', {
               method: 'POST',
-              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
               body: JSON.stringify({ id: planId })
           });
           if (!res.ok) throw new Error("Deletion failed on backend");
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
 
       await fetch(url, {
           method,
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify(data)
       });
       setEditingRole(null);
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('access_token');
       const res = await fetch(`http://127.0.0.1:3001/admin/users/${userId}/block`, {
           method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify({ isBlocked: !currentStatus })
       });
       if (!res.ok) {
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('access_token');
       const res = await fetch(`http://127.0.0.1:3001/admin/users/${userId}/role`, {
           method: 'PUT',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
           body: JSON.stringify({ roleId: newRoleId })
       });
       if (!res.ok) {

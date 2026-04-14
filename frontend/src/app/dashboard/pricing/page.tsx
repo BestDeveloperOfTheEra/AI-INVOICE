@@ -84,7 +84,7 @@ export default function PricingPage() {
                             const token = localStorage.getItem('access_token');
                             fetch(`${API_URL}/subscriptions/checkout`, {
                                 method: 'POST',
-                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
                                 body: JSON.stringify({ planId: plan.id })
                             })
                             .then(async res => {
