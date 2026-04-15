@@ -1,10 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
+
+  // Swagger Configuration
+  const config = new DocumentBuilder()
+    .setTitle('DataExtract AI API')
+    .setDescription('The AI Document Processing API description')
+    .setVersion('1.0')
+    .addTag('extract')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
 
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
   app.use((req: any, res: any, next: any) => {
