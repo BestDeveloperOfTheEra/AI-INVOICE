@@ -28,4 +28,15 @@ export class SubscriptionsController {
   async confirm(@Req() req: any, @Body() body: { planId: string }) {
     return this.subscriptionsService.confirmPayment(req.user.id, body.planId);
   }
+
+  /**
+   * Razorpay Webhook Endpoint
+   * This is PUBLIC and called by Razorpay servers.
+   */
+  @Post('webhook')
+  async handleWebhook(@Req() req: any) {
+    const signature = req.headers['x-razorpay-signature'];
+    const rawBody = req.rawBody; 
+    return this.subscriptionsService.handleRazorpayWebhook(rawBody, signature);
+  }
 }

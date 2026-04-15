@@ -37,35 +37,39 @@ export class SubscriptionsService {
   }
 
   async createCheckoutSession(userId: string, planId: string) {
-    console.log(`[SubscriptionsService] creating checkout session for user: ${userId}, plan: ${planId}`);
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    const plan = await this.prisma.subscriptionPlan.findUnique({ where: { id: planId } });
-    
-    if (!user) console.warn(`[SubscriptionsService] User not found: ${userId}`);
-    if (!plan) console.warn(`[SubscriptionsService] Plan not found: ${planId}`);
+    try {
+        console.log(`[SubscriptionsService] initiating checkout for user: ${userId}, plan: ${planId}`);
+        const user = await this.prisma.user.findUnique({ where: { id: userId } });
+        const plan = await this.prisma.subscriptionPlan.findUnique({ where: { id: planId } });
+        
+        if (!user || !plan) {
+            throw new BadRequestException("User or Subscription Plan not found in database.");
+        }
 
-    if (!user || !plan) throw new BadRequestException("Invalid User or Subscription Plan.");
-
-    // RAZORPAY ORDER CREATION with metadata (notes)
-    const order = await this.razorpayService.createOrder(
-        plan.price, 
-        plan.currency || 'INR', 
-        `receipt_${Date.now()}`,
-        { userId, planId } // Webhook will use these if frontend is closed
-    );
-    
-    return {  
-        razorpayOrderId: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        keyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder',
-        profile: {
-            name: user.name || '',
-            email: user.email,
-        },
-        planId: plan.id,
-        message: "Razorpay Order Initialized" 
-    };
+        // RAZORPAY ORDER CREATION
+        const order = await this.razorpayService.createOrder(
+            plan.price, 
+            plan.currency || 'INR', 
+            `receipt_${Date.now()}`,
+            { userId, planId }
+        );
+        
+        return {  
+            razorpayOrderId: order.id,
+            amount: order.amount,
+            currency: order.currency,
+            keyId: process.env.RAZORPAY_KEY_ID || '',
+            profile: {
+                name: user.name || '',
+                email: user.email,
+            },
+            planId: plan.id,
+            message: "Razorpay Order Initialized" 
+        };
+    } catch (error: any) {
+        console.error('[SubscriptionsService] Checkout initialization failed:', error.message);
+        throw new BadRequestException(error.message || "Failed to initialize payment gateway. Check configuration.");
+    }
   }
 
   async confirmPayment(userId: string, planId: string, razorpayData?: any) {
@@ -90,6 +94,52 @@ export class SubscriptionsService {
    * Centralized method to fulfill a subscription.
    * Called by both the manual confirmation and the webhook handler.
    */
+    );
+  }
+
+  /**
+   * Razorpay Webhook Handler
+   */
+  async handleRazorpayWebhook(rawBody: Buffer, signature: string) {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+        console.error('[Webhook] RAZORPAY_WEBHOOK_SECRET is not configured.');
+        return { status: 'error', message: 'Secret missing' };
+    }
+
+    // VERIFY SIGNATURE
+    const crypto = require('crypto');
+    const expectedSignature = crypto
+        .createHmac('sha256', webhookSecret)
+        .update(rawBody)
+        .digest('hex');
+
+    if (expectedSignature !== signature) {
+        console.warn('[Webhook] Invalid Webhook Signature received.');
+        throw new BadRequestException('Invalid signature');
+    }
+
+    // PARSE BODY
+    const event = JSON.parse(rawBody.toString());
+    console.log(`[Webhook] Received Razorpay event: ${event.event}`);
+
+    // FULFILL SUBSCRIPTION ON SUCCESSFUL PAYMENT
+    // event.event can be 'payment.captured' or 'order.paid' depending on settings
+    if (event.event === 'payment.captured' || event.event === 'order.paid') {
+        const payment = event.payload.payment.entity;
+        const notes = payment.notes; // We passed userId and planId in the notes!
+
+        if (notes && notes.userId && notes.planId) {
+            console.log(`[Webhook] Fulfilling subscription for user ${notes.userId}, plan ${notes.planId}`);
+            await this.fulfillSubscription(notes.userId, notes.planId, payment.id);
+        } else {
+            console.warn('[Webhook] Missing notes (userId/planId) in payment entity.');
+        }
+    }
+
+    return { status: 'success' };
+  }
+
   async fulfillSubscription(userId: string, planId: string, transactionId: string) {
     const plan = await this.prisma.subscriptionPlan.findUnique({ where: { id: planId } });
     if (!plan) throw new BadRequestException("Invalid Plan.");

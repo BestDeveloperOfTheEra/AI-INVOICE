@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
   app.use((req: any, res: any, next: any) => {
