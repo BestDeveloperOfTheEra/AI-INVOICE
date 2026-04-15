@@ -94,12 +94,6 @@ export class SubscriptionsService {
    * Centralized method to fulfill a subscription.
    * Called by both the manual confirmation and the webhook handler.
    */
-    );
-  }
-
-  /**
-   * Razorpay Webhook Handler
-   */
   async handleRazorpayWebhook(rawBody: Buffer, signature: string) {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     if (!webhookSecret) {
