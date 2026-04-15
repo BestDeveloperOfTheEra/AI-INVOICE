@@ -34,6 +34,16 @@ export class AuthController {
     return this.authService.loginWithGoogle(body.credential);
   }
 
+  /** Google Sign-In (Custom Button): receives the access_token from the OAuth2 popup */
+  @Post('google/access-token')
+  @HttpCode(HttpStatus.OK)
+  async googleAccessToken(@Body() body: { access_token: string }) {
+    if (!body.access_token) {
+      throw new BadRequestException('access_token is required');
+    }
+    return this.authService.loginWithGoogleAccessToken(body.access_token);
+  }
+
   /** Apple Sign-In: receives the id_token from Sign In with Apple JS */
   @Post('apple/token')
   @HttpCode(HttpStatus.OK)

@@ -9,6 +9,7 @@ declare global {
   interface Window {
     google: any;
     AppleID: any;
+    googleTokenClient: any;
   }
 }
 
@@ -22,17 +23,26 @@ export default function Login() {
 
   useEffect(() => {
     // Initialize Google Identity Services
-    if (typeof window !== 'undefined' && window.google) {
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (typeof window !== 'undefined' && window.google && googleClientId) {
       window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+        client_id: googleClientId,
         callback: handleGoogleResponse,
+      });
+
+      // Initialize Token Client for Custom Button
+      window.googleTokenClient = window.google.accounts.oauth2.initTokenClient({
+        client_id: googleClientId,
+        scope: 'openid email profile',
+        callback: (tokenResponse: any) => handleGoogleTokenResponse(tokenResponse),
       });
     }
 
     // Initialize Apple Sign In
-    if (typeof window !== 'undefined' && window.AppleID) {
+    const appleClientId = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID;
+    if (typeof window !== 'undefined' && window.AppleID && appleClientId) {
       window.AppleID.auth.init({
-        clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || '',
+        clientId: appleClientId,
         scope: 'name email',
         redirectURI: window.location.origin + '/login',
         usePopup: true,
@@ -61,15 +71,43 @@ export default function Login() {
     }
   };
 
+  const handleGoogleTokenResponse = async (tokenResponse: any) => {
+    if (tokenResponse.error) {
+        console.error('Google OAuth Error:', tokenResponse.error);
+        return;
+    }
+    
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`${API_URL}/auth/google/access-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: tokenResponse.access_token }),
+      });
+
+      if (!res.ok) throw new Error('Google sign-in failed');
+
+      const data = await res.json();
+      completeLogin(data.access_token);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGoogleLogin = () => {
     if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
       setError('Google Client ID not configured');
       return;
     }
-    window.google.accounts.id.prompt(); // Starts One Tap if enabled, or I could use a hidden button
-    // Alternatively, render a small invisible button and click it, 
-    // or use the standard GSI button if the user prefers.
-    // For now, let's try the prompt.
+    
+    if (window.googleTokenClient) {
+        window.googleTokenClient.requestAccessToken();
+    } else {
+        window.google.accounts.id.prompt(); 
+    }
   };
 
   const handleAppleLogin = async () => {

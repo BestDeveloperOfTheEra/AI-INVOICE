@@ -52,6 +52,18 @@ export class AuthService {
     return this.login(user);
   }
 
+  async loginWithGoogleAccessToken(accessToken: string) {
+    const googleUser = await this.oauthService.verifyGoogleAccessToken(accessToken);
+    const user = await this.usersService.findOrCreateOAuthUser({
+      email: googleUser.email,
+      name: googleUser.name,
+      avatarUrl: googleUser.picture,
+      oauthId: googleUser.googleId,
+      authProvider: 'google',
+    });
+    return this.login(user);
+  }
+
   async loginWithApple(
     idToken: string,
     appleUser?: { name?: { firstName?: string; lastName?: string }; email?: string },

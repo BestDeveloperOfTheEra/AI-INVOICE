@@ -31,6 +31,27 @@ export class OAuthService {
     }
   }
 
+  async verifyGoogleAccessToken(accessToken: string): Promise<{ email: string; name?: string; picture?: string; googleId: string }> {
+    try {
+      const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
+      if (!response.ok) {
+        throw new UnauthorizedException('Failed to fetch user info from Google');
+      }
+      const payload = await response.json();
+      if (!payload || !payload.email) {
+        throw new UnauthorizedException('Invalid Google user info response');
+      }
+      return {
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture,
+        googleId: payload.sub,
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid Google access token');
+    }
+  }
+
   async verifyAppleToken(idToken: string): Promise<{ email: string; appleId: string }> {
     try {
       const payload = await appleSignin.verifyIdToken(idToken, {
