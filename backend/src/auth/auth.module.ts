@@ -8,6 +8,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { ApiTokensModule } from '../api-tokens/api-tokens.module';
 import { ApiKeyGuard } from './api-key.guard';
 import { CombinedAuthGuard } from './combined-auth.guard';
+import { OAuthService } from './oauth.service';
 
 @Module({
   imports: [
@@ -16,11 +17,11 @@ import { CombinedAuthGuard } from './combined-auth.guard';
     ApiTokensModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'super-secret-key-for-antigravity',
-      signOptions: { expiresIn: '60d' }, // Increased for easier testing, reduce for prod
+      signOptions: { expiresIn: '60d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, ApiKeyGuard, CombinedAuthGuard],
+  providers: [AuthService, JwtStrategy, ApiKeyGuard, CombinedAuthGuard, OAuthService],
   exports: [ApiKeyGuard, CombinedAuthGuard],
 })
 export class AuthModule {}

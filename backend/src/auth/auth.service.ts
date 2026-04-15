@@ -1,13 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { OAuthService } from './oauth.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private oauthService: OAuthService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -36,5 +38,35 @@ export class AuthService {
     }
     const newUser = await this.usersService.create(body);
     return this.login(newUser);
+  }
+
+  async loginWithGoogle(credential: string) {
+    const googleUser = await this.oauthService.verifyGoogleToken(credential);
+    const user = await this.usersService.findOrCreateOAuthUser({
+      email: googleUser.email,
+      name: googleUser.name,
+      avatarUrl: googleUser.picture,
+      oauthId: googleUser.googleId,
+      authProvider: 'google',
+    });
+    return this.login(user);
+  }
+
+  async loginWithApple(
+    idToken: string,
+    appleUser?: { name?: { firstName?: string; lastName?: string }; email?: string },
+  ) {
+    const applePayload = await this.oauthService.verifyAppleToken(idToken);
+    // Apple only sends the name on the very first sign-in
+    const name = appleUser?.name
+      ? `${appleUser.name.firstName ?? ''} ${appleUser.name.lastName ?? ''}`.trim()
+      : undefined;
+    const user = await this.usersService.findOrCreateOAuthUser({
+      email: applePayload.email,
+      name,
+      oauthId: applePayload.appleId,
+      authProvider: 'apple',
+    });
+    return this.login(user);
   }
 }

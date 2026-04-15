@@ -8,8 +8,9 @@ async function bootstrap() {
 
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
   app.use((req: any, res: any, next: any) => {
-    if (req.headers['content-type']) {
+    if (req.headers['content-type'] && !req.headers['content-type'].includes('multipart/form-data')) {
       // Remove charset from content-type header because body-parser is failing on "UTF-8"
+      // BUT keep it for multipart because it contains the boundary
       req.headers['content-type'] = req.headers['content-type'].split(';')[0];
     }
     next();

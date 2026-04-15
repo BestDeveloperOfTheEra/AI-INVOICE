@@ -34,6 +34,14 @@ export default function RootLayout({
           src="https://checkout.razorpay.com/v1/checkout.js" 
           strategy="lazyOnload" 
         />
+        <Script 
+          src="https://accounts.google.com/gsi/client" 
+          strategy="beforeInteractive"
+        />
+        <Script 
+          src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" 
+          strategy="beforeInteractive"
+        />
         <div className="print:hidden">
           <Navbar />
         </div>
