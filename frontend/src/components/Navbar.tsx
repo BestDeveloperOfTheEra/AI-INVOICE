@@ -65,7 +65,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-8">
               <Link href="/#features" className="text-sm text-gray-300 hover:text-white transition-colors">Features</Link>
               <Link href="/pricing" className="text-sm text-gray-300 hover:text-white transition-colors">Pricing</Link>
-              <a href={`${(API_URL || '').replace('/api', '')}/api/docs`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-white transition-colors">Developers API</a>
+              <a href={`${(API_URL || '').includes('localhost') ? API_URL.replace('/api', '') + '/docs' : (API_URL || '').replace('/api', '') + '/api/docs'}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-white transition-colors">Developers API</a>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4 ml-auto">
@@ -129,7 +129,7 @@ export default function Navbar() {
           <div className="flex flex-col p-4 gap-2">
             <Link href="/#features" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-xl">Features</Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-xl">Pricing</Link>
-            <a href={`${(API_URL || '').replace('/api', '')}/api/docs`} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-xl">Developers API</a>
+            <a href={`${(API_URL || '').includes('localhost') ? API_URL.replace('/api', '') + '/docs' : (API_URL || '').replace('/api', '') + '/api/docs'}`} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-sm text-gray-300 hover:bg-white/5 rounded-xl">Developers API</a>
           </div>
         </div>
       )}
