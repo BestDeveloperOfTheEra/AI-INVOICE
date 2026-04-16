@@ -22,12 +22,13 @@ export class SubscriptionsService {
   async getAllPlans() {
     // Auto-seed if empty dynamically to ensure the UI has something to show!
     const count = await this.prisma.subscriptionPlan.count();
-    if (count !== 4) {
+    if (count !== 5) {
       await this.prisma.subscriptionPlan.deleteMany();
       await this.prisma.subscriptionPlan.createMany({
         data: [
           { name: 'Free', price: 0, quotaPages: 10, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'free_plan' },
           { name: 'Starter', price: 499, quotaPages: 200, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'starter_plan_499' },
+          { name: 'Starter', price: 4999, quotaPages: 2400, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'starter_annual_4999' },
           { name: 'Pro', price: 999, quotaPages: 25000, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'pro_plan_999' },
           { name: 'Pro', price: 9999, quotaPages: 300000, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'pro_annual_9999' }
         ]
