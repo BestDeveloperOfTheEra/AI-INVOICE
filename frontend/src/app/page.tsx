@@ -1,8 +1,27 @@
 import Link from "next/link";
 
 export default function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AutoExtract AI",
+    "operatingSystem": "Web",
+    "applicationCategory": "BusinessApplication",
+    "offers": {
+      "@type": "AggregateOffer",
+      "lowPrice": "0",
+      "highPrice": "4999",
+      "priceCurrency": "INR"
+    },
+    "featureList": "Invoice Extraction, AI Document Parsing, Medical Report OCR, Legal Document Processing"
+  };
+
   return (
     <div className="flex flex-col items-center justify-center pt-24 pb-16 px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="text-center w-full max-w-5xl mx-auto flex flex-col items-center gap-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-blue-400 font-medium mb-4 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
