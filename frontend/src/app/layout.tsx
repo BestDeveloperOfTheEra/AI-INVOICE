@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DataExtract - AI Document Processing",
-  description: "Extract data from Invoices, Medical Reports, and Legal Documents securely.",
+  title: "AutoExtract - AI Document Processing",
+  description: "Extract data from Invoices, Medical Reports, and Legal Documents securely with AutoExtract AI.",
 };
 
 export default function RootLayout({

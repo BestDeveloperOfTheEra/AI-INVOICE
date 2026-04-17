@@ -22,15 +22,24 @@ export class SubscriptionsService {
   async getAllPlans() {
     // Auto-seed if empty dynamically to ensure the UI has something to show!
     const count = await this.prisma.subscriptionPlan.count();
-    if (count !== 5) {
+    if (count !== 9) { // 4 monthly + 4 annual + 1 custom
       await this.prisma.subscriptionPlan.deleteMany();
       await this.prisma.subscriptionPlan.createMany({
         data: [
-          { name: 'Free', price: 0, quotaPages: 10, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'free_plan' },
-          { name: 'Starter', price: 499, quotaPages: 200, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'starter_plan_499' },
-          { name: 'Starter', price: 4999, quotaPages: 2400, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'starter_annual_4999' },
-          { name: 'Pro', price: 999, quotaPages: 25000, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'pro_plan_999' },
-          { name: 'Pro', price: 9999, quotaPages: 300000, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'pro_annual_9999' }
+          // MONTHLY
+          { name: 'Free', price: 0, quotaPages: 20, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'free_plan' },
+          { name: 'Starter', price: 999, quotaPages: 500, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'starter_plan' },
+          { name: 'Pro', price: 3499, quotaPages: 3000, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'pro_plan' },
+          { name: 'Business', price: 9999, quotaPages: 15000, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'business_plan' },
+          
+          // ANNUAL (20% OFF)
+          { name: 'Free', price: 0, quotaPages: 240, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'free_annual' },
+          { name: 'Starter', price: 9588, quotaPages: 6000, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'starter_annual' },
+          { name: 'Pro', price: 33588, quotaPages: 36000, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'pro_annual' },
+          { name: 'Business', price: 95988, quotaPages: 180000, moduleType: 'invoice', billingCycle: 'year', currency: 'INR', paddleProductId: 'business_annual' },
+
+          // ENTERPRISE
+          { name: 'Enterprise', price: 0, quotaPages: 999999, moduleType: 'invoice', billingCycle: 'month', currency: 'INR', paddleProductId: 'enterprise' }
         ]
       });
     }

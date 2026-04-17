@@ -38,7 +38,7 @@ export const useRazorpay = () => {
       key: data.keyId,
       amount: data.amount,
       currency: data.currency,
-      name: "DataExtract AI",
+      name: "AutoExtract AI",
       description: "Subscription Plan Upgrade",
       order_id: data.razorpayOrderId,
       prefill: {

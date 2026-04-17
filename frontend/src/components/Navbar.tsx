@@ -40,7 +40,7 @@ export default function Navbar() {
         {/* BRANDING */}
         <div className="flex items-center gap-2 shrink-0">
           <Link href="/" className="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2 sm:gap-3 whitespace-nowrap">
-            <div>Data<span className={role === 'Admin' ? 'text-red-500' : 'text-blue-500'}>Extract</span></div>
+            <div>Auto<span className={role === 'Admin' ? 'text-red-500' : 'text-blue-500'}>Extract</span></div>
             {role === 'Admin' && (
               <span className="text-[10px] font-bold tracking-widest uppercase bg-red-500/20 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">
                 Admin

@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('DataExtract AI API')
+    .setTitle('AutoExtract AI API')
     .setDescription('The AI Document Processing API description')
     .setVersion('1.0')
     .addTag('extract')

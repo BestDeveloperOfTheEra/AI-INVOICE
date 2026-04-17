@@ -121,74 +121,90 @@ export default function Pricing() {
           <p className="text-gray-400 text-lg max-w-2xl">Choose the plan that's right for your business. Switch or cancel any time.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto w-full">
-          {Array.isArray(plans) && plans.filter(p => p.name === 'Free' || p.billingCycle === billingCycle).map((plan, i) => (
-            <div key={plan.id} className={`p-8 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Starter' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 md:scale-105 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
-              {plan.name === 'Starter' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Most Popular</div>}
-              {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(79,70,229,0.4)] border border-indigo-400/30 z-20 whitespace-nowrap">Enterprise Ready</div>}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 max-w-[90rem] mx-auto w-full px-4">
+          {Array.isArray(plans) && plans.filter(p => (p.name === 'Enterprise' || p.name === 'Free' || p.billingCycle === billingCycle)).map((plan, i) => (
+            <div key={plan.id} className={`p-6 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Pro' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
+              {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Recommended</div>}
+              {plan.name === 'Business' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.1em] border border-indigo-400/30 z-20 whitespace-nowrap">Scaleup</div>}
 
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{plan.name} Plan</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">
-                  {plan.name === 'Free' && "Perfect for individual testing and small invoices."}
-                  {plan.name === 'Starter' && "Everything you need for a growing business with GST compliance."}
-                  {plan.name === 'Pro' && "Unlimited / High-volume processing with priority AI extraction."}
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-white mb-1 tracking-tight">{plan.name}</h3>
+                <p className="text-gray-500 text-[10px] leading-relaxed">
+                  {plan.name === 'Free' && "Best For: Testing"}
+                  {plan.name === 'Starter' && "Best For: Freelancers"}
+                  {plan.name === 'Pro' && "Best For: Small businesses"}
+                  {plan.name === 'Business' && "Best For: Agencies/Finance teams"}
+                  {plan.name === 'Enterprise' && "Best For: Large orgs, API-heavy"}
                 </p>
               </div>
 
-              <div className="mb-8 overflow-hidden">
+              <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-white tracking-tighter">₹{plan.price}</span>
-                  <span className="text-gray-500 font-medium text-xs">/{plan.billingCycle === 'year' ? 'year' : 'month'}</span>
+                  <span className="text-3xl font-black text-white tracking-tighter">
+                    {plan.name === 'Enterprise' ? 'Custom' : `₹${plan.price}`}
+                  </span>
+                  {plan.name !== 'Enterprise' && (
+                    <span className="text-gray-500 font-medium text-[10px]">/{plan.billingCycle === 'year' ? 'yr' : 'mo'}</span>
+                  )}
                 </div>
-                <p className="text-blue-400/80 text-[10px] font-bold uppercase tracking-wider mt-2 bg-blue-400/5 inline-block px-2 py-0.5 rounded-md">
-                  ≈ ₹{(plan.price / (plan.quotaPages || 1)).toFixed(2)} per page
-                </p>
+                {plan.name !== 'Enterprise' && plan.price > 0 && (
+                   <div className="text-blue-400/80 text-[10px] font-bold uppercase tracking-wider mt-1 bg-blue-400/5 inline-block px-1.5 py-0.5 rounded-sm">
+                      ≈ ₹{(plan.price / (plan.quotaPages || 1)).toFixed(2)} / page
+                   </div>
+                )}
               </div>
 
-              <ul className="flex flex-col gap-4 text-gray-300 mb-10 flex-1 border-t border-white/5 pt-8">
-                <li className="flex items-center gap-3 text-sm">
-                  <span className="text-blue-500 font-bold text-lg">✓</span>
-                  <span className="font-bold text-white">{plan.quotaPages.toLocaleString()}</span> Invoices {plan.billingCycle === 'year' ? '/yr' : '/mo'}
+              <ul className="flex flex-col gap-3 text-gray-400 mb-8 flex-1 border-t border-white/5 pt-6">
+                <li className="flex items-center gap-2 text-[13px]">
+                  <span className="text-blue-500 font-bold">✓</span>
+                  <span className="font-bold text-white">{plan.name === 'Enterprise' ? 'Unlimited' : plan.quotaPages.toLocaleString()}</span> Pages {plan.name === 'Enterprise' ? '' : (plan.billingCycle === 'year' ? '/yr' : '/mo')}
                 </li>
-                <li className="flex items-center gap-3 text-sm">
-                  <span className="text-blue-500">✓</span> High-Accuracy OCR Engine
-                </li>
-                <li className="flex items-center gap-3 text-sm">
-                  <span className="text-blue-500">✓</span> Instant Excel & PDF Export
-                </li>
-                {plan.name === 'Free' && (
-                  <li className="flex items-center gap-3 text-sm text-gray-500">
-                    <span className="text-gray-600">×</span> Bulk Upload & Tally Export
+                {plan.name === 'Free' ? (
+                  <li className="flex items-center gap-2 text-[13px] text-gray-600">
+                    <span className="text-gray-600">×</span> Basic Extraction Only
+                  </li>
+                ) : (
+                  <li className="flex items-center gap-2 text-[13px]">
+                    <span className="text-blue-500">✓</span> High-Accuracy AI Engine
                   </li>
                 )}
-                {plan.name !== 'Free' && (
-                  <>
-                    <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
-                      <span className="text-blue-500">✓</span> Bulk Upload & Auto-Processing
-                    </li>
-                    <li className="flex items-center gap-3 text-sm font-medium text-blue-300">
-                      <span className="text-blue-500">✓</span> GST-Ready Excel & Tally Export
-                    </li>
-                  </>
+                
+                {plan.name === 'Starter' || plan.name === 'Free' ? (
+                   <li className="flex items-center gap-2 text-[13px] text-gray-600">
+                    <span className="text-gray-600">×</span> Batch Processing
+                  </li>
+                ) : (
+                  <li className="flex items-center gap-2 text-[13px] font-medium text-blue-300">
+                    <span className="text-blue-500">✓</span> Bulk Batch Processing
+                  </li>
                 )}
-                {plan.name === 'Pro' && (
-                  <>
-                    <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-                      <span className="text-indigo-500">✓</span> Priority Processing Queue
-                    </li>
-                    <li className="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-                      <span className="text-indigo-500">✓</span> 24/7 Premium Support
-                    </li>
-                  </>
+
+                {plan.name === 'Business' || plan.name === 'Enterprise' ? (
+                  <li className="flex items-center gap-2 text-[13px] text-indigo-300 font-bold">
+                    <span className="text-indigo-500">✓</span> API Access & Webhooks
+                  </li>
+                ) : (
+                   <li className="flex items-center gap-2 text-[13px] text-gray-600">
+                    <span className="text-gray-600">×</span> API Access
+                  </li>
+                )}
+
+                {plan.name === 'Enterprise' && (
+                  <li className="flex items-center gap-2 text-[13px] text-green-400 font-bold">
+                    <span className="text-green-500">✓</span> Dedicated Account Manager
+                  </li>
                 )}
               </ul>
 
-              <button onClick={() => handleSubscribe(plan.id)} className={`w-full py-4 rounded-2xl text-white font-bold tracking-tight transition-all active:scale-95 ${plan.name === 'Starter' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_25px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
-                {plan.name === 'Free' ? 'Get Started' : `Upgrade to ${plan.name}`}
+              <button 
+                onClick={() => plan.name === 'Enterprise' ? window.location.href='mailto:sales@yourdomain.com' : handleSubscribe(plan.id)} 
+                className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all active:scale-95 ${plan.name === 'Pro' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
+                {plan.name === 'Free' ? 'Get Started' : plan.name === 'Enterprise' ? 'Contact Sales' : `Upgrade`}
               </button>
             </div>
           ))}
+        </div>
+  ))}
         </div>
       </div>
     </div>
