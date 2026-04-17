@@ -137,11 +137,11 @@ export default function Pricing() {
               <div className="mb-6">
                 <h3 className="text-lg font-bold text-white mb-1 tracking-tight">{plan.name}</h3>
                 <p className="text-gray-500 text-[10px] leading-relaxed">
-                  {plan.name === 'Free' && "Best For: Testing"}
-                  {plan.name === 'Starter' && "Best For: Freelancers"}
-                  {plan.name === 'Pro' && "Best For: Small businesses"}
-                  {plan.name === 'Business' && "Best For: Agencies/Finance teams"}
-                  {plan.name === 'Enterprise' && "Best For: Large orgs, API-heavy"}
+                  {plan.name === 'Free' && "Best For: Trial"}
+                  {plan.name === 'Starter' && "Best For: Individuals"}
+                  {plan.name === 'Pro' && "Best For: Small businesses ⭐"}
+                  {plan.name === 'Business' && "Best For: Teams"}
+                  {plan.name === 'Enterprise' && "Best For: Scale"}
                 </p>
               </div>
 

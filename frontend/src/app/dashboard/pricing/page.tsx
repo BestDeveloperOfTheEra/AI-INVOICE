@@ -71,11 +71,11 @@ export default function PricingPage() {
                         <div className="mb-4">
                             <h4 className="text-lg font-bold text-white mb-1">{plan.name}</h4>
                             <p className="text-gray-500 text-[10px]">
-                                {plan.name === 'Free' && "Best For: Testing"}
-                                {plan.name === 'Starter' && "Best For: Freelancers"}
-                                {plan.name === 'Pro' && "Best For: Small businesses"}
-                                {plan.name === 'Business' && "Best For: Agencies/Finance teams"}
-                                {plan.name === 'Enterprise' && "Best For: API-heavy"}
+                                {plan.name === 'Free' && "Best For: Trial"}
+                                {plan.name === 'Starter' && "Best For: Individuals"}
+                                {plan.name === 'Pro' && "Best For: Small businesses ⭐"}
+                                {plan.name === 'Business' && "Best For: Teams"}
+                                {plan.name === 'Enterprise' && "Best For: Scale"}
                             </p>
                         </div>
 
