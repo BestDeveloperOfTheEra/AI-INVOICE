@@ -20,9 +20,10 @@ export class SubscriptionsService {
   }
 
   async getAllPlans() {
-    // Auto-seed if empty dynamically to ensure the UI has something to show!
-    const count = await this.prisma.subscriptionPlan.count();
-    if (count !== 9) { // Trigger re-seed
+    // FORCE RESET PLANS TO APPLY NEW PRICES
+    const firstPlan = await this.prisma.subscriptionPlan.findFirst({ where: { name: 'Starter', billingCycle: 'month' } });
+    if (!firstPlan || firstPlan.price !== 499) { 
+      console.log('[SubscriptionsService] Prices changed or plans missing. Re-seeding...');
       await this.prisma.subscriptionPlan.deleteMany();
       await this.prisma.subscriptionPlan.createMany({
         data: [
