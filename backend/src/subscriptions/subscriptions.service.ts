@@ -125,20 +125,56 @@ export class SubscriptionsService {
 
     // PARSE BODY
     const event = JSON.parse(rawBody.toString());
-    console.log(`[Webhook] Received Razorpay event: ${event.event}`);
+    const eventName = event.event;
+    console.log(`[Webhook] Processing Razorpay Event: ${eventName}`);
 
-    // FULFILL SUBSCRIPTION ON SUCCESSFUL PAYMENT
-    // event.event can be 'payment.captured' or 'order.paid' depending on settings
-    if (event.event === 'payment.captured' || event.event === 'order.paid') {
-        const payment = event.payload.payment.entity;
-        const notes = payment.notes; // We passed userId and planId in the notes!
+    switch (eventName) {
+        case 'payment.captured':
+        case 'order.paid':
+        case 'payment_link.paid':
+        case 'invoice.paid':
+            const payment = event.payload.payment?.entity || event.payload.order?.entity || event.payload.payment_link?.entity;
+            const notes = payment?.notes || {};
+            if (notes.userId && notes.planId) {
+                console.log(`[Webhook] FULFILLING: User ${notes.userId}, Plan ${notes.planId}`);
+                await this.fulfillSubscription(notes.userId, notes.planId, payment.id || payment.order_id);
+            }
+            break;
 
-        if (notes && notes.userId && notes.planId) {
-            console.log(`[Webhook] Fulfilling subscription for user ${notes.userId}, plan ${notes.planId}`);
-            await this.fulfillSubscription(notes.userId, notes.planId, payment.id);
-        } else {
-            console.warn('[Webhook] Missing notes (userId/planId) in payment entity.');
-        }
+        case 'payment.failed':
+        case 'payment_link.expired':
+        case 'invoice.expired':
+            console.warn(`[Webhook] PAYMENT FAILED: Event ${eventName}. Payload:`, JSON.stringify(event.payload));
+            // Optional: Notify user or log in internal dashboard
+            break;
+
+        case 'refund.processed':
+            const refundPayment = event.payload.payment.entity;
+            const rNotes = refundPayment.notes || {};
+            if (rNotes.userId) {
+                console.log(`[Webhook] REFUNDING: Revoking access for User ${rNotes.userId}`);
+                await this.prisma.userSubscription.updateMany({
+                   where: { userId: rNotes.userId, status: 'active' },
+                   data: { status: 'cancelled' }
+                });
+            }
+            break;
+
+        case 'subscription.cancelled':
+        case 'subscription.halted':
+            const sub = event.payload.subscription.entity;
+            const subNotes = sub.notes || {};
+            if (subNotes.userId) {
+                await this.prisma.userSubscription.updateMany({
+                    where: { userId: subNotes.userId, status: 'active' },
+                    data: { status: 'cancelled' }
+                });
+            }
+            break;
+
+        default:
+            console.log(`[Webhook] INFO: Received unhandled but logged event: ${eventName}`);
+            break;
     }
 
     return { status: 'success' };
