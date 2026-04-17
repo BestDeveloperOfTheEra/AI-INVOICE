@@ -10,13 +10,16 @@ async function bootstrap() {
   // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('AutoExtract AI API')
-    .setDescription('The AI Document Processing API description')
+    .setDescription('The AI Document Processing API description. [Back to Dashboard](https://autoextract.in/dashboard)')
     .setVersion('1.0')
     .addTag('extract')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  // Redirect old /api-docs to /api/docs
+  app.use('/api-docs', (req, res) => res.redirect('/api/docs'));
 
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
   app.use((req: any, res: any, next: any) => {

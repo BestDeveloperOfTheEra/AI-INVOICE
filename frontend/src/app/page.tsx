@@ -23,9 +23,9 @@ export default function Home() {
           <Link href="/dashboard" className="px-8 py-4 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500 transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(37,99,235,0.6)]">
             Start Extracting
           </Link>
-          <Link href="/api-docs" className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all backdrop-blur-sm">
+          <a href="/api/docs" className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all backdrop-blur-sm">
             Explore Developers API
-          </Link>
+          </a>
         </div>
       </section>
 
