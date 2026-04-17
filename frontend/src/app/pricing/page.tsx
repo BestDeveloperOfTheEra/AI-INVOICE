@@ -121,9 +121,16 @@ export default function Pricing() {
           <p className="text-gray-400 text-lg max-w-2xl">Choose the plan that's right for your business. Switch or cancel any time.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 max-w-[90rem] mx-auto w-full px-4">
-          {Array.isArray(plans) && plans.filter(p => (p.name === 'Enterprise' || p.name === 'Free' || p.billingCycle === billingCycle)).map((plan, i) => (
-            <div key={plan.id} className={`p-6 rounded-3xl border flex flex-col transition-all relative group ${plan.name === 'Pro' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-[95rem] mx-auto w-full px-4 mb-20">
+          {Array.isArray(plans) && plans
+            .filter(p => p.billingCycle === billingCycle || p.name === 'Enterprise')
+            .sort((a, b) => {
+              if (a.name === 'Enterprise') return 1;
+              if (b.name === 'Enterprise') return -1;
+              return a.price - b.price;
+            })
+            .map((plan, i) => (
+            <div key={plan.id} className={`p-6 rounded-3xl border flex flex-col transition-all relative group h-full ${plan.name === 'Pro' ? 'bg-blue-600/10 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:bg-blue-600/20 z-10' : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04]'}`}>
               {plan.name === 'Pro' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20 whitespace-nowrap">Recommended</div>}
               {plan.name === 'Business' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.1em] border border-indigo-400/30 z-20 whitespace-nowrap">Scaleup</div>}
 
@@ -197,8 +204,8 @@ export default function Pricing() {
               </ul>
 
               <button 
-                onClick={() => plan.name === 'Enterprise' ? window.location.href='mailto:sales@yourdomain.com' : handleSubscribe(plan.id)} 
-                className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all active:scale-95 ${plan.name === 'Pro' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
+                onClick={() => plan.name === 'Enterprise' ? window.location.href='mailto:sales@autoextract.in' : handleSubscribe(plan.id)} 
+                className={`w-full py-3 rounded-xl text-white text-sm font-bold tracking-tight transition-all active:scale-95 mt-auto ${plan.name === 'Pro' ? 'bg-blue-600 hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}>
                 {plan.name === 'Free' ? 'Get Started' : plan.name === 'Enterprise' ? 'Contact Sales' : `Upgrade`}
               </button>
             </div>
