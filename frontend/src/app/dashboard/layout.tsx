@@ -66,18 +66,18 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
-        {/* Refined Industrial Sidebar (Restored Consistency) */}
-        <aside className="w-full lg:w-80 flex flex-row lg:flex-col shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.04] bg-[#020202] py-16 px-10 relative z-20">
-          <div className="hidden lg:flex items-center gap-4 mb-24 group cursor-pointer" onClick={() => router.push('/dashboard')}>
+        {/* Elite Fixed Sidebar */}
+        <aside className="w-full lg:w-80 lg:h-screen lg:sticky lg:top-0 flex flex-col shrink-0 border-r border-white/[0.04] bg-[#020202] py-16 px-10 z-20 overflow-y-auto no-scrollbar">
+          <div className="flex items-center gap-4 mb-24 group cursor-pointer" onClick={() => router.push('/dashboard')}>
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:scale-110 transition-transform duration-500">
               <Icons.Sparkles />
             </div>
             <span className="text-xl font-black text-white tracking-widest uppercase italic">AutoExtract</span>
           </div>
 
-          <div className="flex flex-col gap-16 w-full">
+          <div className="flex flex-col gap-16 w-full flex-1">
             <div>
-                <p className="text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] mb-12">Menu</p>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em] mb-10 opacity-80">Menu</p>
                 <div className="flex flex-col gap-8">
                     {[
                       { label: 'Extract Invoices', path: '/dashboard' },
@@ -91,7 +91,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                           className={`text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                             isActive 
                             ? 'text-blue-500' 
-                            : 'text-gray-500 hover:text-white'
+                            : 'text-gray-400 hover:text-white'
                           }`}
                         >
                           {item.label}
@@ -102,7 +102,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </div>
 
             <div>
-                <p className="text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] mb-12">Settings</p>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em] mb-10 opacity-80">Settings</p>
                 <div className="flex flex-col gap-10">
                     {[
                       { label: 'Update Profile', path: '/dashboard/profile' },
@@ -116,8 +116,8 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                           href={item.path}
                           className={`px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                             isActive 
-                            ? 'bg-blue-600/10 text-white border border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.1)]' 
-                            : 'text-gray-500 hover:text-white'
+                            ? 'bg-blue-600/15 text-blue-400 border border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.1)]' 
+                            : 'text-gray-400 hover:text-white'
                           }`}
                         >
                           {item.label}
@@ -128,16 +128,16 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="mt-auto hidden lg:flex flex-col gap-10 pt-16 border-t border-white/[0.04]">
+          <div className="mt-8 flex flex-col gap-10 pt-16 border-t border-white/[0.04]">
              <div className="px-2">
                  <div className="flex items-center justify-between mb-4">
-                     <p className="text-[10px] font-black text-gray-800 uppercase tracking-widest">Neural Quota</p>
+                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest opacity-80">Neural Quota</p>
                      <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2.5 py-1 rounded-md italic">{planName}</span>
                  </div>
                  <div className="w-full h-1 bg-white/[0.03] rounded-full overflow-hidden mb-4">
                      <div className="h-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${Math.min(100, (credits/100)*100)}%` }}></div>
                  </div>
-                 <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest italic">{credits} / 100 Credits Loaded</p>
+                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest italic opacity-60">{credits} / 100 Credits Loaded</p>
              </div>
 
              <div className="flex items-center gap-4 hover:bg-white/[0.02] p-4 rounded-3xl transition-all cursor-pointer group">
@@ -146,17 +146,17 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                   </div>
                   <div className="flex flex-col overflow-hidden">
                       <span className="text-xs font-black text-white uppercase tracking-tight truncate max-w-[120px]">{profileName || 'Main Admin'}</span>
-                      <span className="text-[10px] text-gray-700 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">Workspace Owner</span>
+                      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic opacity-60 group-hover:text-gray-400 transition-colors">Workspace Owner</span>
                   </div>
              </div>
           </div>
         </aside>
 
-        {/* Content Area (Clean Fluid Container) */}
-        <div className="flex-1 flex flex-col bg-transparent">
+        {/* Content Area (Elastic Fitness) */}
+        <div className="flex-1 flex flex-col bg-transparent min-w-0">
           <header className="flex items-center justify-between px-10 py-8 border-b border-white/[0.03] sticky top-0 bg-[#020202]/50 backdrop-blur-3xl z-50">
             <div>
-                <h1 className="text-[10px] font-black text-gray-600 uppercase tracking-[0.5em] italic">
+                <h1 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] italic opacity-60">
                    {pathname === '/dashboard' ? 'Neural Workspace' : 
                     pathname.includes('history') ? 'Archive Stream' : 
                     pathname.includes('pricing') ? 'Financial Scaling' : 'Account Config'}
@@ -169,11 +169,11 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                     {credits} / 100 Credits Loaded
                 </span>
               </div>
-              <button onClick={handleLogout} className="text-[10px] font-black text-gray-700 hover:text-red-500 uppercase tracking-widest transition-all">Logout</button>
+              <button onClick={handleLogout} className="text-[10px] font-black text-gray-500 hover:text-red-500 uppercase tracking-widest transition-all">Logout</button>
             </div>
           </header>
 
-          <main className="flex-1 p-10 overflow-y-auto no-scrollbar">
+          <main className="flex-1 p-10 overflow-x-hidden no-scrollbar">
             {children}
           </main>
         </div>
