@@ -3,14 +3,15 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
+import { Request, Response, NextFunction } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('AutoExtract AI API')
-    .setDescription('The AI Document Processing API description. [Back to Dashboard](https://autoextract.in/dashboard)')
+    .setTitle('AutoExtract AI - Invoice Reader API')
+    .setDescription('Advanced AI-powered Invoice and Receipt data extraction API. [Back to Dashboard](https://autoextract.in/dashboard)')
     .setVersion('1.0')
     .addTag('extract')
     .addBearerAuth()
@@ -19,10 +20,10 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   // Redirect old /api-docs to /api/docs
-  app.use('/api-docs', (req, res) => res.redirect('/api/docs'));
+  app.use('/api-docs', (req: Request, res: Response) => res.redirect('/api/docs'));
 
   // SANITIZE HEADERS TO FIX CHARSET ISSUE
-  app.use((req: any, res: any, next: any) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     if (req.headers['content-type'] && !req.headers['content-type'].includes('multipart/form-data')) {
       // Remove charset from content-type header because body-parser is failing on "UTF-8"
       // BUT keep it for multipart because it contains the boundary

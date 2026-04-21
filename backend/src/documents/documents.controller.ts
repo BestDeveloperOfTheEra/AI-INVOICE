@@ -5,6 +5,10 @@ import { DocumentsService } from './documents.service';
 import { ExportsService } from './exports.service';
 import { StorageService } from './storage.service';
 
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+
+@ApiTags('Invoices')
+@ApiBearerAuth()
 @Controller('documents')
 export class DocumentsController {
   constructor(
@@ -20,6 +24,8 @@ export class DocumentsController {
   }
 
   @Post('upload')
+  @ApiOperation({ summary: 'Upload and extract data from invoices/receipts' })
+  @ApiHeader({ name: 'x-sandbox', description: 'Set to true to use trial credits', required: false })
   @UseGuards(CombinedAuthGuard)
   @UseInterceptors(FilesInterceptor('files', 50, { dest: './uploads' }))
   async uploadFiles(@UploadedFiles() files: Express.Multer.File[], @Req() req: any) {
@@ -54,7 +60,7 @@ export class DocumentsController {
     const buffer = await this.exportsService.generateExcel(documents);
     res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': 'attachment; filename="GST_Report.xlsx"',
+      'Content-Disposition': 'attachment; filename="Invoice_Report.xlsx"',
     });
     res.send(buffer);
   }
@@ -78,7 +84,7 @@ export class DocumentsController {
     const buffer = await this.exportsService.generatePdf(documents);
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="GST_Report.pdf"',
+      'Content-Disposition': 'attachment; filename="Invoice_Report.pdf"',
     });
     res.send(buffer);
   }
