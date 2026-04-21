@@ -5,6 +5,16 @@ import { useDashboard } from '@/context/DashboardContext';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { API_URL } from '@/lib/constants';
 
+// --- Premium Inline SVGs for Pricing ---
+const Icons = {
+  Check: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  ),
+  Sparkle: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+  )
+};
+
 export default function PricingPage() {
   const { planName, credits, refreshUserData } = useDashboard();
   const { openRazorpayCheckout } = useRazorpay();
@@ -14,127 +24,133 @@ export default function PricingPage() {
 
   useEffect(() => {
     fetch(`${API_URL}/subscriptions/plans`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch plans');
-        return res.json();
-      })
-      .then(data => {
-        if (Array.isArray(data)) {
-          setPlans(data);
-        } else {
-          console.error('API returned non-array data:', data);
-          setPlans([]);
-        }
-      })
-      .catch(err => {
-        console.error('Error fetching plans:', err);
-        setPlans([]);
-      });
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setPlans(Array.isArray(data) ? data : []))
+      .catch(err => console.error('Error fetching plans:', err));
   }, []);
 
   return (
-    <div className="flex flex-col gap-8 animate-in zoom-in-95 duration-500">
-        {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-4">
-            <span className={`text-sm font-medium ${billingCycle === 'month' ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
-            <button 
-                onClick={() => setBillingCycle(billingCycle === 'month' ? 'year' : 'month')}
-                className="w-14 h-7 bg-white/10 rounded-full relative p-1 transition-colors hover:bg-white/20"
-            >
-                <div className={`w-5 h-5 bg-blue-500 rounded-full shadow-lg transition-transform duration-300 ${billingCycle === 'year' ? 'translate-x-7' : 'translate-x-0'}`}></div>
-            </button>
-            <span className={`text-sm font-medium ${billingCycle === 'year' ? 'text-white' : 'text-gray-500'}`}>
-                Annually <span className="text-green-400 text-[10px] bg-green-400/10 px-2 py-0.5 rounded-full ml-1 font-bold">SAVE 20%</span>
-            </span>
+    <div className="flex flex-col gap-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        {/* Elite Section Header */}
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,1)]"></div>
+                <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.6em]">Financial Scaling</span>
+            </div>
+            <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic">Neural Quota <span className="text-blue-600">Upgrade</span></h2>
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest max-w-xl">
+                Scale your extraction intelligence with ultra-low latency processing and high-priority neural batches.
+            </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 pb-8">
-        {(Array.isArray(plans) ? plans : [])
-            .filter(p => p.billingCycle === billingCycle || p.name === 'Enterprise')
-            .sort((a, b) => {
-              if (a.name === 'Enterprise') return 1;
-              if (b.name === 'Enterprise') return -1;
-              return a.price - b.price;
-            })
-            .map((plan) => {
-                const currentPlan = plans.find(p => p.name === planName);
-                const currentPrice = currentPlan?.price || 0;
-                const isCurrent = plan.name === planName;
-                const isUpgrade = plan.price > currentPrice;
+        {/* Global Billing Controller */}
+        <div className="flex items-center justify-between p-1 bg-white/[0.02] border border-white/[0.05] rounded-2xl w-fit">
+            <button 
+                onClick={() => setBillingCycle('month')}
+                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'month' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'text-gray-600 hover:text-gray-400'}`}
+            >
+                Monthly Pulse
+            </button>
+            <button 
+                onClick={() => setBillingCycle('year')}
+                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'year' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'text-gray-600 hover:text-gray-400'}`}
+            >
+                Annual Stream <span className="ml-2 text-green-400 opacity-60 italic">-20% Economy</span>
+            </button>
+        </div>
 
-                return (
-                    <div key={plan.id} className={`relative group p-6 rounded-3xl bg-white/[0.03] border transition-all hover:scale-[1.02] flex flex-col items-center text-center ${isCurrent ? 'border-green-500/50 bg-green-500/5 shadow-[0_0_30px_rgba(34,197,94,0.1)]' : 'border-white/10 hover:bg-white/[0.05]'}`}>
-                        {isCurrent && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-black text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest z-20">Active</div>}
-                        {!isCurrent && plan.name === 'Pro' && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-[0.15em] shadow-[0_0_20px_rgba(37,99,235,0.4)] border border-blue-400/30 z-20">Recommended</div>}
-                        {!isCurrent && plan.name === 'Business' && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-[0.15em] shadow-[0_0_20px_rgba(79,70,229,0.4)] border border-indigo-400/30 z-20">Scaleup</div>}
-                        
-                        <div className="mb-4">
-                            <h4 className="text-lg font-bold text-white mb-1">{plan.name}</h4>
-                            <p className="text-gray-500 text-[10px]">
-                                {plan.name === 'Free' && "Best For: Trial"}
-                                {plan.name === 'Starter' && "Best For: Individuals"}
-                                {plan.name === 'Pro' && "Best For: Small businesses ⭐"}
-                                {plan.name === 'Business' && "Best For: Teams"}
-                                {plan.name === 'Enterprise' && "Best For: Scale"}
-                            </p>
-                        </div>
+        {/* Neural Plan Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 pb-20">
+            {plans
+                .filter(p => p.billingCycle === billingCycle || p.name === 'Enterprise')
+                .sort((a, b) => a.name === 'Enterprise' ? 1 : b.name === 'Enterprise' ? -1 : a.price - b.price)
+                .map((plan) => {
+                    const isCurrent = plan.name === planName;
+                    const isEnterprise = plan.name === 'Enterprise';
 
-                        <div className="text-3xl font-black text-white mb-6">
-                            {plan.name === 'Enterprise' ? 'Custom' : `₹${plan.price}`}
-                            {plan.name !== 'Enterprise' && <span className="text-xs font-medium text-gray-500 ml-1">/{plan.billingCycle === 'year' ? 'yr' : 'mo'}</span>}
-                        </div>
-
-                        <ul className="text-gray-400 text-xs space-y-3 mb-8 text-left w-full flex-1 border-t border-white/5 pt-6">
-                            <li className="flex items-center gap-2">
-                                <span className="text-blue-500">✓</span>
-                                <span className="font-bold text-white">{plan.name === 'Enterprise' ? 'Unlimited' : plan.quotaPages.toLocaleString()}</span> Pages {plan.name === 'Enterprise' ? '' : (plan.billingCycle === 'year' ? '/yr' : '/mo')}
-                            </li>
-                            {plan.name !== 'Free' && <li className="flex items-center gap-2 text-blue-300 font-medium">✅ Bulk Upload Included</li>}
-                            <li className="flex items-center gap-2">✅ AI Extraction API</li>
-                            <li className="flex items-center gap-2">✅ GST-Ready Export</li>
-                            {(plan.name === 'Pro' || plan.name === 'Business') && <li className="flex items-center gap-2 text-indigo-300 font-bold">✅ Priority Support</li>}
-                            {plan.name === 'Enterprise' && <li className="flex items-center gap-2 text-green-400 font-bold">✅ Account Manager</li>}
-                        </ul>
-
-                        <button 
-                            onClick={() => {
-                                if (isCurrent || isProcessingUpgrade) return;
-                                if (plan.name === 'Enterprise') { window.location.href='mailto:sales@autoextract.in'; return; }
-                                setIsProcessingUpgrade(plan.id);
-                                const token = localStorage.getItem('access_token');
-                                fetch(`${API_URL}/subscriptions/checkout`, {
-                                    method: 'POST',
-                                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json; charset=utf-8' },
-                                    body: JSON.stringify({ planId: plan.id })
-                                })
-                                .then(async res => {
-                                    if (!res.ok) {
-                                        const err = await res.json().catch(() => ({}));
-                                        throw new Error(err.message || 'Checkout failed');
-                                    }
-                                    return res.json();
-                                })
-                                .then(data => { 
-                                    if(data.razorpayOrderId) {
-                                        openRazorpayCheckout(data);
-                                    } else {
-                                        throw new Error('Invalid response from server');
-                                    }
-                                })
-                                .catch(err => {
-                                    console.error('Upgrade error:', err);
-                                    alert(`Failed to initiate upgrade: ${err.message}`);
-                                })
-                                .finally(() => setIsProcessingUpgrade(null));
-                            }}
-                            disabled={isProcessingUpgrade !== null}
-                            className={`w-full py-3 rounded-xl font-bold text-sm transition-all mt-auto ${isCurrent ? 'bg-green-500/20 text-green-400 cursor-default' : 'bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-50 shadow-lg shadow-blue-600/10'}`}
+                    return (
+                        <div 
+                            key={plan.id} 
+                            className={`group relative flex flex-col p-8 rounded-[2rem] transition-all duration-500 overflow-hidden ${
+                                isCurrent 
+                                ? 'bg-blue-600/[0.03] border border-blue-500/30' 
+                                : 'bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] hover:-translate-y-2'
+                            }`}
                         >
-                            {isCurrent ? 'Active Plan' : isProcessingUpgrade === plan.id ? 'Processing...' : plan.name === 'Enterprise' ? 'Contact Sales' : isUpgrade ? 'Upgrade Now' : 'Switch Plan'}
-                        </button>
-                    </div>
-                );
-            })}
+                            {/* Industrial Accents */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[80px] pointer-events-none group-hover:bg-blue-600/10 transition-all duration-700"></div>
+                            
+                            {isCurrent && (
+                                <div className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-widest italic shadow-lg z-10">
+                                    Active Node
+                                </div>
+                            )}
+
+                            {/* Plan Identity */}
+                            <div className="mb-10 relative z-10">
+                                <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2 flex items-center gap-2 italic">
+                                    <Icons.Sparkle /> {plan.name} Intelligence
+                                </p>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-4xl font-black text-white tracking-tighter">
+                                        {isEnterprise ? 'Elite' : `₹${plan.price}`}
+                                    </span>
+                                    {!isEnterprise && <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest">/ {(plan.billingCycle || 'mo').slice(0,2)}</span>}
+                                </div>
+                            </div>
+
+                            {/* Plan Capabilities */}
+                            <div className="flex-1 flex flex-col gap-5 mb-10 relative z-10">
+                                <div className="p-4 bg-white/[0.02] border border-white/[0.04] rounded-2xl">
+                                     <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest mb-1 italic">Neural Capacity</p>
+                                     <p className="text-sm font-black text-white">{isEnterprise ? 'Infinite' : plan.quotaPages.toLocaleString()} Pages / Cycle</p>
+                                </div>
+
+                                <ul className="space-y-4">
+                                    {[
+                                        'Full AI Neural Extraction',
+                                        'Industrial-Grade OCR',
+                                        plan.name !== 'Free' ? 'Bulk Batch Streams' : null,
+                                        isEnterprise ? '24/7 Dedicated Pulse' : 'Standard Response',
+                                        'Global GST Verification'
+                                    ].filter(Boolean).map((feat, idx) => (
+                                        <li key={idx} className="flex items-center gap-3 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+                                            <span className="text-blue-500 opacity-60"><Icons.Check /></span>
+                                            {feat}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Industrial CTA */}
+                            <button 
+                                onClick={() => {
+                                    if (isCurrent || isProcessingUpgrade) return;
+                                    if (isEnterprise) { window.location.href='mailto:sales@autoextract.in'; return; }
+                                    setIsProcessingUpgrade(plan.id);
+                                    const token = localStorage.getItem('access_token');
+                                    fetch(`${API_URL}/subscriptions/checkout`, {
+                                        method: 'POST',
+                                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ planId: plan.id })
+                                    })
+                                    .then(res => res.ok ? res.json() : res.json().then(e => { throw e }))
+                                    .then(data => openRazorpayCheckout(data))
+                                    .catch(err => alert(`System Override: ${err.message}`))
+                                    .finally(() => setIsProcessingUpgrade(null));
+                                }}
+                                disabled={isCurrent || isProcessingUpgrade !== null}
+                                className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 relative z-10 ${
+                                    isCurrent 
+                                    ? 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)] text-white' 
+                                    : 'bg-white/[0.02] border border-white/[0.05] text-gray-500 hover:bg-blue-600 hover:text-white hover:border-transparent hover:shadow-[0_0_30px_rgba(37,99,235,0.3)]'
+                                }`}
+                            >
+                                {isCurrent ? 'Current Intelligence' : isProcessingUpgrade === plan.id ? 'Loading...' : isEnterprise ? 'Request Audit' : 'Upgrade Stream'}
+                            </button>
+                        </div>
+                    );
+                })}
         </div>
     </div>
   );

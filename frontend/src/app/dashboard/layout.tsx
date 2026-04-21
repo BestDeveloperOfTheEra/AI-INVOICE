@@ -83,12 +83,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                       { label: 'Extract Invoices', path: '/dashboard' },
                       { label: 'Invoice History', path: '/dashboard/history' },
                     ].map((item) => {
-                      const isActive = pathname === item.path;
+                      const isActive = item.path === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.path);
                       return (
                         <Link 
                           key={item.label}
                           href={item.path}
-                          className={`px-6 py-4 rounded-[1.2rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
+                          className={`px-6 py-5 rounded-[1.4rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
                             isActive 
                             ? 'bg-white/[0.04] text-white border border-white/[0.05] shadow-inner' 
                             : 'text-gray-500 hover:text-white'
@@ -109,14 +109,14 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                       { label: 'Developer Portal', path: '/dashboard/developer' },
                       { label: 'Subscription Plan', path: '/dashboard/pricing' },
                     ].map((item) => {
-                      const isActive = pathname === item.path;
+                      const isActive = pathname.startsWith(item.path);
                       return (
                         <Link 
                           key={item.label}
                           href={item.path}
-                          className={`px-6 py-4 rounded-[1.2rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
+                          className={`px-6 py-5 rounded-[1.4rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
                             isActive 
-                            ? 'bg-blue-600/10 text-white border border-blue-500/10 shadow-[0_0_30px_rgba(37,99,235,0.1)]' 
+                            ? 'bg-white/[0.04] text-white border border-white/[0.05] shadow-inner' 
                             : 'text-gray-500 hover:text-white'
                           }`}
                         >

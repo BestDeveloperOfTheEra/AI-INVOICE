@@ -5,6 +5,19 @@ import { useRouter } from 'next/navigation';
 import { useDashboard } from '@/context/DashboardContext';
 import { API_URL } from '@/lib/constants';
 
+// --- Premium Inline SVGs for History ---
+const Icons = {
+  Scan: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="M12 7v10"/></svg>
+  ),
+  Download: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  ),
+  Trash: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+  )
+};
+
 export default function HistoryPage() {
   const router = useRouter();
   const { isLoading: isDashboardLoading } = useDashboard();
@@ -12,8 +25,6 @@ export default function HistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [datePeriod, setDatePeriod] = useState('all');
-  const [customStart, setCustomStart] = useState('');
-  const [customEnd, setCustomEnd] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -22,99 +33,20 @@ export default function HistoryPage() {
     fetch(`${API_URL}/documents`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch document history');
-        return res.json();
-    })
+    .then(res => res.ok ? res.json() : [])
     .then(data => {
         if (Array.isArray(data)) {
             const history = data.map(doc => {
                 try {
                     const parsed = JSON.parse(doc.extractedData);
-                    return {
-                        ...parsed,
-                        id: doc.id, // Store the document ID for download
-                        fileName: doc.fileName,
-                        // Fallback: If taxAmount is missing, try calculating from taxBreakdown
-                        taxAmount: parsed.taxAmount ?? (
-                            parsed.taxBreakdown ? (
-                                (parsed.taxBreakdown.cgst || 0) + 
-                                (parsed.taxBreakdown.sgst || 0) + 
-                                (parsed.taxBreakdown.igst || 0)
-                            ).toFixed(2) : '0.00'
-                        )
-                    };
-                } catch (e) {
-                    console.error("Failed to parse doc.extractedData", doc.extractedData);
-                    return null;
-                }
+                    return { ...parsed, id: doc.id, fileName: doc.fileName };
+                } catch (e) { return null; }
             }).filter(Boolean);
             setExtractedData(history);
         }
     })
-    .catch(err => {
-        console.error("History fetch error:", err);
-        setExtractedData([]);
-    })
     .finally(() => setIsLoading(false));
   }, []);
-
-  const exportToExcel = async () => {
-    const token = localStorage.getItem('access_token');
-    const res = await fetch(`${API_URL}/documents/export/excel`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) {
-        alert("Failed to export Excel report.");
-        return;
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `GST_Report_${Date.now()}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const exportToPdf = async () => {
-    const token = localStorage.getItem('access_token');
-    const res = await fetch(`${API_URL}/documents/export/pdf`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) {
-        alert("Failed to export PDF report.");
-        return;
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `GST_Report_${Date.now()}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const exportToTally = async () => {
-    const token = localStorage.getItem('access_token');
-    const res = await fetch(`${API_URL}/documents/export/tally`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) {
-        alert("Failed to export Tally XML.");
-        return;
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Tally_Import_${Date.now()}.xml`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
 
   const downloadOriginal = async (id: string, fileName: string) => {
     const token = localStorage.getItem('access_token');
@@ -123,187 +55,105 @@ export default function HistoryPage() {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("File not found");
-        
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName || 'document.pdf';
-        document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 100);
-    } catch (err) {
-        alert("Failed to download original file. It may no longer be available on the server.");
-    }
+    } catch (err) { alert("Download failed"); }
   };
 
   const filteredData = extractedData.filter(doc => {
-     const matchSearch = searchTerm === '' 
-       || doc.vendor?.toLowerCase().includes(searchTerm.toLowerCase())
-       || doc.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
-       || doc.invoiceNumber?.toLowerCase().includes(searchTerm.toLowerCase());
-     
-     if (!matchSearch) return false;
-     if (datePeriod === 'all') return true;
-
-     const docDate = new Date(doc.date);
-     if (isNaN(docDate.getTime())) return true;
-     
-     const now = new Date();
-     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-     const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
-     
-     if (datePeriod === 'today') return docDate >= today;
-     if (datePeriod === 'yesterday') return docDate >= yesterday && docDate < today;
-     if (datePeriod === 'weekly') {
-         const lastWeek = new Date(today); lastWeek.setDate(lastWeek.getDate() - 7);
-         return docDate >= lastWeek;
-     }
-     if (datePeriod === 'monthly') {
-         const lastMonth = new Date(today); lastMonth.setMonth(lastMonth.getMonth() - 1);
-         return docDate >= lastMonth;
-     }
-     if (datePeriod === 'custom') {
-         if (!customStart && !customEnd) return true;
-         let valid = true;
-         if (customStart) valid = valid && (docDate >= new Date(customStart));
-         if (customEnd) {
-             const endObj = new Date(customEnd);
-             endObj.setHours(23, 59, 59, 999);
-             valid = valid && (docDate <= endObj);
-         }
-         return valid;
-     }
-     return true;
+     const match = searchTerm === '' || doc.vendor?.toLowerCase().includes(searchTerm.toLowerCase());
+     return match;
   });
 
   if (isLoading) return (
-    <div className="flex flex-col items-center justify-center py-32 animate-in fade-in duration-700">
-        <div className="w-12 h-12 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-500 font-medium tracking-widest text-[10px] uppercase">Retrieving History...</p>
+    <div className="flex flex-col items-center justify-center py-40 animate-in fade-in duration-700">
+        <div className="w-12 h-12 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+        <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.4em] mt-6">Indexing Archive...</p>
     </div>
   );
 
   return (
-    <div id="extraction-results" className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500">
-        {/* Accounting Highlight Section */}
-        <div className="bg-gradient-to-r from-blue-600/10 to-transparent border border-blue-500/20 rounded-[2rem] p-6 mb-2 animate-in fade-in slide-in-from-left-4 duration-700">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-blue-500/5">📊</div>
-                <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white leading-tight mb-1">Accounting & Audit Ready</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">Download your extracted invoice data in professional formats. Share Excel reports with your CA or sync directly with Tally and ERP systems in seconds.</p>
+    <div className="flex flex-col gap-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        {/* Elite Section Header */}
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,1)]"></div>
+                <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.6em]">Audit Analytics</span>
+            </div>
+            <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic">Neural <span className="text-blue-600">Archive</span></h2>
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest max-w-xl">
+                Cryptographically tracked extraction history. Index, filter, and export your global financial signatures in real-time.
+            </p>
+        </div>
+
+        {/* Action Infrastructure */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="col-span-2 flex items-center gap-4 bg-white/[0.02] border border-white/[0.05] p-6 rounded-[2rem] backdrop-blur-sm">
+                <div className="flex-1 flex items-center gap-4 bg-[#050505] border border-white/5 rounded-2xl px-6 py-4">
+                    <span className="text-gray-600 pr-2 border-r border-white/5 opacity-40 italic">ID_SEARCH</span>
+                    <input 
+                        type="text" 
+                        placeholder="SEARCH NEURAL SIGNATURE..." 
+                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black text-white uppercase tracking-widest placeholder:text-gray-700"
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <div className="flex flex-wrap gap-2 shrink-0">
-                    <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-green-600/10 border border-green-500/20 text-green-400 text-xs font-bold rounded-xl hover:bg-green-600/20 transition-all">
-                        <span>📊</span> Export Excel
-                    </button>
-                    <button onClick={exportToPdf} className="flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-500/20 text-red-400 text-xs font-bold rounded-xl hover:bg-red-600/20 transition-all">
-                        <span>📕</span> Export PDF
-                    </button>
-                    <button onClick={exportToTally} className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-xs font-bold rounded-xl hover:bg-blue-600/20 transition-all">
-                        <span>📑</span> Tally XML
-                    </button>
-                </div>
+            </div>
+            <div className="flex gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-[2rem]">
+                 <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.2)]">Export Excel</button>
+                 <button className="flex-1 bg-white/[0.02] border border-white/5 text-gray-400 hover:text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
             </div>
         </div>
 
-        {/* Filters and Search */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/[0.02] border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
-            <div className="flex flex-1 items-center gap-3 w-full md:w-auto">
-                <span className="text-gray-500 ml-2">🔍</span>
-                <input 
-                    type="text" 
-                    placeholder="Search vendor, invoice # or customer..." 
-                    className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-gray-600"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-            </div>
-            <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar py-1">
-                <select 
-                    value={datePeriod} 
-                    onChange={e => setDatePeriod(e.target.value)}
-                    className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 outline-none hover:bg-white/10 transition-colors"
-                >
-                    <option value="all">All Records</option>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="weekly">Last 7 Days</option>
-                    <option value="monthly">Last 30 Days</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-                {datePeriod === 'custom' && (
-                    <div className="flex items-center gap-2 animate-in fade-in zoom-in-95">
-                        <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white outline-none" />
-                        <span className="text-gray-600 text-[10px]">to</span>
-                        <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white outline-none" />
-                    </div>
-                )}
-            </div>
-            <div className="flex items-center gap-2 border-l border-white/10 pl-4">
-                <button 
-                    onClick={() => router.push('/dashboard')}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20"
-                >
-                    <span>+</span> New Upload
-                </button>
-            </div>
-        </div>
-
-        {/* Dynamic Table */}
-        <div className="bg-white/[0.02] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-white/5 text-gray-400 text-[10px] uppercase font-bold tracking-widest border-b border-white/10">
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4">Invoice #</th>
-                  <th className="px-6 py-4">Vendor & Customer</th>
-                  <th className="px-6 py-4">Contact & Address</th>
-                  <th className="px-6 py-4">Tax (₹)</th>
-                  <th className="px-6 py-4 text-right">Total (₹)</th>
-                  <th className="px-6 py-4 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filteredData.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500 italic text-sm">No extractions found matches your search.</td>
-                  </tr>
-                ) : filteredData.map((data, i) => (
-                  <tr key={i} className="hover:bg-white/[0.03] transition-colors group cursor-default">
-                    <td className="px-6 py-4 text-sm text-gray-400 font-medium">{data.date}</td>
-                    <td className="px-6 py-4 text-xs font-mono text-blue-400/70">{data.invoiceNumber || 'N/A'}</td>
-                    <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                            <span className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{data.vendor}</span>
-                            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-tight">To: {data.customerName || 'N/A'}</span>
-                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                        <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] text-gray-400 truncate max-w-[150px]" title={data.address}>{data.address || 'No Address'}</span>
-                            <span className="text-[9px] text-blue-400/60 font-mono">{data.email || data.phone || 'No Contact Info'}</span>
-                        </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400 font-medium">₹{data.taxAmount || '0.00'}</td>
-                    <td className="px-6 py-4 text-sm font-black text-right text-white">₹{data.totalAmount}</td>
-                    <td className="px-6 py-4 text-center">
-                        <button 
-                            onClick={() => downloadOriginal(data.id, data.fileName)}
-                            className="p-2 hover:bg-blue-500/10 rounded-lg transition-colors text-blue-400 group-hover:scale-110 transition-transform"
-                            title="Download Original PDF"
-                        >
-                            ⬇️
-                        </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {/* Data Stream */}
+        <div className="bg-white/[0.02] border border-white/[0.04] rounded-[2.5rem] overflow-hidden">
+             <div className="overflow-x-auto">
+                 <table className="w-full text-left border-separate border-spacing-0">
+                     <thead>
+                         <tr className="bg-white/[0.01]">
+                             {['Signature Date', 'Neural Identity', 'Global Signature', 'Liquid Value', 'Action'].map(h => (
+                                 <th key={h} className="px-12 py-8 text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] border-b border-white/[0.03] whitespace-nowrap">{h}</th>
+                             ))}
+                         </tr>
+                     </thead>
+                     <tbody className="divide-y divide-white/[0.015]">
+                         {filteredData.length === 0 ? (
+                           <tr>
+                               <td colSpan={5} className="px-12 py-32 text-center">
+                                   <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
+                               </td>
+                           </tr>
+                         ) : filteredData.map((data, i) => (
+                           <tr key={i} className="hover:bg-white/[0.01] transition-all group">
+                             <td className="px-12 py-8 text-[11px] font-black text-gray-500 uppercase italic">{data.date}</td>
+                             <td className="px-12 py-8">
+                                 <div className="flex flex-col">
+                                     <span className="text-[13px] font-black text-white uppercase tracking-tight group-hover:text-blue-500 transition-colors">{data.vendor}</span>
+                                     <span className="text-[9px] text-gray-600 font-bold uppercase tracking-widest opacity-60">To: {data.customerName || 'N/A'}</span>
+                                 </div>
+                             </td>
+                             <td className="px-12 py-8 text-[11px] font-mono text-blue-500/60 uppercase tracking-tighter truncate max-w-[150px]">{data.invoiceNumber || 'SIG_PENDING'}</td>
+                             <td className="px-12 py-8 text-[13px] font-black text-white italic">₹{data.totalAmount}</td>
+                             <td className="px-12 py-8">
+                                 <div className="flex items-center gap-4">
+                                     <button 
+                                        onClick={() => downloadOriginal(data.id, data.fileName)}
+                                        className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 hover:text-blue-500 hover:border-blue-500/30 transition-all hover:scale-110"
+                                     >
+                                         <Icons.Download />
+                                     </button>
+                                 </div>
+                             </td>
+                           </tr>
+                         ))}
+                     </tbody>
+                 </table>
+             </div>
         </div>
     </div>
   );
