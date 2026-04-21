@@ -15,78 +15,92 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  const menuItems = [
+    { name: 'Extract', path: '/dashboard', id: 'dashboard' },
+    { name: 'History', path: '/dashboard/history', id: 'history' },
+    { name: 'Usage', path: '/dashboard/stats', id: 'stats' },
+    { name: 'Plan', path: '/dashboard/pricing', id: 'pricing' },
+    { name: 'Dev Portal', path: '/dashboard/developer', id: 'developer' },
+    { name: 'Profile', path: '/dashboard/profile', id: 'profile' },
+  ];
+
   const activeView = pathname.split('/').pop() || 'dashboard';
   const currentView = pathname === '/dashboard' ? 'dashboard' : activeView;
 
   if (isLoading) {
-    return <div className="flex flex-1 items-center justify-center text-white min-h-screen bg-black">Loading Dashboard...</div>;
+    return <div className="flex flex-1 items-center justify-center text-white min-h-screen bg-[#050505]">
+        <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Loading AutoExtract...</p>
+        </div>
+    </div>;
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-blue-500/30">
-      <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12 gap-6 lg:gap-8 min-h-screen">
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 font-sans">
+      <div className="flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
         {/* Sidebar Nav */}
-        <aside className="w-full lg:w-64 flex flex-row lg:flex-col gap-1 lg:gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/5 pb-4 lg:pb-0 lg:pr-8 overflow-x-auto lg:overflow-visible no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="hidden lg:block px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Menu</div>
-          <Link href="/dashboard" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'dashboard' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            Extract
-          </Link>
-          <Link href="/dashboard/history" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'history' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            History
-          </Link>
+        <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-1 lg:gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.06] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar">
+          <div className="hidden lg:flex items-center gap-3 px-4 mb-12">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black">A</div>
+            <span className="text-xl font-black tracking-tight">AutoExtract</span>
+          </div>
+
+          <div className="hidden lg:block px-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-4">Dashboard</div>
           
-          <div className="hidden lg:block px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">Settings</div>
-          <Link href="/dashboard/profile" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'profile' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            Profile
-          </Link>
-          <Link href="/dashboard/developer" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'developer' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            Dev Portal
-          </Link>
-          <Link href="/dashboard/pricing" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'pricing' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            Plan
-          </Link>
-          <Link href="/dashboard/stats" className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-colors text-sm lg:text-base ${currentView === 'stats' ? 'bg-blue-600/10 text-blue-400 font-medium border border-blue-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
-            Usage
-          </Link>
-          <button onClick={handleLogout} className="whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors lg:mt-auto">
-            Logout
-          </button>
+          {menuItems.map((item) => (
+            <Link 
+              key={item.id}
+              href={item.path} 
+              className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-all text-sm font-bold tracking-tight ${currentView === item.id ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' : 'text-gray-500 hover:bg-white/[0.03] hover:text-white'}`}
+            >
+              {item.name}
+            </Link>
+          ))}
+          
+          <div className="lg:mt-auto pt-8 border-t border-white/[0.06]">
+              <button onClick={handleLogout} className="w-full whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all text-sm font-bold">
+                Logout
+              </button>
+          </div>
         </aside>
 
         {/* Content Area */}
-        <div className="flex-1 flex flex-col gap-6">
-          <header className="flex items-center justify-between pb-6 border-b border-white/10">
-            <div className="flex items-center gap-4">
-              {avatarUrl ? (
-                <img src={`${API_URL}${avatarUrl}`} alt="Avatar" className="w-12 h-12 rounded-full border border-white/20 object-cover bg-black" />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-xl uppercase">
-                  {profileName ? profileName.charAt(0) : userEmail ? userEmail.charAt(0) : 'U'}
-                </div>
-              )}
-              <div>
-                <h1 className="text-3xl font-bold text-white uppercase tracking-tight">
-                  {currentView === 'profile' ? 'Profile Settings' : 
-                   currentView === 'developer' ? 'Developer Portal' :
-                   currentView === 'pricing' ? 'Subscription Plans' : 
-                   currentView === 'stats' ? 'Usage Statistics' :
-                   currentView === 'history' ? 'Extraction History' :
-                   'Extract Invoices'}
+        <div className="flex-1 flex flex-col">
+          <header className="flex items-center justify-between px-8 py-6 border-b border-white/[0.06] sticky top-0 bg-[#050505]/80 backdrop-blur-md z-50">
+            <div>
+                <h1 className="text-2xl font-black text-white tracking-tight uppercase">
+                  {menuItems.find(i => i.id === currentView)?.name || 'Extract'}
                 </h1>
-                {profileName && <p className="text-gray-400 text-sm">Welcome back, <span className="text-gray-200 font-medium">{profileName}</span></p>}
-              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className={`text-sm font-medium px-3 py-1 rounded-full border ${credits > 0 ? 'bg-blue-600/20 text-blue-400 border-blue-500/30' : 'bg-red-600/20 text-red-400 border-red-500/30'}`}>
-                {planName} ({credits} credits left)
-              </span>
-              <Link href="/dashboard/pricing" className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-full">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                <span className="text-sm font-black text-blue-400">
+                    {credits} Credits Left
+                </span>
+              </div>
+              <Link href="/dashboard/pricing" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-black transition-all shadow-[0_0_25px_rgba(37,99,235,0.25)]">
                 Upgrade
               </Link>
+              
+              <div className="hidden sm:flex items-center gap-3 pl-6 border-l border-white/[0.06]">
+                  <div className="text-right">
+                      <p className="text-sm font-bold text-white">{profileName || 'User'}</p>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{planName}</p>
+                  </div>
+                  {avatarUrl ? (
+                    <img src={`${API_URL}${avatarUrl}`} alt="Avatar" className="w-10 h-10 rounded-xl border border-white/10 object-cover bg-black" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-black text-lg uppercase shadow-lg">
+                      {profileName ? profileName.charAt(0) : 'U'}
+                    </div>
+                  )}
+              </div>
             </div>
           </header>
 
-          <main className="flex-1">
+          <main className="flex-1 p-8">
             {children}
           </main>
         </div>

@@ -23,6 +23,13 @@ export class DocumentsController {
     return this.documentsService.getDocumentsByUser(req.user.id);
   }
 
+  @Get('stats')
+  @UseGuards(CombinedAuthGuard)
+  @ApiOperation({ summary: 'Get dashboard statistics' })
+  async getStats(@Req() req: any) {
+    return this.documentsService.getStats(req.user.id);
+  }
+
   @Post('upload')
   @ApiOperation({ summary: 'Upload and extract data from invoices/receipts' })
   @ApiHeader({ name: 'x-sandbox', description: 'Set to true to use trial credits', required: false })

@@ -110,4 +110,31 @@ export class DocumentsService {
       }
     });
   }
+
+  async getStats(userId: string) {
+    const totalInvoices = await this.prisma.documentProcess.count({ where: { userId } });
+    const aggregate = await this.prisma.documentProcess.aggregate({
+      where: { userId },
+      _sum: { totalAmount: true }
+    });
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisMonthAggregate = await this.prisma.documentProcess.aggregate({
+      where: { 
+        userId,
+        processedAt: { gte: startOfMonth }
+      },
+      _sum: { totalAmount: true },
+      _count: true
+    });
+
+    return {
+      totalInvoices,
+      totalAmount: aggregate._sum.totalAmount || 0,
+      thisMonthAmount: thisMonthAggregate._sum.totalAmount || 0,
+      thisMonthCount: thisMonthAggregate._count || 0,
+      exportsGenerated: Math.floor(totalInvoices * 0.15) // Mock: 15% of invoices have been exported
+    };
+  }
 }

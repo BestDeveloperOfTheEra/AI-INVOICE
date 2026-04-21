@@ -187,13 +187,35 @@ export default function HistoryPage() {
 
   return (
     <div id="extraction-results" className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500">
+        {/* Accounting Highlight Section */}
+        <div className="bg-gradient-to-r from-blue-600/10 to-transparent border border-blue-500/20 rounded-[2rem] p-6 mb-2 animate-in fade-in slide-in-from-left-4 duration-700">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-blue-500/5">📊</div>
+                <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white leading-tight mb-1">Accounting & Audit Ready</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">Download your extracted invoice data in professional formats. Share Excel reports with your CA or sync directly with Tally and ERP systems in seconds.</p>
+                </div>
+                <div className="flex flex-wrap gap-2 shrink-0">
+                    <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-green-600/10 border border-green-500/20 text-green-400 text-xs font-bold rounded-xl hover:bg-green-600/20 transition-all">
+                        <span>📊</span> Export Excel
+                    </button>
+                    <button onClick={exportToPdf} className="flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-500/20 text-red-400 text-xs font-bold rounded-xl hover:bg-red-600/20 transition-all">
+                        <span>📕</span> Export PDF
+                    </button>
+                    <button onClick={exportToTally} className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-xs font-bold rounded-xl hover:bg-blue-600/20 transition-all">
+                        <span>📑</span> Tally XML
+                    </button>
+                </div>
+            </div>
+        </div>
+
         {/* Filters and Search */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/[0.02] border border-white/10 p-4 rounded-2xl backdrop-blur-sm">
             <div className="flex flex-1 items-center gap-3 w-full md:w-auto">
                 <span className="text-gray-500 ml-2">🔍</span>
                 <input 
                     type="text" 
-                    placeholder="Search by vendor or invoice #..." 
+                    placeholder="Search vendor, invoice # or customer..." 
                     className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-gray-600"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
@@ -205,7 +227,7 @@ export default function HistoryPage() {
                     onChange={e => setDatePeriod(e.target.value)}
                     className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-gray-300 outline-none hover:bg-white/10 transition-colors"
                 >
-                    <option value="all">All Time</option>
+                    <option value="all">All Records</option>
                     <option value="today">Today</option>
                     <option value="yesterday">Yesterday</option>
                     <option value="weekly">Last 7 Days</option>
@@ -223,18 +245,9 @@ export default function HistoryPage() {
             <div className="flex items-center gap-2 border-l border-white/10 pl-4">
                 <button 
                     onClick={() => router.push('/dashboard')}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 mr-2"
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20"
                 >
-                    <span>+</span> Upload More
-                </button>
-                <button onClick={exportToExcel} className="p-2 hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-green-400" title="Export to Excel">
-                    📊
-                </button>
-                <button onClick={exportToPdf} className="p-2 hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-red-400" title="Export to PDF">
-                    📕
-                </button>
-                <button onClick={exportToTally} className="p-2 hover:bg-white/5 rounded-lg transition-colors text-gray-400 hover:text-blue-400" title="Export for Tally">
-                    📑
+                    <span>+</span> New Upload
                 </button>
             </div>
         </div>
