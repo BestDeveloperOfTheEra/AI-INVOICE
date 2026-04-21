@@ -508,25 +508,27 @@ export default function DashboardPage() {
               <table className="w-full text-left border-separate border-spacing-0">
                   <thead>
                       <tr className="bg-white/[0.01]">
-                          {['Neural Identity', 'Global Signature', 'Capture Timestamp', 'Liquid Asset Value', 'Validation Status'].map(h => (
-                              <th key={h} className="px-16 py-8 text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
-                          ))}
+                           {['Neural Identity', 'Global Signature', 'Capture Timestamp', 'Liquid Asset Value', 'Validation Status'].map(h => (
+                               <th key={h} className="px-16 py-8 text-[9px] font-black text-gray-400 uppercase tracking-[0.5em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
+                           ))}
                       </tr>
                   </thead>
                   <tbody className="divide-y divide-white/[0.015]">
                       {recentDocs.length === 0 ? (
                         <tr>
                             <td colSpan={5} className="px-16 py-40">
-                                <div className="flex flex-col items-center gap-8 opacity-20 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
-                                    <Icons.EmptyBox />
+                                <div className="flex flex-col items-center gap-8 opacity-40 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
+                                    <div className="w-20 h-20 bg-white/[0.02] border border-white/10 rounded-3xl flex items-center justify-center text-white/30">
+                                        <Icons.EmptyBox />
+                                    </div>
                                     <div className="space-y-1">
-                                        <p className="text-lg font-black uppercase tracking-[0.5em]">System Log Empty</p>
+                                        <p className="text-lg font-black text-white/70 uppercase tracking-[0.5em]">System Log Empty</p>
                                         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                      ) : recentDocs.slice(0, 6).map((doc, i) => {
+                      ) : (                ) : recentDocs.slice(0, 6).map((doc, i) => {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
                               <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>

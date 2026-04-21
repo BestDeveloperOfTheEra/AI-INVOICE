@@ -75,10 +75,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             <span className="text-xl font-black text-white tracking-widest uppercase italic">AutoExtract</span>
           </div>
 
-          <div className="flex flex-col gap-16 w-full flex-1">
-            <div>
-                <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] mb-12 px-6">Menu</p>
-                <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-12 w-full flex-1">
+            <div className="px-2">
+                <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.2em] mb-10 px-6">Menu</p>
+                <div className="flex flex-col gap-3">
                     {[
                       { label: 'Extract Invoices', path: '/dashboard' },
                       { label: 'Invoice History', path: '/dashboard/history' },
@@ -88,9 +88,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                         <Link 
                           key={item.label}
                           href={item.path}
-                          className={`px-6 py-5 rounded-[1.4rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
+                          className={`px-6 py-4 rounded-2xl text-[14px] font-medium transition-all duration-300 ${
                             isActive 
-                            ? 'bg-white/[0.04] text-white border border-white/[0.05] shadow-inner' 
+                            ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' 
                             : 'text-gray-500 hover:text-white'
                           }`}
                         >
@@ -101,9 +101,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                 </div>
             </div>
 
-            <div>
-                <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] mb-12 px-6">Settings</p>
-                <div className="flex flex-col gap-4">
+            <div className="px-2">
+                <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.2em] mb-10 px-6">Settings</p>
+                <div className="flex flex-col gap-3">
                     {[
                       { label: 'Update Profile', path: '/dashboard/profile' },
                       { label: 'Developer Portal', path: '/dashboard/developer' },
@@ -114,9 +114,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                         <Link 
                           key={item.label}
                           href={item.path}
-                          className={`px-6 py-5 rounded-[1.4rem] text-[12px] font-black uppercase tracking-widest transition-all duration-300 ${
+                          className={`px-6 py-4 rounded-2xl text-[14px] font-medium transition-all duration-300 ${
                             isActive 
-                            ? 'bg-white/[0.04] text-white border border-white/[0.05] shadow-inner' 
+                            ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' 
                             : 'text-gray-500 hover:text-white'
                           }`}
                         >
