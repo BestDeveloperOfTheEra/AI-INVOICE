@@ -37,8 +37,15 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 font-sans">
-      <div className="flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 font-sans relative overflow-x-hidden">
+      {/* Premium Background Layering */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.08)_0%,transparent_50%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,rgba(99,102,241,0.05)_0%,transparent_40%)]"></div>
+          <div className="absolute inset-0 opacity-[0.03] contrast-150 brightness-100" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+      </div>
+
+      <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
         {/* Sidebar Nav */}
         <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-1 lg:gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.06] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar">
           <div className="hidden lg:flex items-center gap-3 px-4 mb-12">
@@ -46,16 +53,16 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             <span className="text-xl font-black tracking-tight">AutoExtract</span>
           </div>
 
-          <div className="hidden lg:block px-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6">Main Menu</div>
+          <div className="hidden lg:block px-5 text-[10px] font-black text-gray-600 uppercase tracking-[0.4em] mb-8">Navigation</div>
           
-          <div className="flex flex-row lg:flex-col gap-1 lg:gap-1.5 w-full">
+          <div className="flex flex-row lg:flex-col gap-1 w-full">
             {menuItems.map((item) => (
               <Link 
                 key={item.id}
                 href={item.path} 
-                className={`flex items-center gap-3 whitespace-nowrap lg:whitespace-normal px-4 py-3 rounded-xl transition-all duration-300 text-sm font-bold tracking-tight border border-transparent ${currentView === item.id ? 'bg-blue-600/15 text-blue-400 border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' : 'text-gray-500 hover:bg-white/[0.03] hover:text-white hover:pl-5'}`}
+                className={`flex items-center gap-4 whitespace-nowrap lg:whitespace-normal px-5 py-4 rounded-2xl transition-all duration-500 text-[13px] font-black tracking-tight border border-transparent group ${currentView === item.id ? 'bg-blue-600/10 text-white border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.1)]' : 'text-gray-500 hover:bg-white/[0.02] hover:text-white hover:translate-x-1'}`}
               >
-                <span className={`transition-colors duration-300 ${currentView === item.id ? 'text-blue-400' : 'text-gray-600 group-hover:text-white'}`}>
+                <span className={`transition-all duration-500 ${currentView === item.id ? 'text-blue-500 scale-110' : 'text-gray-700 group-hover:text-gray-300 group-hover:scale-110'}`}>
                   {item.icon}
                 </span>
                 {item.name}

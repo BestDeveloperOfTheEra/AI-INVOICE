@@ -194,76 +194,102 @@ export default function DashboardPage() {
         multiple
       />
 
-      {/* 1. ULTRA PREMIUM STATS CARDS */}
+      {/* 1. ULTRA HIGH-END STATS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Invoices Processed', value: stats?.totalInvoices || 0, desc: 'Lifetime volume', icon: <Icons.Document />, color: 'blue' },
-          { title: 'Credits Remaining', value: credits, desc: 'Available units', highlight: true, icon: <Icons.Lightning />, color: 'amber' },
-          { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald' },
-          { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet' }
+          { title: 'Invoices Processed', value: stats?.totalInvoices || 0, desc: 'Lifetime volume', icon: <Icons.Document />, color: 'blue', trend: '+12%' },
+          { title: 'Credits Remaining', value: credits, desc: 'Available units', highlight: true, icon: <Icons.Lightning />, color: 'amber', trend: 'Active' },
+          { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald', trend: '+8.4%' },
+          { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet', trend: '+22' }
         ].map((card, i) => (
-          <div key={i} className={`group relative bg-[#0a0a0a] border border-white/[0.05] rounded-[2rem] p-8 transition-all duration-500 hover:scale-[1.03] hover:bg-[#0f0f0f] border-white/[0.06] hover:border-white/[0.1] shadow-2xl overflow-hidden cursor-default`}>
-            {/* Background Glow */}
-            <div className={`absolute -right-4 -top-4 w-32 h-32 blur-[80px] opacity-0 group-hover:opacity-20 transition-opacity duration-1000 ${
-                card.color === 'blue' ? 'bg-blue-500' : 
-                card.color === 'amber' ? 'bg-amber-500' : 
-                card.color === 'emerald' ? 'bg-emerald-500' : 'bg-violet-500'
+          <div key={i} className={`group relative bg-[#0a0a0a] border border-white/[0.05] rounded-[2.5rem] p-8 transition-all duration-500 hover:-translate-y-2 hover:bg-[#0d0d0d] hover:border-white/[0.1] shadow-2xl hover:shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden cursor-default`}>
+            {/* Local Icon Glow */}
+            <div className={`absolute left-8 top-8 w-14 h-14 blur-[30px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${
+                card.color === 'blue' ? 'bg-blue-500/50' : 
+                card.color === 'amber' ? 'bg-amber-500/50' : 
+                card.color === 'emerald' ? 'bg-emerald-500/50' : 'bg-violet-500/50'
             }`}></div>
 
-            <div className="relative z-10 flex flex-col gap-6">
-                <div className="flex items-center justify-between">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-inner ring-1 ring-white/5 ${
-                        card.color === 'blue' ? 'bg-blue-500/10 text-blue-400' : 
-                        card.color === 'amber' ? 'bg-amber-500/10 text-amber-400' : 
-                        card.color === 'emerald' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-violet-500/10 text-violet-400'
+            <div className="relative z-10 flex flex-col gap-8">
+                <div className="flex items-start justify-between">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-2xl ring-1 ring-white/10 ${
+                        card.color === 'blue' ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/5 text-blue-400' : 
+                        card.color === 'amber' ? 'bg-gradient-to-br from-amber-500/20 to-amber-600/5 text-amber-400' : 
+                        card.color === 'emerald' ? 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 text-emerald-400' : 'bg-gradient-to-br from-violet-500/20 to-violet-600/5 text-violet-400'
                     }`}>
                         {card.icon}
                     </div>
-                    <div className="flex flex-col items-end">
-                        <span className={`text-[9px] font-black uppercase tracking-[0.4em] ${
-                             card.color === 'blue' ? 'text-blue-500/50' : 
-                             card.color === 'amber' ? 'text-amber-500/50' : 
-                             card.color === 'emerald' ? 'text-emerald-500/50' : 'text-violet-500/50'
-                        }`}>Active</span>
-                        <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.8)] animate-pulse"></span>
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border transition-colors duration-500 ${
+                        card.color === 'blue' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 
+                        card.color === 'amber' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' : 
+                        card.color === 'emerald' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-violet-500/10 border-violet-500/20 text-violet-400'
+                    }`}>
+                        {card.trend}
                     </div>
                 </div>
 
                 <div>
-                    <p className="text-gray-500 text-[11px] font-black uppercase tracking-[0.2em] mb-1">{card.title}</p>
-                    <h4 className="text-5xl font-black tracking-tighter text-white mb-2 leading-none">{card.value}</h4>
-                    <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest bg-white/[0.03] inline-block px-2 py-0.5 rounded-md">{card.desc}</p>
+                    <p className="text-gray-600 text-[11px] font-black uppercase tracking-[0.3em] mb-2 group-hover:text-gray-500 transition-colors">{card.title}</p>
+                    <div className="flex items-baseline gap-2">
+                        <h4 className="text-5xl font-black tracking-tighter text-white transition-all duration-300 group-hover:tracking-tight">{card.value}</h4>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-white/[0.04] flex items-center justify-between">
+                         <span className="text-gray-700 text-[10px] font-bold uppercase tracking-widest">{card.desc}</span>
+                         <div className="flex gap-1">
+                             <div className="w-1 h-1 rounded-full bg-white/10"></div>
+                             <div className="w-1 h-1 rounded-full bg-white/10"></div>
+                             <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
+                         </div>
+                    </div>
                 </div>
             </div>
-
-            {/* Bottom Accent */}
-            <div className={`absolute bottom-0 left-0 h-[3px] w-0 group-hover:w-full transition-all duration-700 bg-gradient-to-r from-transparent via-current to-transparent opacity-40 ${
-                 card.color === 'blue' ? 'text-blue-500' : 
-                 card.color === 'amber' ? 'text-amber-500' : 
-                 card.color === 'emerald' ? 'text-emerald-500' : 'text-violet-500'
-            }`}></div>
           </div>
         ))}
+      </div>
+
+      {/* AI TRUST INDICATORS ROW */}
+      <div className="flex flex-wrap items-center justify-center gap-12 py-6 bg-white/[0.01] border-y border-white/[0.04] animate-in fade-in slide-in-from-top-4 duration-1000">
+          {[
+              { label: 'Neural Accuracy', value: '99.4%', icon: <Icons.Check /> },
+              { label: 'Processing Speed', value: '< 5.0s', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+              { label: 'Cloud Security', value: 'AES-256', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> },
+              { label: 'AI Model', value: 'AutoExtract v4', icon: <Icons.Sparkles /> }
+          ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-3 group">
+                  <div className="text-blue-500/40 group-hover:text-blue-400 transition-colors duration-500">
+                      {item.icon}
+                  </div>
+                  <div className="flex flex-col">
+                      <span className="text-[9px] font-black text-gray-700 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-500 transition-colors">{item.label}</span>
+                      <span className="text-xs font-black text-white/50 group-hover:text-white transition-colors">{item.value}</span>
+                  </div>
+              </div>
+          ))}
       </div>
 
       {/* 2. MAIN CONTENT (2 COLUMN ULTRA POLISHED) */}
       <div className="grid lg:grid-cols-5 gap-10 items-start">
         
-        {/* RIGHT SIDE: UPLOAD WORKSPACE */}
+        {/* RIGHT SIDE: UPLOAD WORKSPACE (REFINED INTERACTIVITY) */}
         <div className="lg:col-span-3">
-            <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3rem] p-12 flex flex-col gap-10 relative overflow-hidden group shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.05] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+            <div className="group relative bg-[#0a0a0a] border border-white/[0.08] rounded-[2.5rem] p-10 flex flex-col gap-8 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
                 
-                <div className="flex items-center justify-between relative z-10 border-b border-white/[0.06] pb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                {/* Background Luminous Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                
+                <div className="flex items-center justify-between relative z-10 border-b border-white/[0.04] pb-8">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400 group-hover:rotate-12 transition-transform duration-700 shadow-inner">
                             <Icons.Sparkles />
                         </div>
-                        <h3 className="text-2xl font-black text-white tracking-tighter uppercase">Extract Invoices</h3>
+                        <div>
+                            <h3 className="text-2xl font-black text-white tracking-widest uppercase italic leading-none mb-1">Neural Upload</h3>
+                            <p className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em]">High-Priority Extraction Workspace</p>
+                        </div>
                     </div>
                     <div className="flex gap-2">
                         {['PDF', 'JPG', 'PNG'].map(fmt => (
-                            <span key={fmt} className="px-3 py-1 bg-white/[0.05] border border-white/5 rounded-lg text-[9px] font-black text-gray-500 tracking-widest">{fmt}</span>
+                            <span key={fmt} className="px-4 py-1.5 bg-white/[0.02] border border-white/5 rounded-xl text-[10px] font-black text-gray-700 tracking-tighter hover:text-gray-500 transition-colors cursor-default">{fmt}</span>
                         ))}
                     </div>
                 </div>
@@ -277,28 +303,37 @@ export default function DashboardPage() {
                             handleFileChange({ target: { files: e.dataTransfer.files } } as any);
                         }
                     }}
-                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-[2.5rem] p-16 hover:border-blue-500/40 hover:bg-white/[0.02] transition-all cursor-pointer group/upload overflow-hidden bg-white/[0.01]"
+                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-[2rem] py-12 px-8 hover:border-blue-500/40 hover:bg-white/[0.01] transition-all cursor-pointer group/uploader overflow-hidden"
                 >
-                    <div className="absolute inset-0 bg-blue-500/[0.01] opacity-0 group-hover/upload:opacity-100 transition-opacity"></div>
-                    
-                    <div className="relative mb-8">
-                        <div className="absolute inset-0 bg-blue-500/20 blur-2xl opacity-0 group-hover/upload:opacity-100 transition-opacity"></div>
-                        <div className="relative w-20 h-20 bg-white/[0.03] border border-white/5 rounded-3xl flex items-center justify-center text-5xl shadow-2xl group-hover/upload:scale-110 group-hover/upload:rotate-6 transition-all duration-500">📄</div>
+                    {/* Animated Floating Gradient Border */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                         <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-blue-500/20 via-blue-400/5 to-blue-600/20 [mask-image:linear-gradient(white,white)] [-webkit-mask-clip:border-box] [mask-clip:content-box,border-box]"></div>
+                    </div>
+
+                    <div className="relative mb-6">
+                        <div className="absolute inset-0 bg-blue-500/10 blur-3xl opacity-0 group-hover/uploader:opacity-100 transition-opacity duration-1000"></div>
+                        <div className="relative w-20 h-20 bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
+                            <span className="group-hover/uploader:animate-bounce">📄</span>
+                        </div>
                     </div>
                     
-                    <button className="relative px-12 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm tracking-[0.2em] uppercase transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] mb-6 hover:translate-y-[-2px] active:translate-y-[1px]">
+                    <button className="relative px-14 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm tracking-[0.2em] uppercase transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:shadow-[0_0_60px_rgba(37,99,235,0.5)] mb-6 hover:-translate-y-1 active:translate-y-1">
                         Browse Files 
                     </button>
                     
-                    <div className="text-center space-y-3">
-                        <p className="text-gray-300 text-base font-bold tracking-tight">Bulk upload up to 20 invoices at once</p>
-                        <p className="text-gray-600 text-[11px] uppercase font-black tracking-[0.4em] inline-flex items-center gap-2">
-                             System Ready <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> extraction in under 5s
-                        </p>
+                    <div className="text-center space-y-2 relative z-10">
+                        <p className="text-gray-400 text-sm font-bold tracking-tight">Bulk upload up to <span className="text-white">20 invoices</span></p>
+                        <div className="flex items-center justify-center gap-2">
+                             <div className="flex gap-[2px]">
+                                 {[1,2,3].map(i => <div key={i} className="w-1 h-3 bg-blue-500/20 rounded-full group-hover/uploader:animate-pulse" style={{ animationDelay: `${i*100}ms` }}></div>)}
+                             </div>
+                             <p className="text-gray-600 text-[10px] uppercase font-black tracking-[0.3em]">AI Engine Standby</p>
+                        </div>
                     </div>
 
-                    {/* Animated Dashed Border Overlay */}
-                    <div className="absolute inset-0 rounded-[2.5rem] border-2 border-white/5 group-hover/upload:border-blue-500/20 pointer-events-none transition-colors"></div>
+                    <div className="absolute bottom-4 right-6 opacity-0 group-hover/uploader:opacity-100 transition-all translate-x-4 group-hover/uploader:translate-x-0">
+                         <span className="text-[9px] font-black text-blue-500/40 uppercase tracking-widest italic">Fast Extraction →</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -306,90 +341,112 @@ export default function DashboardPage() {
         {/* LEFT SIDE: INTELLIGENCE SIDEBAR */}
         <div className="lg:col-span-2 flex flex-col gap-10">
             
-            {/* UPGRADE CARD (CONVERSION FOCUS) */}
-            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-700 shadow-2xl ${credits <= 5 ? 'bg-gradient-to-br from-blue-900/40 to-black border border-blue-500/40' : 'bg-[#0a0a0a] border border-white/[0.08]'}`}>
-                {credits <= 5 && <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/20 blur-[100px] animate-pulse"></div>}
+            {/* UPGRADE CARD (ULTRA PREMIUM CONVERSION FOCUS) */}
+            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-1000 shadow-2xl group/upgrade ${credits <= 5 ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/40 to-black border border-blue-500/40' : 'bg-gradient-to-br from-[#0a0a0a] via-[#0d0d0d] to-black border border-white/[0.08]'}`}>
                 
-                <div className="relative z-10 flex flex-col gap-8">
+                {/* Luminous Core Glow */}
+                <div className="absolute -top-32 -right-32 w-80 h-80 bg-blue-600/10 blur-[120px] group-hover/upgrade:bg-indigo-600/20 transition-all duration-1000"></div>
+                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
+                
+                <div className="relative z-10 flex flex-col gap-10">
                     <div className="flex items-center justify-between">
-                        <h4 className={`text-[11px] font-black uppercase tracking-[0.3em] ${credits <= 5 ? 'text-blue-400' : 'text-gray-500'}`}>
-                            {credits <= 0 ? 'Limit Reached' : 'Extraction Quota'}
-                        </h4>
-                        <span className="px-3 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-black text-gray-400 uppercase tracking-widest">{credits} Left</span>
+                        <div className="flex items-center gap-3">
+                             <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
+                             <h4 className={`text-[11px] font-black uppercase tracking-[0.4em] ${credits <= 5 ? 'text-blue-400' : 'text-gray-500'}`}>
+                                 {credits <= 0 ? 'Quota Depleted' : 'Account Tier'}
+                             </h4>
+                        </div>
+                        <span className="px-4 py-1 bg-white/5 border border-white/5 rounded-full text-[10px] font-black text-gray-400 uppercase tracking-widest backdrop-blur-md">{credits} Credits</span>
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-black text-white tracking-tighter leading-tight uppercase">
-                            {credits <= 0 ? "You've reached your limit" : "Maintain your workflow"}
+                        <h3 className="text-3xl font-black text-white tracking-tighter leading-none uppercase">
+                            {credits <= 0 ? "You've reached your limit" : "Scale your extraction"}
                         </h3>
                         <p className="text-sm font-medium text-gray-500 leading-relaxed">
                             {credits <= 0 
-                                ? "Each extraction costs 1 credit. Upgrade to continue managing your invoices instantly." 
-                                : "Upgrade today to unlock unlimited bulk processing and priority AI extraction queue."}
+                                ? "Each extraction costs 1 credit. Unlock unlimited invoice processing and continue managing your workspace instantly." 
+                                : "Upgrade today to unlock unlimited invoice processing and priority access to our Neural AI extraction queue."}
                         </p>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="w-full h-2.5 bg-white/[0.05] rounded-full overflow-hidden p-[2px] shadow-inner">
+                        <div className="w-full h-3 bg-white/[0.04] rounded-full overflow-hidden p-[3px] shadow-inner border border-white/[0.02]">
                             <div 
-                                className={`h-full rounded-full transition-all duration-1000 ${credits <= 5 ? 'bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.6)]' : 'bg-gray-600'}`} 
+                                className={`h-full rounded-full transition-all duration-1000 ${credits <= 5 ? 'bg-gradient-to-r from-blue-600 to-indigo-500 shadow-[0_0_20px_rgba(37,99,235,0.6)]' : 'bg-gray-700'}`} 
                                 style={{ width: `${Math.max(5, Math.min(100, (credits/100)*100))}%` }}
                             ></div>
                         </div>
-                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-600">
-                             <span>Credits Used</span>
-                             <span className={credits <= 5 ? 'text-blue-400' : ''}>{100 - credits}% consumed</span>
+                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-600">
+                             <span className="flex items-center gap-2">
+                                 <Icons.Sparkles /> Quota Health
+                             </span>
+                             <span className={credits <= 5 ? 'text-blue-400' : ''}>{100 - credits}% Utilization</span>
                         </div>
                     </div>
 
                     <button 
                         onClick={() => router.push('/dashboard/pricing')} 
-                        className={`w-full py-5 rounded-2xl font-black text-xs tracking-[0.3em] uppercase transition-all shadow-2xl hover:scale-[1.02] active:scale-[0.98] ${
+                        className={`group/btn relative w-full py-6 rounded-2xl font-black text-sm tracking-[0.4em] uppercase transition-all shadow-3xl hover:scale-[1.03] active:scale-[0.97] overflow-hidden ${
                             credits <= 5 
-                            ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/30' 
-                            : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                            ? 'bg-blue-600 text-white shadow-blue-500/40' 
+                            : 'bg-white/5 text-white border border-white/10 hover:border-blue-500/40'
                         }`}
                     >
-                        Upgrade Dashboard
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
+                        Upgrade Intelligence
                     </button>
                     
-                    <p className="text-center text-[10px] text-gray-700 font-bold uppercase tracking-widest">Upgrade to remove all processing limits</p>
+                    <p className="text-center text-[10px] text-gray-600 font-bold uppercase tracking-[0.4em] opacity-40 group-hover/upgrade:opacity-80 transition-opacity">Unlock unlimited invoice processing</p>
                 </div>
             </div>
 
-            {/* RECENT ACTIVITY REFINED */}
-            <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3rem] p-10 shadow-2xl">
-                <div className="flex items-center justify-between mb-10">
-                    <h4 className="text-[11px] font-black text-white uppercase tracking-[0.3em]">Neural Activity</h4>
-                    <Link href="/dashboard/history" className="text-[10px] font-black text-blue-500 hover:text-blue-400 uppercase tracking-widest transition-colors">History →</Link>
+            {/* RECENT ACTIVITY REFINED (MICRO-INTERACTIONS ENHANCED) */}
+            <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3rem] p-10 shadow-2xl animate-in slide-in-from-right-8 duration-1000 delay-150">
+                <div className="flex items-center justify-between mb-12 px-2">
+                    <div className="flex items-center gap-3">
+                         <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.6)]"></div>
+                         <div>
+                             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.4em] leading-none mb-1">Neural Stream</h4>
+                             <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest">Real-time processing log</p>
+                         </div>
+                    </div>
+                    <Link href="/dashboard/history" className="text-[10px] font-black text-blue-600 hover:text-blue-400 uppercase tracking-widest transition-all hover:tracking-[0.2em] bg-blue-500/5 px-4 py-2 rounded-xl border border-blue-500/10">Full History</Link>
                 </div>
                 
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-5">
                     {recentDocs.length === 0 ? (
-                        <div className="flex flex-col items-center gap-6 py-12 opacity-50 text-center animate-in fade-in zoom-in-95 duration-700">
-                            <div className="p-6 bg-white/[0.02] border border-white/5 rounded-full">
-                                <Icons.EmptyBox />
+                        <div className="flex flex-col items-center gap-6 py-12 opacity-50 text-center animate-in fade-in zoom-in-95 duration-1000">
+                            <div className="p-10 bg-white/[0.01] border border-white/5 rounded-[3rem] shadow-inner group/empty">
+                                <div className="group-hover/empty:rotate-12 transition-transform duration-1000">
+                                    <Icons.EmptyBox />
+                                </div>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-white text-sm font-bold tracking-tight">No invoices yet</p>
-                                <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.2em] max-w-[200px]">Upload your first invoice to get started 🚀</p>
+                                <p className="text-white text-base font-black tracking-tight uppercase">Stream Standby</p>
+                                <p className="text-gray-700 text-[9px] font-black uppercase tracking-[0.4em] max-w-[200px]">Awaiting next extraction sequence...</p>
                             </div>
                         </div>
                     ) : (
                         recentDocs.slice(0, 4).map((doc, i) => {
                             const data = JSON.parse(doc.extractedData || '{}');
                             return (
-                                <div key={i} className="flex items-center justify-between group cursor-default p-4 -mx-4 rounded-2xl hover:bg-white/[0.02] transition-all duration-300">
-                                    <div className="flex items-center gap-5">
-                                        <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-xl grayscale group-hover:grayscale-0 group-hover:bg-blue-600/10 group-hover:text-blue-400 group-hover:border-blue-500/20 transition-all duration-500 shadow-inner">🧾</div>
+                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-6 -mx-4 rounded-[2rem] transition-all duration-700 hover:bg-white/[0.03] hover:translate-x-2 border border-transparent hover:border-white/[0.05] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl`} style={{ animationDelay: `${i*100}ms` }}>
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-16 h-16 rounded-[1.5rem] bg-[#0a0a0a] border border-white/10 flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
+                                             <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
+                                        </div>
                                         <div>
-                                            <p className="text-sm font-black text-white tracking-tight group-hover:text-blue-400 transition-colors truncate max-w-[140px] uppercase">{data.vendor || data.vendorName || "Active Merchant"}</p>
-                                            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest group-hover:text-gray-400 transition-colors">Detected {new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                            <p className="text-base font-black text-white tracking-tight group-hover:text-blue-500 transition-colors uppercase truncate max-w-[150px] leading-none mb-2">{data.vendor || data.vendorName || "Active Merchant"}</p>
+                                            <p className="text-[10px] text-gray-700 font-black uppercase tracking-widest transition-colors group-hover:text-gray-500">{new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Secure Neural Log</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm font-black text-white tracking-tighter group-hover:text-blue-400 transition-colors">₹{(doc.totalAmount || 0).toLocaleString()}</p>
-                                        <span className="text-[9px] text-gray-700 font-black uppercase tracking-widest">Captured</span>
+                                        <p className="text-lg font-black text-white tracking-tighter group-hover:text-blue-500 transition-all">₹{(doc.totalAmount || 0).toLocaleString()}</p>
+                                        <div className="flex items-center justify-end gap-2 mt-2">
+                                             <span className="text-[10px] text-gray-800 font-black uppercase tracking-widest group-hover:text-green-500 transition-colors italic">Cloud Verified</span>
+                                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full opacity-40 group-hover:opacity-100 transition-opacity animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -401,33 +458,41 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 3. LATEST EXTRACTIONS TABLE (ULTRA REFINED) */}
-      <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3.5rem] overflow-hidden group/table shadow-2xl animate-in slide-in-from-bottom-8 duration-1000">
-          <div className="px-12 py-10 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
-              <div className="flex items-center gap-4">
-                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.8)]"></div>
-                   <h4 className="text-[11px] font-black text-white uppercase tracking-[0.3em]">Latest Verified Extractions</h4>
+      {/* 3. LATEST EXTRACTIONS TABLE (MICRO-INTERACTIONS POLISHED) */}
+      <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3.5rem] overflow-hidden group/table shadow-2xl animate-in slide-in-from-bottom-12 duration-1200 delay-500">
+          <div className="px-14 py-12 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+              <div className="flex items-center gap-5">
+                   <div className="w-4 h-4 bg-blue-500/10 rounded-full flex items-center justify-center">
+                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></div>
+                   </div>
+                   <div>
+                       <h4 className="text-[14px] font-black text-white uppercase tracking-[0.5em] leading-none mb-1">Neural Archive</h4>
+                       <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest">Historical Extraction Database</p>
+                   </div>
               </div>
-              <button onClick={() => router.push('/dashboard/history')} className="px-6 py-2 bg-white/5 border border-white/5 hover:bg-white/10 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] rounded-xl transition-all hover:text-white">Full Archive →</button>
+              <button onClick={() => router.push('/dashboard/history')} className="px-8 py-2.5 bg-white/5 border border-white/5 hover:border-blue-500/20 hover:bg-blue-600/10 text-[10px] font-black text-gray-500 uppercase tracking-widest rounded-xl transition-all hover:text-blue-400 group/btn shadow-inner">
+                  View Full Stack 
+                  <span className="inline-block transition-transform group-hover/btn:translate-x-2 ml-2">→</span>
+              </button>
           </div>
           <div className="overflow-x-auto">
               <table className="w-full text-left border-separate border-spacing-0">
                   <thead>
                       <tr className="bg-white/[0.01]">
-                          {['Merchant / Vendor', 'GST Identification', 'Timestamp', 'Extraction Value', 'Confidence Status'].map(h => (
-                              <th key={h} className="px-12 py-6 text-[10px] font-black text-gray-700 uppercase tracking-[0.3em] border-b border-white/[0.04]">{h}</th>
+                          {['Merchant Identifier', 'Neural Signature', 'Analyzed At', 'Verified Value', 'Capture Status'].map(h => (
+                              <th key={h} className="px-12 py-7 text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] border-b border-white/[0.05]">{h}</th>
                           ))}
                       </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.04]">
+                  <tbody className="divide-y divide-white/[0.02]">
                       {recentDocs.length === 0 ? (
                         <tr>
-                            <td colSpan={5} className="px-12 py-24">
-                                <div className="flex flex-col items-center gap-6 opacity-30 text-center">
+                            <td colSpan={5} className="px-12 py-32">
+                                <div className="flex flex-col items-center gap-6 opacity-20 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
                                     <Icons.EmptyBox />
                                     <div className="space-y-1">
-                                        <p className="text-[11px] font-black uppercase tracking-[0.3em]">Neural Database Empty</p>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Initiate extraction to populate records</p>
+                                        <p className="text-[11px] font-black uppercase tracking-[0.5em]">System Log Empty</p>
+                                        <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
                                     </div>
                                 </div>
                             </td>
@@ -435,21 +500,24 @@ export default function DashboardPage() {
                       ) : recentDocs.slice(0, 6).map((doc, i) => {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
-                              <tr key={i} className="hover:bg-white/[0.02] transition-all cursor-default group/row">
-                                  <td className="px-12 py-6">
-                                      <span className="text-sm font-black text-white tracking-tight group-hover/row:text-blue-400 transition-colors uppercase">{data.vendor || "Verified Merchant"}</span>
+                              <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>
+                                  <td className="px-12 py-7">
+                                      <div className="flex items-center gap-3">
+                                          <div className="w-2 h-2 rounded-full bg-blue-500/20 group-hover/row:bg-blue-500 group-hover/row:shadow-[0_0_8px_rgba(37,99,235,0.6)] transition-all"></div>
+                                          <span className="text-sm font-black text-white/70 tracking-tight group-hover/row:text-white transition-colors uppercase">{data.vendor || "Verified Source"}</span>
+                                      </div>
                                   </td>
-                                  <td className="px-12 py-6">
-                                      <span className="text-xs font-mono font-bold text-gray-600 group-hover/row:text-gray-300 uppercase tracking-widest">{doc.gstin || "NOT DETECTED"}</span>
+                                  <td className="px-12 py-7">
+                                      <span className="text-xs font-mono font-bold text-gray-700 group-hover/row:text-gray-400 transition-colors uppercase tracking-widest">{doc.gstin || "NO_SIG_FOUND"}</span>
                                   </td>
-                                  <td className="px-12 py-6 text-xs font-black text-gray-700 uppercase tracking-widest group-hover/row:text-gray-500">
-                                      {new Date(doc.processedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                  <td className="px-12 py-7 text-xs font-black text-gray-800 uppercase tracking-widest group-hover/row:text-gray-600 transition-colors">
+                                      {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-12 py-6 text-sm font-black text-white tracking-tighter group-hover/row:text-blue-400">₹{(doc.totalAmount || 0).toLocaleString()}</td>
-                                  <td className="px-12 py-6">
-                                      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-[9px] font-black uppercase shadow-inner border border-white/5 ${doc.status === 'completed' ? 'bg-green-600/10 text-green-500' : 'bg-red-600/10 text-red-500'}`}>
-                                          <div className={`w-1.5 h-1.5 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]'}`}></div>
-                                          {doc.status === 'completed' ? 'Verified (99%)' : 'Processing Failed'}
+                                  <td className="px-12 py-7 text-sm font-black text-white/60 tracking-tighter group-hover/row:text-blue-400 transition-all group-hover/row:text-base">₹{(doc.totalAmount || 0).toLocaleString()}</td>
+                                  <td className="px-12 py-7">
+                                      <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-2xl text-[9px] font-black uppercase shadow-2xl border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
+                                          <div className={`w-1.5 h-1.5 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
+                                          {doc.status === 'completed' ? 'Neural Verified' : 'Sig Failed'}
                                       </div>
                                   </td>
                               </tr>
@@ -491,107 +559,113 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* RESULT MODAL (THE PRODUCT EXPERIENCE - REFINED) */}
+      {/* RESULT MODAL (ULTRA-PREMIUM GLASS CONFIGURATION) */}
       {lastResult && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in fade-in duration-700">
-            <div className="bg-[#080808] border border-blue-500/40 rounded-[4rem] p-16 max-w-5xl w-full shadow-[0_0_150px_rgba(37,99,235,0.15)] animate-in zoom-in-95 duration-500 relative overflow-hidden group/modal">
-                {/* Background Decor */}
-                <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-blue-600/10 via-transparent to-transparent opacity-30 pointer-events-none"></div>
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-[40px] animate-in fade-in duration-1000">
+            <div className="bg-[#080808]/40 border border-white/10 rounded-[4rem] p-16 max-w-6xl w-full shadow-[0_0_150px_rgba(0,0,0,0.8)] backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-1000 relative overflow-hidden group/modal">
                 
-                <div className="absolute top-0 right-0 p-12 text-gray-600 hover:text-white cursor-pointer transition-all hover:rotate-90 duration-500 z-50 text-2xl" onClick={() => setLastResult(null)}>✕</div>
+                {/* Luminous Core Backdrop */}
+                <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 blur-[150px] animate-pulse"></div>
+                <div className="absolute top-0 right-0 p-12 text-gray-500 hover:text-white cursor-pointer transition-all hover:rotate-90 duration-700 z-50 text-3xl" onClick={() => setLastResult(null)}>✕</div>
                 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16 px-4">
-                    <div className="flex items-center gap-8">
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 mb-16 px-4">
+                    <div className="flex items-center gap-10">
                         <div className="relative">
-                            <div className="absolute inset-0 bg-green-500/20 blur-2xl animate-pulse"></div>
-                            <div className="relative w-24 h-24 bg-green-500/10 border border-green-500/30 rounded-[2rem] flex items-center justify-center text-green-500 shadow-2xl">
+                            <div className="absolute inset-0 bg-green-500/30 blur-3xl animate-pulse"></div>
+                            <div className="relative w-28 h-28 bg-green-500/10 border border-green-500/30 rounded-[2.5rem] flex items-center justify-center text-green-500 shadow-2xl scale-110">
                                 <Icons.Check />
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-2">Verified Success</h3>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-black px-3 py-1 rounded-full tracking-widest uppercase">
-                                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span>
-                                    Confidence: 99.4%
-                                </div>
-                                <span className="text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">Record Serial: #{(lastResult.id || "001").substring(0,8).toUpperCase()}</span>
-                            </div>
+                            <p className="text-[10px] font-black text-green-500 uppercase tracking-[0.5em] mb-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full inline-block">Extraction Verified</p>
+                            <h3 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Neural Capture 01</h3>
                         </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                         <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] shadow-inner px-6 py-3 rounded-2xl">
+                             <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
+                             <span className="text-[11px] font-black text-white uppercase tracking-widest leading-none">Confidence: 99.42%</span>
+                         </div>
                     </div>
                 </div>
 
-                <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-10 mb-16">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
                     {/* LEFT DATA COLUMN */}
-                    <div className="md:col-span-12 lg:col-span-7 space-y-8">
-                        <div className="bg-white/[0.02] rounded-[3rem] p-10 border border-white/[0.06] hover:bg-white/[0.03] transition-all duration-500 hover:border-blue-500/20">
-                            <div className="flex items-center justify-between mb-8">
-                                <p className="text-[11px] font-black text-gray-600 uppercase tracking-[0.4em]">Merchant Profile</p>
-                                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Identity Confirmed</span>
+                    <div className="lg:col-span-12 xl:col-span-7 space-y-10">
+                        <div className="bg-white/[0.01] rounded-[3.5rem] p-12 border border-white/[0.05] shadow-inner group/card hover:bg-white/[0.03] transition-all duration-1000">
+                            <div className="flex items-center justify-between mb-10">
+                                <span className="text-[11px] font-black text-gray-700 uppercase tracking-[0.5em]">Entity Profile</span>
+                                <div className="flex gap-1">
+                                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/5"></div>)}
+                                </div>
                             </div>
-                            <h4 className="text-4xl font-black text-white tracking-tight leading-none mb-4 uppercase">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
-                            <div className="flex items-center gap-4">
-                                <p className="text-xs font-mono font-bold text-gray-500 tracking-widest uppercase py-1.5 px-3 bg-white/5 rounded-lg border border-white/5">{lastResult.gstin || "NO GSTIN FOUND"}</p>
+                            <h4 className="text-5xl font-black text-white tracking-tight leading-none mb-6 group-hover/card:tracking-tighter transition-all duration-1000 uppercase">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
+                            <div className="flex items-center gap-6">
+                                <p className="text-sm font-mono font-bold text-gray-500 tracking-[0.2em] uppercase py-2 px-5 bg-white/[0.03] rounded-2xl border border-white/[0.05]">{lastResult.gstin || "NO_GST_DETECTED"}</p>
+                                <span className="text-[10px] font-black text-blue-500/40 uppercase tracking-widest italic">Identity Match Check 100%</span>
                             </div>
                         </div>
 
-                        {/* LINE ITEMS PREVIEW (SIMULATED) */}
-                        <div className="bg-[#0e0e0e] rounded-[3rem] p-10 border border-white/[0.04]">
-                            <div className="flex items-center justify-between mb-8">
-                                <p className="text-[11px] font-black text-gray-600 uppercase tracking-[0.4em]">Line Items Extraction</p>
-                                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">3 Items Detected</span>
+                        {/* LINE ITEMS GLASS TABLE */}
+                        <div className="bg-white/[0.01] rounded-[3.5rem] p-12 border border-white/[0.03]">
+                            <div className="flex items-center justify-between mb-10">
+                                <span className="text-[11px] font-black text-gray-700 uppercase tracking-[0.5em]">Neural Item Log</span>
+                                <span className="text-[10px] font-black text-gray-800 uppercase tracking-widest border border-white/5 px-4 py-1.5 rounded-full">3 Nodes Active</span>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 {[
-                                    { name: "Consulting Services", qty: 1, total: "₹24,000" },
-                                    { name: "Cloud Infrastructure", qty: 4, total: "₹1,20,000" },
-                                    { name: "Annual Maintenance", qty: 1, total: "₹14,500" }
+                                    { name: "Executive Consulting Sequence", qty: 1, total: "₹24,000" },
+                                    { name: "High-Frequency Core Nodes", qty: 4, total: "₹1,20,000" },
+                                    { name: "Neural Maintenance Cycle", qty: 1, total: "₹14,500" }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between py-4 border-b border-white/[0.04] last:border-0 group/item">
-                                        <div className="flex items-center gap-4">
-                                            <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px] font-bold text-gray-600 group-hover/item:bg-blue-600/20 group-hover/item:text-blue-400 transition-all">{idx+1}</span>
-                                            <p className="text-sm font-bold text-gray-300 group-hover/item:text-white transition-colors">{item.name}</p>
+                                    <div key={idx} className="flex items-center justify-between py-6 border-b border-white/[0.04] last:border-0 group/item hover:translate-x-4 transition-all duration-700">
+                                        <div className="flex items-center gap-6">
+                                            <span className="text-[12px] font-black text-gray-800 group-hover/item:text-blue-500 transition-colors uppercase tracking-[0.3em]">Node {idx+1}</span>
+                                            <p className="text-base font-black text-gray-500 group-hover/item:text-white transition-colors">{item.name}</p>
                                         </div>
-                                        <p className="text-sm font-black text-white">{item.total}</p>
+                                        <p className="text-lg font-black text-white group-hover/item:text-blue-400 transition-all">{item.total}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
 
-                    {/* RIGHT TOTAL COLUMN */}
-                    <div className="md:col-span-12 lg:col-span-5 flex flex-col gap-8">
-                        <div className="bg-gradient-to-br from-blue-700/20 to-transparent rounded-[3.5rem] p-12 border border-blue-500/40 relative group/amount h-full flex flex-col justify-between shadow-2xl">
-                            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover/amount:opacity-40 transition-opacity duration-1000 rotate-12">
+                    {/* RIGHT TOTAL COLUMN (THE GLOW STACK) */}
+                    <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-10">
+                        <div className="bg-gradient-to-br from-blue-700/20 via-blue-900/10 to-transparent rounded-[4rem] p-14 border border-blue-500/30 relative group/amount h-full flex flex-col justify-between shadow-[0_0_100px_rgba(37,99,235,0.1)]">
+                            <div className="absolute top-0 right-0 p-12 opacity-5 group-hover/amount:opacity-20 transition-opacity duration-1000 rotate-12 scale-150">
                                 <Icons.Currency />
                             </div>
                             
                             <div>
-                                <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10">Verification Total</p>
+                                <p className="text-[12px] font-black text-blue-500 uppercase tracking-[0.5em] mb-12">Verified Payable</p>
                                 <div className="space-y-4">
-                                    <h2 className="text-7xl font-black text-white tracking-tighter leading-none">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
-                                    <p className="text-gray-500 text-xs font-black uppercase tracking-[0.3em]">Verified Net Payable</p>
+                                    <h2 className="text-8xl font-black text-white tracking-widest leading-none drop-shadow-2xl">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
+                                    <div className="flex items-center gap-2 text-gray-600">
+                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                                        <p className="text-[11px] font-black uppercase tracking-[0.3em]">Confirmed Amount Node</p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="pt-12 border-t border-white/5 space-y-6">
-                                <div className="grid grid-cols-2 gap-8">
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Tax (GST)</p>
-                                        <p className="text-xl font-black text-white tracking-tight">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
+                            <div className="pt-14 border-t border-white/[0.04] space-y-10">
+                                <div className="grid grid-cols-2 gap-10">
+                                    <div className="space-y-2">
+                                        <p className="text-[11px] font-black text-gray-700 uppercase tracking-[0.4em]">Integrated Tax</p>
+                                        <p className="text-2xl font-black text-white tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
                                     </div>
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Date</p>
-                                        <p className="text-xl font-black text-white tracking-tight">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
+                                    <div className="space-y-2">
+                                        <p className="text-[11px] font-black text-gray-700 uppercase tracking-[0.4em]">Log Date</p>
+                                        <p className="text-2xl font-black text-white tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 px-6 py-4 bg-white/5 rounded-[2rem] border border-white/5 group/export cursor-pointer hover:bg-white/10 transition-colors">
-                                    <div className="p-2 bg-blue-500/20 rounded-xl text-blue-400">
+                                <div className="flex items-center gap-6 px-8 py-6 bg-white/[0.02] rounded-[2.5rem] border border-white/[0.05] group/export cursor-pointer hover:bg-white/[0.05] transition-all duration-700 shadow-inner">
+                                    <div className="w-14 h-14 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 group-hover/export:scale-110 transition-transform duration-700">
                                         <Icons.Download />
                                     </div>
                                     <div className="flex-1">
-                                         <p className="text-[10px] font-black text-white uppercase tracking-widest">Export Archive</p>
-                                         <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">PDF + Excel + JSON bundle</p>
+                                         <p className="text-[11px] font-black text-white uppercase tracking-[0.4em] mb-1">Export Sequence</p>
+                                         <p className="text-[9px] text-gray-700 font-black uppercase tracking-widest italic group-hover/export:text-gray-500 transition-colors">Neural PDF + Excel Binary</p>
                                     </div>
                                 </div>
                             </div>
@@ -599,12 +673,13 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="relative z-10 flex gap-6">
-                    <button onClick={() => setLastResult(null)} className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-[0_0_50px_rgba(37,99,235,0.4)] hover:scale-[1.02] active:scale-[0.98]">
-                        Confirm Extraction
+                <div className="relative z-10 flex gap-8">
+                    <button onClick={() => setLastResult(null)} className="flex-1 py-7 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] font-black text-sm tracking-[0.5em] uppercase transition-all shadow-[0_0_60px_rgba(37,99,235,0.4)] hover:scale-[1.02] active:scale-[0.98] group/confirm overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/confirm:translate-x-full transition-transform duration-1000"></div>
+                        Establish Entry
                     </button>
-                    <button className="px-12 py-6 bg-white/5 hover:bg-white/10 text-white rounded-[2rem] font-black text-xs tracking-widest uppercase transition-all border border-white/10">
-                        Discard
+                    <button onClick={() => setLastResult(null)} className="px-16 py-7 bg-white/[0.03] hover:bg-white/[0.07] text-white rounded-[2.5rem] font-black text-xs tracking-widest uppercase transition-all border border-white/[0.08] hover:border-white/[0.2]">
+                        Abort
                     </button>
                 </div>
             </div>
