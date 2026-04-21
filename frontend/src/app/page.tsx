@@ -27,14 +27,14 @@ export default function Home() {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-blue-400 font-medium mb-4 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
           ✨ Now supporting automated Invoice processing
         </div>
-        
+
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight">
-          Turn your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Documents</span> 
-          <br className="hidden md:block"/> into Data.
+          Turn your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Documents</span>
+          <br className="hidden md:block" /> into Data.
         </h1>
-        
+
         <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          Upload thousands of invoices, medical reports, and legal documents. 
+          Upload thousands of invoices, medical reports, and legal documents.
           Extract structured data instantly into Excel, PDF, or our API Sandbox.
         </p>
 
@@ -59,7 +59,7 @@ export default function Home() {
             Automatically extract line items, totals, dates, and vendor information directly to your customized records.
           </p>
         </div>
-        
+
         <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-md hover:bg-white/[0.04] transition-colors">
           <div className="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl mb-6">
             🛠️
@@ -69,7 +69,7 @@ export default function Home() {
             Securely test and integrate our extraction engine directly into your own applications using our developer sandbox.
           </p>
         </div>
-        
+
         <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-md hover:bg-white/[0.04] transition-colors">
           <div className="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6">
             📊
