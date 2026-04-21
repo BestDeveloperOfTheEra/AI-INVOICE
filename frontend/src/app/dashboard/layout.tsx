@@ -16,12 +16,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   };
 
   const menuItems = [
-    { name: 'Extract', path: '/dashboard', id: 'dashboard' },
-    { name: 'History', path: '/dashboard/history', id: 'history' },
-    { name: 'Usage', path: '/dashboard/stats', id: 'stats' },
-    { name: 'Plan', path: '/dashboard/pricing', id: 'pricing' },
-    { name: 'Dev Portal', path: '/dashboard/developer', id: 'developer' },
-    { name: 'Profile', path: '/dashboard/profile', id: 'profile' },
+    { name: 'Extract', path: '/dashboard', id: 'dashboard', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> },
+    { name: 'History', path: '/dashboard/history', id: 'history', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+    { name: 'Usage', path: '/dashboard/stats', id: 'stats', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> },
+    { name: 'Plan', path: '/dashboard/pricing', id: 'pricing', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> },
+    { name: 'Dev Portal', path: '/dashboard/developer', id: 'developer', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> },
+    { name: 'Profile', path: '/dashboard/profile', id: 'profile', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
   ];
 
   const activeView = pathname.split('/').pop() || 'dashboard';
@@ -31,7 +31,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     return <div className="flex flex-1 items-center justify-center text-white min-h-screen bg-[#050505]">
         <div className="flex flex-col items-center gap-4">
             <div className="w-10 h-10 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Loading AutoExtract...</p>
+            <p className="text-gray-500 text-xs font-black uppercase tracking-widest">Loading AutoExtract...</p>
         </div>
     </div>;
   }
@@ -42,24 +42,37 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         {/* Sidebar Nav */}
         <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-1 lg:gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.06] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar">
           <div className="hidden lg:flex items-center gap-3 px-4 mb-12">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black">A</div>
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/20">A</div>
             <span className="text-xl font-black tracking-tight">AutoExtract</span>
           </div>
 
-          <div className="hidden lg:block px-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-4">Dashboard</div>
+          <div className="hidden lg:block px-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6">Main Menu</div>
           
-          {menuItems.map((item) => (
-            <Link 
-              key={item.id}
-              href={item.path} 
-              className={`whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl transition-all text-sm font-bold tracking-tight ${currentView === item.id ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' : 'text-gray-500 hover:bg-white/[0.03] hover:text-white'}`}
-            >
-              {item.name}
-            </Link>
-          ))}
+          <div className="flex flex-row lg:flex-col gap-1 lg:gap-1.5 w-full">
+            {menuItems.map((item) => (
+              <Link 
+                key={item.id}
+                href={item.path} 
+                className={`flex items-center gap-3 whitespace-nowrap lg:whitespace-normal px-4 py-3 rounded-xl transition-all duration-300 text-sm font-bold tracking-tight border border-transparent ${currentView === item.id ? 'bg-blue-600/15 text-blue-400 border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]' : 'text-gray-500 hover:bg-white/[0.03] hover:text-white hover:pl-5'}`}
+              >
+                <span className={`transition-colors duration-300 ${currentView === item.id ? 'text-blue-400' : 'text-gray-600 group-hover:text-white'}`}>
+                  {item.icon}
+                </span>
+                {item.name}
+              </Link>
+            ))}
+          </div>
           
-          <div className="lg:mt-auto pt-8 border-t border-white/[0.06]">
-              <button onClick={handleLogout} className="w-full whitespace-nowrap lg:whitespace-normal text-left px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all text-sm font-bold">
+          <div className="lg:mt-auto pt-8 border-t border-white/[0.06] px-4 space-y-4">
+              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 hidden lg:block">
+                  <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-2">Current Plan</p>
+                  <p className="text-sm font-bold text-white mb-1">{planName}</p>
+                  <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(credits/100)*100}%` }}></div>
+                  </div>
+              </div>
+              <button onClick={handleLogout} className="w-full flex items-center gap-3 whitespace-nowrap lg:whitespace-normal px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all text-sm font-bold border border-transparent group">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 Logout
               </button>
           </div>
