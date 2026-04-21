@@ -66,104 +66,114 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
-        {/* Elite Minimal Sidebar */}
-        <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.04] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar bg-[#020202]">
-          <div className="hidden lg:flex items-center gap-4 px-4 mb-14 group cursor-pointer" onClick={() => router.push('/dashboard')}>
+        {/* Refined Industrial Sidebar (Restored Consistency) */}
+        <aside className="w-full lg:w-80 flex flex-row lg:flex-col shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.04] bg-[#020202] py-16 px-10 relative z-20">
+          <div className="hidden lg:flex items-center gap-4 mb-24 group cursor-pointer" onClick={() => router.push('/dashboard')}>
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:scale-110 transition-transform duration-500">
               <Icons.Sparkles />
             </div>
             <span className="text-xl font-black text-white tracking-widest uppercase italic">AutoExtract</span>
           </div>
 
-          <div className="flex flex-row lg:flex-col gap-2 w-full">
-            <p className="hidden lg:block text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] px-4 mb-4">Core Navigation</p>
-            {[
-              { label: 'Intelligence', icon: <Icons.Dashboard />, path: '/dashboard' },
-              { label: 'Neural Log', icon: <Icons.History />, path: '/dashboard/history' },
-              { label: 'Scale Up', icon: <Icons.Pricing />, path: '/dashboard/pricing' },
-              { label: 'Config', icon: <Icons.Settings />, path: '/dashboard/settings' },
-            ].map((item) => {
-              const isActive = pathname === item.path;
-              return (
-                <Link 
-                  key={item.label}
-                  href={item.path}
-                  className={`flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 group ${
-                    isActive 
-                    ? 'bg-white/[0.03] text-white border border-white/[0.05] shadow-inner' 
-                    : 'text-gray-500 hover:text-white hover:bg-white/[0.01]'
-                  }`}
-                >
-                  <div className={`transition-colors duration-300 ${isActive ? 'text-blue-500' : 'group-hover:text-blue-400'}`}>
-                    {item.icon}
-                  </div>
-                  <span className="text-xs font-black uppercase tracking-[0.2em]">{item.label}</span>
-                  {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>}
-                </Link>
-              );
-            })}
+          <div className="flex flex-col gap-16 w-full">
+            <div>
+                <p className="text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] mb-12">Menu</p>
+                <div className="flex flex-col gap-8">
+                    {[
+                      { label: 'Extract Invoices', path: '/dashboard' },
+                      { label: 'Invoice History', path: '/dashboard/history' },
+                    ].map((item) => {
+                      const isActive = pathname === item.path;
+                      return (
+                        <Link 
+                          key={item.label}
+                          href={item.path}
+                          className={`text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                            isActive 
+                            ? 'text-blue-500' 
+                            : 'text-gray-500 hover:text-white'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                </div>
+            </div>
+
+            <div>
+                <p className="text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] mb-12">Settings</p>
+                <div className="flex flex-col gap-10">
+                    {[
+                      { label: 'Update Profile', path: '/dashboard/profile' },
+                      { label: 'Developer Portal', path: '/dashboard/developer' },
+                      { label: 'Subscription Plan', path: '/dashboard/pricing' },
+                    ].map((item) => {
+                      const isActive = pathname === item.path;
+                      return (
+                        <Link 
+                          key={item.label}
+                          href={item.path}
+                          className={`px-6 py-4 rounded-2xl text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                            isActive 
+                            ? 'bg-blue-600/10 text-white border border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.1)]' 
+                            : 'text-gray-500 hover:text-white'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                </div>
+            </div>
           </div>
 
-          <div className="mt-auto hidden lg:flex flex-col gap-8 pt-10 border-t border-white/[0.04]">
-             <div className="px-4">
+          <div className="mt-auto hidden lg:flex flex-col gap-10 pt-16 border-t border-white/[0.04]">
+             <div className="px-2">
                  <div className="flex items-center justify-between mb-4">
-                     <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Neural Quota</p>
-                     <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-0.5 rounded-md italic">{planName}</span>
+                     <p className="text-[10px] font-black text-gray-800 uppercase tracking-widest">Neural Quota</p>
+                     <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2.5 py-1 rounded-md italic">{planName}</span>
                  </div>
-                 <div className="w-full h-1.5 bg-white/[0.03] rounded-full overflow-hidden mb-4">
+                 <div className="w-full h-1 bg-white/[0.03] rounded-full overflow-hidden mb-4">
                      <div className="h-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${Math.min(100, (credits/100)*100)}%` }}></div>
                  </div>
-                 <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">{credits} / 100 Credits Loaded</p>
+                 <p className="text-[9px] text-gray-700 font-bold uppercase tracking-widest italic">{credits} / 100 Credits Loaded</p>
              </div>
 
-             <div className="px-1 flex items-center gap-4 hover:bg-white/[0.02] p-3 rounded-2xl transition-colors cursor-pointer group pb-8">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/5 flex items-center justify-center text-gray-500 group-hover:text-white transition-colors">
+             <div className="flex items-center gap-4 hover:bg-white/[0.02] p-4 rounded-3xl transition-all cursor-pointer group">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-800 to-black border border-white/5 flex items-center justify-center text-gray-500 group-hover:text-white transition-all">
                       <Icons.User />
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col overflow-hidden">
                       <span className="text-xs font-black text-white uppercase tracking-tight truncate max-w-[120px]">{profileName || 'Main Admin'}</span>
-                      <span className="text-[10px] text-gray-600 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">Workspace Owner</span>
+                      <span className="text-[10px] text-gray-700 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">Workspace Owner</span>
                   </div>
              </div>
           </div>
         </aside>
 
-        {/* Content Area */}
-        <div className="flex-1 flex flex-col">
-          <header className="flex items-center justify-between px-8 py-6 border-b border-white/[0.06] sticky top-0 bg-[#050505]/80 backdrop-blur-md z-50">
+        {/* Content Area (Clean Fluid Container) */}
+        <div className="flex-1 flex flex-col bg-transparent">
+          <header className="flex items-center justify-between px-10 py-8 border-b border-white/[0.03] sticky top-0 bg-[#020202]/50 backdrop-blur-3xl z-50">
             <div>
-                <h1 className="text-2xl font-black text-white tracking-tight uppercase">
-                  {menuItems.find(i => i.id === currentView)?.name || 'Extract'}
+                <h1 className="text-[10px] font-black text-gray-600 uppercase tracking-[0.5em] italic">
+                   {pathname === '/dashboard' ? 'Neural Workspace' : 
+                    pathname.includes('history') ? 'Archive Stream' : 
+                    pathname.includes('pricing') ? 'Financial Scaling' : 'Account Config'}
                 </h1>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-full">
-                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                <span className="text-sm font-black text-blue-400">
-                    {credits} Credits Left
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-3 px-5 py-2 bg-blue-600/5 border border-blue-500/10 rounded-full shadow-inner">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(37,99,235,0.8)]"></span>
+                <span className="text-xs font-black text-blue-500/80 uppercase tracking-widest">
+                    {credits} / 100 Credits Loaded
                 </span>
               </div>
-              <Link href="/dashboard/pricing" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-black transition-all shadow-[0_0_25px_rgba(37,99,235,0.25)]">
-                Upgrade
-              </Link>
-              
-              <div className="hidden sm:flex items-center gap-3 pl-6 border-l border-white/[0.06]">
-                  <div className="text-right">
-                      <p className="text-sm font-bold text-white">{profileName || 'User'}</p>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{planName}</p>
-                  </div>
-                  {avatarUrl ? (
-                    <img src={`${API_URL}${avatarUrl}`} alt="Avatar" className="w-10 h-10 rounded-xl border border-white/10 object-cover bg-black" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-black text-lg uppercase shadow-lg">
-                      {profileName ? profileName.charAt(0) : 'U'}
-                    </div>
-                  )}
-              </div>
+              <button onClick={handleLogout} className="text-[10px] font-black text-gray-700 hover:text-red-500 uppercase tracking-widest transition-all">Logout</button>
             </div>
           </header>
 
-          <main className="flex-1 p-8">
+          <main className="flex-1 p-10 overflow-y-auto no-scrollbar">
             {children}
           </main>
         </div>
