@@ -137,11 +137,11 @@ export default function Pricing() {
               <div className="mb-6">
                 <h3 className="text-lg font-bold text-white mb-1 tracking-tight">{plan.name}</h3>
                 <p className="text-gray-500 text-[10px] leading-relaxed">
-                  {plan.name === 'Free' && "Best For: Trial"}
-                  {plan.name === 'Starter' && "Best For: Individuals"}
-                  {plan.name === 'Pro' && "Best For: Small businesses ⭐"}
-                  {plan.name === 'Business' && "Best For: Teams"}
-                  {plan.name === 'Enterprise' && "Best For: Scale"}
+                  {plan.name === 'Free' && "Best For: Testing AI OCR"}
+                  {plan.name === 'Starter' && "Best For: Freelancers & Small Shops"}
+                  {plan.name === 'Pro' && "Best For: SMEs & Multi-vendor Billing ⭐"}
+                  {plan.name === 'Business' && "Best For: Accounts Payable Teams"}
+                  {plan.name === 'Enterprise' && "Best For: High-Volume Enterprise ERP"}
                 </p>
               </div>
 
@@ -172,7 +172,7 @@ export default function Pricing() {
                   </li>
                 ) : (
                   <li className="flex items-center gap-2 text-[13px]">
-                    <span className="text-blue-500">✓</span> High-Accuracy AI Engine
+                    <span className="text-blue-500">✓</span> Advanced Invoice AI Engine
                   </li>
                 )}
                 

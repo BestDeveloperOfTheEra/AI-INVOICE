@@ -17,15 +17,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://autoextract.in'),
   title: {
-    default: "AutoExtract - AI Document Processing & Invoice Extraction",
+    default: "AutoExtract AI - Advanced AI Invoice Reader & Data Extraction",
     template: "%s | AutoExtract AI"
   },
-  description: "Automate your data extraction from Invoices, Medical Reports, and Legal Documents securely with AutoExtract AI. Export to Excel, PDF, and API.",
-  keywords: ["AI Document Extraction", "Invoice Processing", "OCR API", "Automated Bookkeeping", "Invoice to Excel"],
+  description: "Stop manual data entry. AutoExtract AI is the ultimate AI Invoice Reader that extracts line items, taxes, and vendor data with 99% accuracy. Export to Excel, PDF, or API.",
+  keywords: ["AI Invoice Reader", "Invoice Extraction Software", "Automated Invoice Processing", "Invoice OCR API", "Receipt Scanner AI", "Automated Accounts Payable", "Invoice to Excel Converter"],
   authors: [{ name: "AutoExtract Team" }],
   openGraph: {
-    title: "AutoExtract - AI Document Processing",
-    description: "Turn your Documents into Data instantly with AI.",
+    title: "AutoExtract AI - The Smartest AI Invoice Reader",
+    description: "Convert any Invoice into structured data instantly. Automated Extraction for Invoices & Receipts.",
     url: "https://autoextract.in",
     siteName: "AutoExtract AI",
     locale: "en_US",
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AutoExtract - AI Document Processing",
-    description: "Automate your data extraction from Invoices & Documents.",
+    title: "AutoExtract AI - Smart Invoice Reader",
+    description: "Automate your data extraction from Invoices & Receipts with AI.",
   },
   alternates: {
     canonical: "/",
