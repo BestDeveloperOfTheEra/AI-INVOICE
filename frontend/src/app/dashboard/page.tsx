@@ -7,6 +7,30 @@ import { PDFDocument } from 'pdf-lib';
 import { API_URL } from '@/lib/constants';
 import Link from 'next/link';
 
+// --- UTILITIES ---
+const CountUp = ({ value, duration = 2000 }: { value: number | string, duration?: number }) => {
+  const [count, setCount] = useState(0);
+  const target = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]/g, '')) : value;
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      setCount(Math.floor(progress * target));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [target, duration]);
+
+  if (typeof value === 'string' && value.includes('₹')) {
+    return <span>₹{count.toLocaleString()}</span>;
+  }
+  return <span>{count.toLocaleString()}</span>;
+};
+
 // --- Premium Inline SVGs ---
 const Icons = {
   Document: () => (
@@ -195,14 +219,14 @@ export default function DashboardPage() {
       />
 
       {/* 1. ULTRA HIGH-END STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           { title: 'Invoices Processed', value: stats?.totalInvoices || 0, desc: 'Lifetime volume', icon: <Icons.Document />, color: 'blue', trend: '+12%' },
           { title: 'Credits Remaining', value: credits, desc: 'Available units', highlight: true, icon: <Icons.Lightning />, color: 'amber', trend: 'Active' },
           { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald', trend: '+8.4%' },
           { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet', trend: '+22' }
         ].map((card, i) => (
-          <div key={i} className={`group relative bg-[#0a0a0a] border border-white/[0.05] rounded-[2.5rem] p-8 transition-all duration-500 hover:-translate-y-2 hover:bg-[#0d0d0d] hover:border-white/[0.1] shadow-2xl hover:shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden cursor-default`}>
+          <div key={i} className={`group relative bg-[#0a0a0a] border border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-[#0d0d0d] hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
             {/* Local Icon Glow */}
             <div className={`absolute left-8 top-8 w-14 h-14 blur-[30px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${
                 card.color === 'blue' ? 'bg-blue-500/50' : 
@@ -212,12 +236,14 @@ export default function DashboardPage() {
 
             <div className="relative z-10 flex flex-col gap-8">
                 <div className="flex items-start justify-between">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-2xl ring-1 ring-white/10 ${
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-700 group-hover:scale-110 shadow-2xl ring-1 ring-white/10 relative overflow-hidden ${
                         card.color === 'blue' ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/5 text-blue-400' : 
                         card.color === 'amber' ? 'bg-gradient-to-br from-amber-500/20 to-amber-600/5 text-amber-400' : 
                         card.color === 'emerald' ? 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/5 text-emerald-400' : 'bg-gradient-to-br from-violet-500/20 to-violet-600/5 text-violet-400'
                     }`}>
-                        {card.icon}
+                        <div className="animate-[bounce_3s_infinite] group-hover:animate-none">
+                            {card.icon}
+                        </div>
                     </div>
                     <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border transition-colors duration-500 ${
                         card.color === 'blue' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 
@@ -229,13 +255,15 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                    <p className="text-gray-600 text-[11px] font-black uppercase tracking-[0.3em] mb-2 group-hover:text-gray-500 transition-colors">{card.title}</p>
-                    <div className="flex items-baseline gap-2">
-                        <h4 className="text-5xl font-black tracking-tighter text-white transition-all duration-300 group-hover:tracking-tight">{card.value}</h4>
+                    <p className="text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors">{card.title}</p>
+                    <div className="flex items-baseline gap-2 mb-4">
+                        <h4 className="text-5xl font-black text-white tracking-tighter leading-none">
+                            <CountUp value={card.value} />
+                        </h4>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-white/[0.04] flex items-center justify-between">
-                         <span className="text-gray-700 text-[10px] font-bold uppercase tracking-widest">{card.desc}</span>
-                         <div className="flex gap-1">
+                    <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
+                         <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
+                         <div className="flex gap-1 animate-pulse">
                              <div className="w-1 h-1 rounded-full bg-white/10"></div>
                              <div className="w-1 h-1 rounded-full bg-white/10"></div>
                              <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
@@ -247,8 +275,8 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* AI TRUST INDICATORS ROW */}
-      <div className="flex flex-wrap items-center justify-center gap-12 py-6 bg-white/[0.01] border-y border-white/[0.04] animate-in fade-in slide-in-from-top-4 duration-1000">
+      {/* AI TRUST INDICATORS ROW (DIVIDER) */}
+      <div className="flex flex-wrap items-center justify-center gap-12 py-10 bg-white/[0.01] border-y border-white/[0.05] animate-in fade-in slide-in-from-top-4 duration-1200 rounded-3xl">
           {[
               { label: 'Neural Accuracy', value: '99.4%', icon: <Icons.Check /> },
               { label: 'Processing Speed', value: '< 5.0s', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
@@ -260,7 +288,7 @@ export default function DashboardPage() {
                       {item.icon}
                   </div>
                   <div className="flex flex-col">
-                      <span className="text-[9px] font-black text-gray-700 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-500 transition-colors">{item.label}</span>
+                      <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-400 transition-colors">{item.label}</span>
                       <span className="text-xs font-black text-white/50 group-hover:text-white transition-colors">{item.value}</span>
                   </div>
               </div>
@@ -268,11 +296,11 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. MAIN CONTENT (2 COLUMN ULTRA POLISHED) */}
-      <div className="grid lg:grid-cols-5 gap-10 items-start">
+      <div className="grid lg:grid-cols-5 gap-16 items-start">
         
         {/* RIGHT SIDE: UPLOAD WORKSPACE (REFINED INTERACTIVITY) */}
         <div className="lg:col-span-3">
-            <div className="group relative bg-[#0a0a0a] border border-white/[0.08] rounded-[2.5rem] p-10 flex flex-col gap-8 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+            <div className="group relative bg-[#0a0a0a] border border-white/[0.1] rounded-[3rem] p-12 flex flex-col gap-10 overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.5)]">
                 
                 {/* Background Luminous Glow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
@@ -284,12 +312,12 @@ export default function DashboardPage() {
                         </div>
                         <div>
                             <h3 className="text-2xl font-black text-white tracking-widest uppercase italic leading-none mb-1">Neural Upload</h3>
-                            <p className="text-[9px] font-black text-gray-700 uppercase tracking-[0.2em]">High-Priority Extraction Workspace</p>
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">High-Priority Extraction Workspace</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
                         {['PDF', 'JPG', 'PNG'].map(fmt => (
-                            <span key={fmt} className="px-4 py-1.5 bg-white/[0.02] border border-white/5 rounded-xl text-[10px] font-black text-gray-700 tracking-tighter hover:text-gray-500 transition-colors cursor-default">{fmt}</span>
+                            <span key={fmt} className="px-4 py-1.5 bg-white/[0.02] border border-white/5 rounded-xl text-[10px] font-black text-gray-500 tracking-tighter hover:text-gray-400 transition-colors cursor-default">{fmt}</span>
                         ))}
                     </div>
                 </div>
@@ -303,52 +331,53 @@ export default function DashboardPage() {
                             handleFileChange({ target: { files: e.dataTransfer.files } } as any);
                         }
                     }}
-                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-[2rem] py-12 px-8 hover:border-blue-500/40 hover:bg-white/[0.01] transition-all cursor-pointer group/uploader overflow-hidden"
+                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-[2.5rem] py-16 px-10 hover:border-blue-500/40 hover:bg-white/[0.01] transition-all cursor-pointer group/uploader overflow-hidden"
                 >
                     {/* Animated Floating Gradient Border */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
                          <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-blue-500/20 via-blue-400/5 to-blue-600/20 [mask-image:linear-gradient(white,white)] [-webkit-mask-clip:border-box] [mask-clip:content-box,border-box]"></div>
                     </div>
 
-                    <div className="relative mb-6">
+                    <div className="relative mb-8">
                         <div className="absolute inset-0 bg-blue-500/10 blur-3xl opacity-0 group-hover/uploader:opacity-100 transition-opacity duration-1000"></div>
-                        <div className="relative w-20 h-20 bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
+                        <div className="relative w-24 h-24 bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center text-6xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
                             <span className="group-hover/uploader:animate-bounce">📄</span>
                         </div>
                     </div>
                     
-                    <button className="relative px-14 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm tracking-[0.2em] uppercase transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:shadow-[0_0_60px_rgba(37,99,235,0.5)] mb-6 hover:-translate-y-1 active:translate-y-1">
-                        Browse Files 
+                    <button className="relative px-20 py-6 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-[2rem] font-black text-[15px] tracking-[0.5em] uppercase transition-all shadow-[0_0_60px_rgba(37,99,235,0.5)] hover:shadow-[0_0_90px_rgba(37,99,235,0.7)] mb-10 hover:scale-[1.05] active:scale-[0.95] group/cta overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000"></div>
+                        <span className="relative z-10 group-hover:animate-pulse">Browse Files</span>
                     </button>
                     
-                    <div className="text-center space-y-2 relative z-10">
-                        <p className="text-gray-400 text-sm font-bold tracking-tight">Bulk upload up to <span className="text-white">20 invoices</span></p>
+                    <div className="text-center space-y-3 relative z-10">
+                        <p className="text-gray-400 text-base font-bold tracking-tight">Bulk upload up to <span className="text-white">20 invoices</span></p>
                         <div className="flex items-center justify-center gap-2">
                              <div className="flex gap-[2px]">
-                                 {[1,2,3].map(i => <div key={i} className="w-1 h-3 bg-blue-500/20 rounded-full group-hover/uploader:animate-pulse" style={{ animationDelay: `${i*100}ms` }}></div>)}
+                                 {[1,2,3].map(i => <div key={i} className="w-1.5 h-3.5 bg-blue-500/20 rounded-full group-hover/uploader:animate-pulse" style={{ animationDelay: `${i*100}ms` }}></div>)}
                              </div>
-                             <p className="text-gray-600 text-[10px] uppercase font-black tracking-[0.3em]">AI Engine Standby</p>
+                             <p className="text-gray-600 text-[11px] uppercase font-black tracking-[0.3em]">AI Engine Standby</p>
                         </div>
                     </div>
 
-                    <div className="absolute bottom-4 right-6 opacity-0 group-hover/uploader:opacity-100 transition-all translate-x-4 group-hover/uploader:translate-x-0">
-                         <span className="text-[9px] font-black text-blue-500/40 uppercase tracking-widest italic">Fast Extraction →</span>
+                    <div className="absolute bottom-6 right-8 opacity-0 group-hover/uploader:opacity-100 transition-all translate-x-4 group-hover/uploader:translate-x-0">
+                         <span className="text-[10px] font-black text-blue-500/40 uppercase tracking-widest italic">Fast Extraction →</span>
                     </div>
                 </div>
             </div>
         </div>
 
         {/* LEFT SIDE: INTELLIGENCE SIDEBAR */}
-        <div className="lg:col-span-2 flex flex-col gap-10">
+        <div className="lg:col-span-2 flex flex-col gap-16">
             
             {/* UPGRADE CARD (ULTRA PREMIUM CONVERSION FOCUS) */}
-            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-1000 shadow-2xl group/upgrade ${credits <= 5 ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/40 to-black border border-blue-500/40' : 'bg-gradient-to-br from-[#0a0a0a] via-[#0d0d0d] to-black border border-white/[0.08]'}`}>
+            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-1000 shadow-[0_30px_70px_rgba(0,0,0,0.5)] group/upgrade ${credits <= 5 ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/40 to-black border border-blue-500/40' : 'bg-gradient-to-br from-[#0a0a0a] via-[#0d0d0d] to-black border border-white/[0.12]'}`}>
                 
                 {/* Luminous Core Glow */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-blue-600/10 blur-[120px] group-hover/upgrade:bg-indigo-600/20 transition-all duration-1000"></div>
                 <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
                 
-                <div className="relative z-10 flex flex-col gap-10">
+                <div className="relative z-10 flex flex-col gap-12">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                              <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
@@ -356,7 +385,7 @@ export default function DashboardPage() {
                                  {credits <= 0 ? 'Quota Depleted' : 'Account Tier'}
                              </h4>
                         </div>
-                        <span className="px-4 py-1 bg-white/5 border border-white/5 rounded-full text-[10px] font-black text-gray-400 uppercase tracking-widest backdrop-blur-md">{credits} Credits</span>
+                        <span className="px-4 py-1.5 bg-white/5 border border-white/5 rounded-full text-[10px] font-black text-gray-400 uppercase tracking-widest backdrop-blur-md">{credits} Credits</span>
                     </div>
 
                     <div className="space-y-4">
@@ -371,7 +400,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="space-y-4">
-                        <div className="w-full h-3 bg-white/[0.04] rounded-full overflow-hidden p-[3px] shadow-inner border border-white/[0.02]">
+                        <div className="w-full h-3.5 bg-white/[0.04] rounded-full overflow-hidden p-[4px] shadow-inner border border-white/[0.02]">
                             <div 
                                 className={`h-full rounded-full transition-all duration-1000 ${credits <= 5 ? 'bg-gradient-to-r from-blue-600 to-indigo-500 shadow-[0_0_20px_rgba(37,99,235,0.6)]' : 'bg-gray-700'}`} 
                                 style={{ width: `${Math.max(5, Math.min(100, (credits/100)*100))}%` }}
@@ -402,49 +431,49 @@ export default function DashboardPage() {
             </div>
 
             {/* RECENT ACTIVITY REFINED (MICRO-INTERACTIONS ENHANCED) */}
-            <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3rem] p-10 shadow-2xl animate-in slide-in-from-right-8 duration-1000 delay-150">
+            <div className="bg-[#0a0a0a] border border-white/[0.12] rounded-[3.5rem] p-12 shadow-[0_30px_70px_rgba(0,0,0,0.5)] animate-in slide-in-from-right-8 duration-1000 delay-150">
                 <div className="flex items-center justify-between mb-12 px-2">
                     <div className="flex items-center gap-3">
                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.6)]"></div>
                          <div>
                              <h4 className="text-[12px] font-black text-white uppercase tracking-[0.4em] leading-none mb-1">Neural Stream</h4>
-                             <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest">Real-time processing log</p>
+                             <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Real-time processing log</p>
                          </div>
                     </div>
-                    <Link href="/dashboard/history" className="text-[10px] font-black text-blue-600 hover:text-blue-400 uppercase tracking-widest transition-all hover:tracking-[0.2em] bg-blue-500/5 px-4 py-2 rounded-xl border border-blue-500/10">Full History</Link>
+                    <Link href="/dashboard/history" className="text-[10px] font-black text-blue-600 hover:text-blue-400 uppercase tracking-widest transition-all hover:tracking-[0.2em] bg-blue-500/5 px-5 py-2.5 rounded-xl border border-blue-500/10">Full History</Link>
                 </div>
                 
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-6">
                     {recentDocs.length === 0 ? (
-                        <div className="flex flex-col items-center gap-6 py-12 opacity-50 text-center animate-in fade-in zoom-in-95 duration-1000">
-                            <div className="p-10 bg-white/[0.01] border border-white/5 rounded-[3rem] shadow-inner group/empty">
+                        <div className="flex flex-col items-center gap-6 py-14 opacity-50 text-center animate-in fade-in zoom-in-95 duration-1000">
+                            <div className="p-12 bg-white/[0.01] border border-white/5 rounded-[3.5rem] shadow-inner group/empty">
                                 <div className="group-hover/empty:rotate-12 transition-transform duration-1000">
                                     <Icons.EmptyBox />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-white text-base font-black tracking-tight uppercase">Stream Standby</p>
-                                <p className="text-gray-700 text-[9px] font-black uppercase tracking-[0.4em] max-w-[200px]">Awaiting next extraction sequence...</p>
+                                <p className="text-white text-lg font-black tracking-tight uppercase">Stream Standby</p>
+                                <p className="text-gray-600 text-[9px] font-black uppercase tracking-[0.4em] max-w-[200px]">Awaiting next extraction sequence...</p>
                             </div>
                         </div>
                     ) : (
                         recentDocs.slice(0, 4).map((doc, i) => {
                             const data = JSON.parse(doc.extractedData || '{}');
                             return (
-                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-6 -mx-4 rounded-[2rem] transition-all duration-700 hover:bg-white/[0.03] hover:translate-x-2 border border-transparent hover:border-white/[0.05] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl`} style={{ animationDelay: `${i*100}ms` }}>
-                                    <div className="flex items-center gap-6">
+                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-white/[0.08] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl`} style={{ animationDelay: `${i*100}ms` }}>
+                                    <div className="flex items-center gap-7">
                                         <div className="w-16 h-16 rounded-[1.5rem] bg-[#0a0a0a] border border-white/10 flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
                                              <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
                                         </div>
                                         <div>
-                                            <p className="text-base font-black text-white tracking-tight group-hover:text-blue-500 transition-colors uppercase truncate max-w-[150px] leading-none mb-2">{data.vendor || data.vendorName || "Active Merchant"}</p>
-                                            <p className="text-[10px] text-gray-700 font-black uppercase tracking-widest transition-colors group-hover:text-gray-500">{new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Secure Neural Log</p>
+                                            <p className="text-lg font-black text-white tracking-tight group-hover:text-blue-500 transition-colors uppercase truncate max-w-[160px] leading-none mb-3">{data.vendor || data.vendorName || "Active Merchant"}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest transition-colors group-hover:text-gray-400">{new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Secure Neural Log</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-lg font-black text-white tracking-tighter group-hover:text-blue-500 transition-all">₹{(doc.totalAmount || 0).toLocaleString()}</p>
+                                        <p className="text-xl font-black text-white tracking-tighter group-hover:text-blue-500 transition-all">₹{(doc.totalAmount || 0).toLocaleString()}</p>
                                         <div className="flex items-center justify-end gap-2 mt-2">
-                                             <span className="text-[10px] text-gray-800 font-black uppercase tracking-widest group-hover:text-green-500 transition-colors italic">Cloud Verified</span>
+                                             <span className="text-[10px] text-gray-600 font-black uppercase tracking-widest group-hover:text-green-500 transition-colors italic">Cloud Verified</span>
                                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full opacity-40 group-hover:opacity-100 transition-opacity animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
                                         </div>
                                     </div>
@@ -459,18 +488,18 @@ export default function DashboardPage() {
       </div>
 
       {/* 3. LATEST EXTRACTIONS TABLE (MICRO-INTERACTIONS POLISHED) */}
-      <div className="bg-[#0a0a0a] border border-white/[0.08] rounded-[3.5rem] overflow-hidden group/table shadow-2xl animate-in slide-in-from-bottom-12 duration-1200 delay-500">
-          <div className="px-14 py-12 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
-              <div className="flex items-center gap-5">
-                   <div className="w-4 h-4 bg-blue-500/10 rounded-full flex items-center justify-center">
-                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></div>
+      <div className="bg-[#0a0a0a] border border-white/[0.12] rounded-[4rem] overflow-hidden group/table shadow-[0_30px_70px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-12 duration-1200 delay-500">
+          <div className="px-16 py-14 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+              <div className="flex items-center gap-6">
+                   <div className="w-5 h-5 bg-blue-500/10 rounded-full flex items-center justify-center">
+                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
                    </div>
                    <div>
-                       <h4 className="text-[14px] font-black text-white uppercase tracking-[0.5em] leading-none mb-1">Neural Archive</h4>
-                       <p className="text-[9px] font-black text-gray-700 uppercase tracking-widest">Historical Extraction Database</p>
+                       <h4 className="text-lg font-black text-white uppercase tracking-[0.5em] leading-none mb-1">Neural Archive</h4>
+                       <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Historical Extraction Database</p>
                    </div>
               </div>
-              <button onClick={() => router.push('/dashboard/history')} className="px-8 py-2.5 bg-white/5 border border-white/5 hover:border-blue-500/20 hover:bg-blue-600/10 text-[10px] font-black text-gray-500 uppercase tracking-widest rounded-xl transition-all hover:text-blue-400 group/btn shadow-inner">
+              <button onClick={() => router.push('/dashboard/history')} className="px-10 py-3 bg-white/5 border border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[11px] font-black text-gray-400 uppercase tracking-widest rounded-2xl transition-all hover:text-blue-400 group/btn shadow-inner">
                   View Full Stack 
                   <span className="inline-block transition-transform group-hover/btn:translate-x-2 ml-2">→</span>
               </button>
@@ -479,20 +508,20 @@ export default function DashboardPage() {
               <table className="w-full text-left border-separate border-spacing-0">
                   <thead>
                       <tr className="bg-white/[0.01]">
-                          {['Merchant Identifier', 'Neural Signature', 'Analyzed At', 'Verified Value', 'Capture Status'].map(h => (
-                              <th key={h} className="px-12 py-7 text-[10px] font-black text-gray-800 uppercase tracking-[0.4em] border-b border-white/[0.05]">{h}</th>
+                          {['Neural Identity', 'Global Signature', 'Capture Timestamp', 'Liquid Asset Value', 'Validation Status'].map(h => (
+                              <th key={h} className="px-16 py-8 text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
                           ))}
                       </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.02]">
+                  <tbody className="divide-y divide-white/[0.015]">
                       {recentDocs.length === 0 ? (
                         <tr>
-                            <td colSpan={5} className="px-12 py-32">
-                                <div className="flex flex-col items-center gap-6 opacity-20 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
+                            <td colSpan={5} className="px-16 py-40">
+                                <div className="flex flex-col items-center gap-8 opacity-20 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
                                     <Icons.EmptyBox />
                                     <div className="space-y-1">
-                                        <p className="text-[11px] font-black uppercase tracking-[0.5em]">System Log Empty</p>
-                                        <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
+                                        <p className="text-lg font-black uppercase tracking-[0.5em]">System Log Empty</p>
+                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
                                     </div>
                                 </div>
                             </td>
@@ -501,22 +530,22 @@ export default function DashboardPage() {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
                               <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>
-                                  <td className="px-12 py-7">
-                                      <div className="flex items-center gap-3">
-                                          <div className="w-2 h-2 rounded-full bg-blue-500/20 group-hover/row:bg-blue-500 group-hover/row:shadow-[0_0_8px_rgba(37,99,235,0.6)] transition-all"></div>
-                                          <span className="text-sm font-black text-white/70 tracking-tight group-hover/row:text-white transition-colors uppercase">{data.vendor || "Verified Source"}</span>
+                                  <td className="px-16 py-8">
+                                      <div className="flex items-center gap-4">
+                                          <div className="w-2.5 h-2.5 rounded-full bg-blue-500/20 group-hover/row:bg-blue-500 group-hover/row:shadow-[0_0_8px_rgba(37,99,235,0.6)] transition-all"></div>
+                                          <span className="text-base font-black text-white/70 tracking-tight group-hover/row:text-white transition-colors uppercase">{data.vendor || "Verified Source"}</span>
                                       </div>
                                   </td>
-                                  <td className="px-12 py-7">
-                                      <span className="text-xs font-mono font-bold text-gray-700 group-hover/row:text-gray-400 transition-colors uppercase tracking-widest">{doc.gstin || "NO_SIG_FOUND"}</span>
+                                  <td className="px-16 py-8">
+                                      <span className="text-sm font-mono font-bold text-gray-400 group-hover/row:text-gray-300 transition-colors uppercase tracking-widest">{doc.gstin || "NO_SIG_FOUND"}</span>
                                   </td>
-                                  <td className="px-12 py-7 text-xs font-black text-gray-800 uppercase tracking-widest group-hover/row:text-gray-600 transition-colors">
+                                  <td className="px-16 py-8 text-sm font-black text-gray-500 uppercase tracking-widest group-hover/row:text-gray-400 transition-colors">
                                       {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-12 py-7 text-sm font-black text-white/60 tracking-tighter group-hover/row:text-blue-400 transition-all group-hover/row:text-base">₹{(doc.totalAmount || 0).toLocaleString()}</td>
-                                  <td className="px-12 py-7">
-                                      <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-2xl text-[9px] font-black uppercase shadow-2xl border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
-                                          <div className={`w-1.5 h-1.5 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
+                                  <td className="px-16 py-8 text-base font-black text-white/60 tracking-tighter group-hover/row:text-blue-400 transition-all group-hover/row:text-lg">₹{(doc.totalAmount || 0).toLocaleString()}</td>
+                                  <td className="px-16 py-8">
+                                      <div className={`inline-flex items-center gap-3 px-6 py-2.5 rounded-[1.5rem] text-[10px] font-black uppercase shadow-2xl border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
+                                          <div className={`w-2 h-2 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
                                           {doc.status === 'completed' ? 'Neural Verified' : 'Sig Failed'}
                                       </div>
                                   </td>
@@ -559,113 +588,102 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* RESULT MODAL (ULTRA-PREMIUM GLASS CONFIGURATION) */}
+      {/* RESULT MODAL (REFINED FOR CLARITY AND FOCUS) */}
       {lastResult && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-[40px] animate-in fade-in duration-1000">
-            <div className="bg-[#080808]/40 border border-white/10 rounded-[4rem] p-16 max-w-6xl w-full shadow-[0_0_150px_rgba(0,0,0,0.8)] backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-1000 relative overflow-hidden group/modal">
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/85 backdrop-blur-[20px] animate-in fade-in duration-700">
+            <div className="bg-[#080808]/70 border border-white/10 rounded-[3rem] p-12 max-w-6xl w-full shadow-[0_0_100px_rgba(0,0,0,0.9)] backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal">
                 
-                {/* Luminous Core Backdrop */}
-                <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 blur-[150px] animate-pulse"></div>
-                <div className="absolute top-0 right-0 p-12 text-gray-500 hover:text-white cursor-pointer transition-all hover:rotate-90 duration-700 z-50 text-3xl" onClick={() => setLastResult(null)}>✕</div>
+                {/* Subtle Luminous Accent */}
+                <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 blur-[150px]"></div>
+                <div className="absolute top-0 right-0 p-10 text-gray-600 hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setLastResult(null)}>✕</div>
                 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 mb-16 px-4">
-                    <div className="flex items-center gap-10">
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-12 px-2">
+                    <div className="flex items-center gap-8">
                         <div className="relative">
-                            <div className="absolute inset-0 bg-green-500/30 blur-3xl animate-pulse"></div>
-                            <div className="relative w-28 h-28 bg-green-500/10 border border-green-500/30 rounded-[2.5rem] flex items-center justify-center text-green-500 shadow-2xl scale-110">
+                            <div className="absolute inset-0 bg-green-500/10 blur-2xl"></div>
+                            <div className="relative w-20 h-20 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center text-green-500 shadow-xl">
                                 <Icons.Check />
                             </div>
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-green-500 uppercase tracking-[0.5em] mb-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full inline-block">Extraction Verified</p>
-                            <h3 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Neural Capture 01</h3>
+                            <p className="text-[9px] font-black text-green-500/60 uppercase tracking-[0.4em] mb-1">Extraction Verified</p>
+                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">Neural Capture 01</h3>
                         </div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                         <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] shadow-inner px-6 py-3 rounded-2xl">
-                             <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
-                             <span className="text-[11px] font-black text-white uppercase tracking-widest leading-none">Confidence: 99.42%</span>
+                         <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] shadow-inner px-5 py-2.5 rounded-xl">
+                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Confidence Score: 99.4%</span>
                          </div>
                     </div>
                 </div>
 
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
                     {/* LEFT DATA COLUMN */}
-                    <div className="lg:col-span-12 xl:col-span-7 space-y-10">
-                        <div className="bg-white/[0.01] rounded-[3.5rem] p-12 border border-white/[0.05] shadow-inner group/card hover:bg-white/[0.03] transition-all duration-1000">
-                            <div className="flex items-center justify-between mb-10">
-                                <span className="text-[11px] font-black text-gray-700 uppercase tracking-[0.5em]">Entity Profile</span>
-                                <div className="flex gap-1">
-                                    {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/5"></div>)}
+                    <div className="lg:col-span-12 xl:col-span-7 space-y-8">
+                        <div className="bg-white/[0.01] rounded-[2.5rem] p-10 border border-white/[0.05] shadow-inner group/card hover:bg-white/[0.02] transition-colors duration-700">
+                            <div className="flex items-center justify-between mb-8 text-[10px] font-black text-gray-700 uppercase tracking-[0.4em]">
+                                <span>Entity Profile</span>
+                                <div className="flex gap-1 opacity-20">
+                                    {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-white"></div>)}
                                 </div>
                             </div>
-                            <h4 className="text-5xl font-black text-white tracking-tight leading-none mb-6 group-hover/card:tracking-tighter transition-all duration-1000 uppercase">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
-                            <div className="flex items-center gap-6">
-                                <p className="text-sm font-mono font-bold text-gray-500 tracking-[0.2em] uppercase py-2 px-5 bg-white/[0.03] rounded-2xl border border-white/[0.05]">{lastResult.gstin || "NO_GST_DETECTED"}</p>
-                                <span className="text-[10px] font-black text-blue-500/40 uppercase tracking-widest italic">Identity Match Check 100%</span>
+                            <h4 className="text-4xl font-black text-white tracking-tight uppercase leading-none mb-6">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
+                            <div className="flex items-center gap-4">
+                                <p className="text-xs font-mono font-bold text-gray-500 tracking-[0.2em] uppercase py-2 px-4 bg-white/[0.02] rounded-xl border border-white/[0.05]">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
                         </div>
 
-                        {/* LINE ITEMS GLASS TABLE */}
-                        <div className="bg-white/[0.01] rounded-[3.5rem] p-12 border border-white/[0.03]">
-                            <div className="flex items-center justify-between mb-10">
-                                <span className="text-[11px] font-black text-gray-700 uppercase tracking-[0.5em]">Neural Item Log</span>
-                                <span className="text-[10px] font-black text-gray-800 uppercase tracking-widest border border-white/5 px-4 py-1.5 rounded-full">3 Nodes Active</span>
-                            </div>
-                            <div className="space-y-6">
+                        {/* LINE ITEMS TABLE */}
+                        <div className="bg-white/[0.01] rounded-[2.5rem] p-10 border border-white/[0.03]">
+                            <div className="text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] mb-8">Neural Item Log</div>
+                            <div className="space-y-4">
                                 {[
                                     { name: "Executive Consulting Sequence", qty: 1, total: "₹24,000" },
                                     { name: "High-Frequency Core Nodes", qty: 4, total: "₹1,20,000" },
                                     { name: "Neural Maintenance Cycle", qty: 1, total: "₹14,500" }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between py-6 border-b border-white/[0.04] last:border-0 group/item hover:translate-x-4 transition-all duration-700">
-                                        <div className="flex items-center gap-6">
-                                            <span className="text-[12px] font-black text-gray-800 group-hover/item:text-blue-500 transition-colors uppercase tracking-[0.3em]">Node {idx+1}</span>
-                                            <p className="text-base font-black text-gray-500 group-hover/item:text-white transition-colors">{item.name}</p>
+                                    <div key={idx} className="flex items-center justify-between py-4 border-b border-white/[0.03] last:border-0 group/item">
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-[11px] font-black text-gray-800 uppercase tracking-widest">Node {idx+1}</span>
+                                            <p className="text-sm font-bold text-gray-500 transition-colors group-hover/item:text-gray-300">{item.name}</p>
                                         </div>
-                                        <p className="text-lg font-black text-white group-hover/item:text-blue-400 transition-all">{item.total}</p>
+                                        <p className="text-base font-black text-white">{item.total}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
 
-                    {/* RIGHT TOTAL COLUMN (THE GLOW STACK) */}
-                    <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-10">
-                        <div className="bg-gradient-to-br from-blue-700/20 via-blue-900/10 to-transparent rounded-[4rem] p-14 border border-blue-500/30 relative group/amount h-full flex flex-col justify-between shadow-[0_0_100px_rgba(37,99,235,0.1)]">
-                            <div className="absolute top-0 right-0 p-12 opacity-5 group-hover/amount:opacity-20 transition-opacity duration-1000 rotate-12 scale-150">
-                                <Icons.Currency />
-                            </div>
-                            
+                    {/* RIGHT TOTAL COLUMN */}
+                    <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-8">
+                        <div className="bg-gradient-to-br from-blue-700/10 to-transparent rounded-[3rem] p-12 border border-blue-500/20 relative group/amount h-full flex flex-col justify-between">
                             <div>
-                                <p className="text-[12px] font-black text-blue-500 uppercase tracking-[0.5em] mb-12">Verified Payable</p>
+                                <p className="text-[11px] font-black text-blue-500/60 uppercase tracking-[0.4em] mb-10">Verified Payable</p>
                                 <div className="space-y-4">
-                                    <h2 className="text-8xl font-black text-white tracking-widest leading-none drop-shadow-2xl">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
-                                        <p className="text-[11px] font-black uppercase tracking-[0.3em]">Confirmed Amount Node</p>
-                                    </div>
+                                    <h2 className="text-7xl font-black text-white tracking-widest leading-none">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
+                                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em]">Confirmed Amount Node</p>
                                 </div>
                             </div>
 
-                            <div className="pt-14 border-t border-white/[0.04] space-y-10">
-                                <div className="grid grid-cols-2 gap-10">
-                                    <div className="space-y-2">
-                                        <p className="text-[11px] font-black text-gray-700 uppercase tracking-[0.4em]">Integrated Tax</p>
-                                        <p className="text-2xl font-black text-white tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
+                            <div className="pt-10 border-t border-white/[0.04] space-y-8">
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Tax Net</p>
+                                        <p className="text-xl font-black text-white tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
                                     </div>
-                                    <div className="space-y-2">
-                                        <p className="text-[11px] font-black text-gray-700 uppercase tracking-[0.4em]">Log Date</p>
-                                        <p className="text-2xl font-black text-white tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Log Date</p>
+                                        <p className="text-xl font-black text-white tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-6 px-8 py-6 bg-white/[0.02] rounded-[2.5rem] border border-white/[0.05] group/export cursor-pointer hover:bg-white/[0.05] transition-all duration-700 shadow-inner">
-                                    <div className="w-14 h-14 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 group-hover/export:scale-110 transition-transform duration-700">
+                                <div className="flex items-center gap-5 px-6 py-5 bg-white/[0.01] rounded-[2rem] border border-white/[0.05] group/export cursor-pointer hover:bg-white/[0.03] transition-colors">
+                                    <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/15 rounded-xl flex items-center justify-center text-blue-400">
                                         <Icons.Download />
                                     </div>
-                                    <div className="flex-1">
-                                         <p className="text-[11px] font-black text-white uppercase tracking-[0.4em] mb-1">Export Sequence</p>
-                                         <p className="text-[9px] text-gray-700 font-black uppercase tracking-widest italic group-hover/export:text-gray-500 transition-colors">Neural PDF + Excel Binary</p>
+                                    <div>
+                                         <p className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-0.5">Binary Export</p>
+                                         <p className="text-[9px] text-gray-700 font-black uppercase tracking-widest">Neural PDF + Excel</p>
                                     </div>
                                 </div>
                             </div>
@@ -673,12 +691,11 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="relative z-10 flex gap-8">
-                    <button onClick={() => setLastResult(null)} className="flex-1 py-7 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] font-black text-sm tracking-[0.5em] uppercase transition-all shadow-[0_0_60px_rgba(37,99,235,0.4)] hover:scale-[1.02] active:scale-[0.98] group/confirm overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/confirm:translate-x-full transition-transform duration-1000"></div>
-                        Establish Entry
+                <div className="relative z-10 flex gap-6">
+                    <button onClick={() => setLastResult(null)} className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-xl hover:translate-y-[-1px] active:translate-y-0">
+                        Confirm Data Entry
                     </button>
-                    <button onClick={() => setLastResult(null)} className="px-16 py-7 bg-white/[0.03] hover:bg-white/[0.07] text-white rounded-[2.5rem] font-black text-xs tracking-widest uppercase transition-all border border-white/[0.08] hover:border-white/[0.2]">
+                    <button onClick={() => setLastResult(null)} className="px-12 py-6 bg-white/[0.02] border border-white/[0.08] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase hover:bg-white/[0.05] transition-all">
                         Abort
                     </button>
                 </div>

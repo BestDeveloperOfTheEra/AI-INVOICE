@@ -37,51 +37,74 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 font-sans relative overflow-x-hidden">
-      {/* Premium Background Layering */}
+    <div className="min-h-screen bg-[#020202] text-white selection:bg-blue-500/30 font-sans relative overflow-x-hidden">
+      {/* Premium Background Layering (Refined for Clarity) */}
       <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.08)_0%,transparent_50%)]"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,rgba(99,102,241,0.05)_0%,transparent_40%)]"></div>
-          <div className="absolute inset-0 opacity-[0.03] contrast-150 brightness-100" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.05)_0%,transparent_50%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_100%,rgba(99,102,241,0.03)_0%,transparent_40%)]"></div>
+          <div className="absolute inset-0 opacity-[0.015] contrast-125 brightness-100" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
 
       <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
-        {/* Sidebar Nav */}
-        <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-1 lg:gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.06] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar">
-          <div className="hidden lg:flex items-center gap-3 px-4 mb-12">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/20">A</div>
-            <span className="text-xl font-black tracking-tight">AutoExtract</span>
+        {/* Elite Minimal Sidebar */}
+        <aside className="w-full lg:w-72 flex flex-row lg:flex-col gap-2 shrink-0 border-b lg:border-b-0 lg:border-r border-white/[0.04] pb-4 lg:pb-8 lg:pt-12 px-6 overflow-x-auto lg:overflow-visible no-scrollbar bg-[#020202]">
+          <div className="hidden lg:flex items-center gap-4 px-4 mb-14 group cursor-pointer" onClick={() => router.push('/dashboard')}>
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:scale-110 transition-transform duration-500">
+              <Icons.Sparkles />
+            </div>
+            <span className="text-xl font-black text-white tracking-widest uppercase italic">AutoExtract</span>
           </div>
 
-          <div className="hidden lg:block px-5 text-[10px] font-black text-gray-600 uppercase tracking-[0.4em] mb-8">Navigation</div>
-          
-          <div className="flex flex-row lg:flex-col gap-1 w-full">
-            {menuItems.map((item) => (
-              <Link 
-                key={item.id}
-                href={item.path} 
-                className={`flex items-center gap-4 whitespace-nowrap lg:whitespace-normal px-5 py-4 rounded-2xl transition-all duration-500 text-[13px] font-black tracking-tight border border-transparent group ${currentView === item.id ? 'bg-blue-600/10 text-white border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.1)]' : 'text-gray-500 hover:bg-white/[0.02] hover:text-white hover:translate-x-1'}`}
-              >
-                <span className={`transition-all duration-500 ${currentView === item.id ? 'text-blue-500 scale-110' : 'text-gray-700 group-hover:text-gray-300 group-hover:scale-110'}`}>
-                  {item.icon}
-                </span>
-                {item.name}
-              </Link>
-            ))}
-          </div>
-          
-          <div className="lg:mt-auto pt-8 border-t border-white/[0.06] px-4 space-y-4">
-              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 hidden lg:block">
-                  <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-2">Current Plan</p>
-                  <p className="text-sm font-bold text-white mb-1">{planName}</p>
-                  <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(credits/100)*100}%` }}></div>
+          <div className="flex flex-row lg:flex-col gap-2 w-full">
+            <p className="hidden lg:block text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] px-4 mb-4">Core Navigation</p>
+            {[
+              { label: 'Intelligence', icon: <Icons.Dashboard />, path: '/dashboard' },
+              { label: 'Neural Log', icon: <Icons.History />, path: '/dashboard/history' },
+              { label: 'Scale Up', icon: <Icons.Pricing />, path: '/dashboard/pricing' },
+              { label: 'Config', icon: <Icons.Settings />, path: '/dashboard/settings' },
+            ].map((item) => {
+              const isActive = pathname === item.path;
+              return (
+                <Link 
+                  key={item.label}
+                  href={item.path}
+                  className={`flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 group ${
+                    isActive 
+                    ? 'bg-white/[0.03] text-white border border-white/[0.05] shadow-inner' 
+                    : 'text-gray-500 hover:text-white hover:bg-white/[0.01]'
+                  }`}
+                >
+                  <div className={`transition-colors duration-300 ${isActive ? 'text-blue-500' : 'group-hover:text-blue-400'}`}>
+                    {item.icon}
                   </div>
-              </div>
-              <button onClick={handleLogout} className="w-full flex items-center gap-3 whitespace-nowrap lg:whitespace-normal px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all text-sm font-bold border border-transparent group">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Logout
-              </button>
+                  <span className="text-xs font-black uppercase tracking-[0.2em]">{item.label}</span>
+                  {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-auto hidden lg:flex flex-col gap-8 pt-10 border-t border-white/[0.04]">
+             <div className="px-4">
+                 <div className="flex items-center justify-between mb-4">
+                     <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Neural Quota</p>
+                     <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-0.5 rounded-md italic">{planName}</span>
+                 </div>
+                 <div className="w-full h-1.5 bg-white/[0.03] rounded-full overflow-hidden mb-4">
+                     <div className="h-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${Math.min(100, (credits/100)*100)}%` }}></div>
+                 </div>
+                 <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">{credits} / 100 Credits Loaded</p>
+             </div>
+
+             <div className="px-1 flex items-center gap-4 hover:bg-white/[0.02] p-3 rounded-2xl transition-colors cursor-pointer group pb-8">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/5 flex items-center justify-center text-gray-500 group-hover:text-white transition-colors">
+                      <Icons.User />
+                  </div>
+                  <div className="flex flex-col">
+                      <span className="text-xs font-black text-white uppercase tracking-tight truncate max-w-[120px]">{profileName || 'Main Admin'}</span>
+                      <span className="text-[10px] text-gray-600 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">Workspace Owner</span>
+                  </div>
+             </div>
           </div>
         </aside>
 
