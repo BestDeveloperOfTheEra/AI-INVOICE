@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { API_URL } from '@/lib/constants';
 
 // Add type safety for Google and Apple SDKs
@@ -13,13 +13,19 @@ declare global {
   }
 }
 
-export default function Login() {
-  const [isRegistering, setIsRegistering] = useState(false);
+function LoginContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isRegistering, setIsRegistering] = useState(searchParams.get('register') === 'true');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [captcha, setCaptcha] = useState({ a: 0, b: 0, result: '' });
+
+  useEffect(() => {
+    setIsRegistering(searchParams.get('register') === 'true');
+  }, [searchParams]);
 
   useEffect(() => {
     // Initialize Google Identity Services
@@ -48,7 +54,15 @@ export default function Login() {
         usePopup: true,
       });
     }
-  }, []);
+
+    generateCaptcha();
+  }, [isRegistering]);
+
+  const generateCaptcha = () => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    setCaptcha({ a, b, result: '' });
+  };
 
   const handleGoogleResponse = async (response: any) => {
     setLoading(true);
@@ -157,6 +171,13 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isRegistering && parseInt(captcha.result) !== captcha.a + captcha.b) {
+      setError('Incorrect captcha solution. Please try again.');
+      generateCaptcha();
+      return;
+    }
+
     setError('');
     setLoading(true);
 
@@ -222,10 +243,27 @@ export default function Login() {
             />
           </div>
 
+          {isRegistering && (
+            <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Human Verification</label>
+              <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 shadow-inner">
+                <span className="text-lg font-black text-white italic">{captcha.a} + {captcha.b} = </span>
+                <input 
+                  type="number"
+                  required
+                  value={captcha.result}
+                  onChange={(e) => setCaptcha({ ...captcha, result: e.target.value })}
+                  placeholder="?"
+                  className="w-20 px-3 py-2 rounded-lg bg-black/50 border border-white/10 text-white text-center font-black focus:outline-none focus:border-blue-500 transition-all"
+                />
+              </div>
+            </div>
+          )}
+
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full mt-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(37,99,235,0.3)]"
           >
             {loading ? 'Processing...' : (isRegistering ? 'Sign Up' : 'Sign In')}
           </button>
@@ -272,3 +310,14 @@ export default function Login() {
   );
 }
 
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+          <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
+  );
+}

@@ -165,12 +165,68 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Create Account Section */}
+      <section className="w-full max-w-6xl mx-auto mt-40 px-6">
+        <div className="grid md:grid-cols-2 gap-16 items-center bg-white/[0.02] border border-white/5 rounded-[4rem] p-16 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px]"></div>
+          
+          <div className="space-y-8">
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">
+              CREATE <br /> ACCOUNT
+            </h2>
+            <p className="text-xl text-gray-400 font-medium leading-relaxed">
+              Start extracting data today with our enterprise-grade neural engine. 
+              Setup takes less than 60 seconds.
+            </p>
+            <div className="space-y-4">
+               <div className="flex items-center gap-4 text-green-500 font-black uppercase tracking-widest text-xs bg-green-500/5 w-fit px-6 py-3 rounded-2xl border border-green-500/10">
+                 <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                 Spam Protected
+               </div>
+               <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold italic">Bot detection & Neural Captcha active</p>
+            </div>
+            <Link href="/login?register=true" className="inline-block px-12 py-5 bg-blue-600 text-white font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-blue-500 transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95">
+              Initialize Signup
+            </Link>
+          </div>
+
+          <div className="relative group">
+            <div className="absolute inset-0 bg-blue-500/20 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            <div className="relative bg-[#0f0f0f] border border-white/10 rounded-[3rem] p-10 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-1000">
+               <div className="space-y-6">
+                  <div className="w-12 h-1 bg-blue-600/50 rounded-full"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-3/4 bg-white/5 rounded-md"></div>
+                    <div className="h-10 w-full bg-white/5 rounded-xl border border-white/10"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-1/2 bg-white/5 rounded-md"></div>
+                    <div className="h-10 w-full bg-white/5 rounded-xl border border-white/10"></div>
+                  </div>
+                  <div className="pt-4 space-y-4">
+                    <div className="h-3 w-1/3 bg-blue-500/20 rounded-md"></div>
+                    <div className="h-14 w-full bg-blue-600/20 border border-blue-500/30 rounded-2xl flex items-center justify-center gap-4">
+                      <span className="text-blue-400 font-mono font-black">7 + 4 = </span>
+                      <div className="w-12 h-8 bg-blue-500/20 rounded-lg animate-pulse"></div>
+                    </div>
+                  </div>
+                  <div className="h-14 w-full bg-blue-600 rounded-xl shadow-lg"></div>
+               </div>
+            </div>
+            {/* Floating Badges */}
+            <div className="absolute -top-6 -right-6 bg-[#1a1a1a] border border-white/10 p-4 rounded-2xl shadow-2xl animate-bounce duration-[3000ms]">
+               <span className="text-xl">🔒</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
-      <section className="w-full max-w-4xl mx-auto mt-20 mb-20 p-12 rounded-[2rem] bg-gradient-to-br from-blue-600 to-indigo-700 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+      <section className="w-full max-w-4xl mx-auto mt-40 mb-20 p-12 rounded-[2rem] bg-gradient-to-br from-blue-600/10 to-indigo-700/10 border border-blue-500/20 text-center relative overflow-hidden backdrop-blur-xl">
+        <div className="absolute inset-0 bg-blue-600/5 opacity-10"></div>
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">Ready to automate your Invoicing?</h2>
-        <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto relative z-10">Join 500+ businesses who have eliminated manual data entry. Start your free trial today.</p>
-        <Link href="/login" className="inline-block px-10 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all shadow-xl relative z-10">
+        <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto relative z-10">Join 500+ businesses who have eliminated manual data entry. Start your free trial today.</p>
+        <Link href="/login" className="inline-block px-10 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 transition-all shadow-xl relative z-10">
           Get Started for Free
         </Link>
       </section>

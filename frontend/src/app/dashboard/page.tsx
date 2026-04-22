@@ -459,7 +459,8 @@ export default function DashboardPage() {
                     ) : (
                         recentDocs.slice(0, 4).map((doc, i) => {
                             const data = JSON.parse(doc.extractedData || '{}');
-                                                          <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-[var(--border)] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl transition-colors`} style={{ animationDelay: `${i*100}ms` }}>
+                            return (
+                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-[var(--border)] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl transition-colors`} style={{ animationDelay: `${i*100}ms` }}>
                                      <div className="flex items-center gap-7">
                                          <div className="w-16 h-16 rounded-[1.5rem] bg-blue-600/5 border border-[var(--border)] flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
                                               <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
@@ -477,7 +478,6 @@ export default function DashboardPage() {
                                          </div>
                                      </div>
                                  </div>
-           </div>
                             );
                         })
                     )}
@@ -528,7 +528,8 @@ export default function DashboardPage() {
                                 </div>
                             </td>
                         </tr>
-                      ) : (                ) : recentDocs.slice(0, 6).map((doc, i) => {
+                      ) : (
+                        recentDocs.slice(0, 6).map((doc, i) => {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
                               <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>
