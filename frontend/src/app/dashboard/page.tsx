@@ -554,7 +554,8 @@ export default function DashboardPage() {
                                   </td>
                               </tr>
                           );
-                      })}
+                        })
+                      )}
                   </tbody>
               </table>
           </div>
