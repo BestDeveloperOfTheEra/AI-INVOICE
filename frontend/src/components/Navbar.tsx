@@ -3,11 +3,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { API_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState<string>('Customer');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -34,13 +36,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`sticky top-0 z-50 w-full border-b backdrop-blur-md ${role === 'Admin' ? 'bg-red-950/20 border-red-500/20' : 'bg-black/50 border-white/10'}`}>
+    <nav className={`sticky top-0 z-50 w-full border-b backdrop-blur-md ${role === 'Admin' ? 'bg-red-950/20 border-red-500/20' : 'bg-white/70 dark:bg-black/50 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white'}`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
 
         {/* BRANDING */}
         <div className="flex items-center gap-2 shrink-0">
-          <Link href="/" className="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2 sm:gap-3 whitespace-nowrap">
-            <div>Auto<span className={role === 'Admin' ? 'text-red-500' : 'text-blue-500'}>Extract</span></div>
+          <Link href="/" className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2 sm:gap-3 whitespace-nowrap">
+            <div>Auto<span className={role === 'Admin' ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}>Extract</span></div>
             {role === 'Admin' && (
               <span className="text-[10px] font-bold tracking-widest uppercase bg-red-500/20 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full hidden sm:inline-block">
                 Admin
@@ -62,16 +64,25 @@ export default function Navbar() {
         ) : (
           /* STANDARD CUSTOMER HEADER */
           <>
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/#features" className="text-sm text-gray-300 hover:text-white transition-colors">Features</Link>
-              <Link href="/pricing" className="text-sm text-gray-300 hover:text-white transition-colors">Pricing</Link>
-              <a href={`${API_URL.includes('localhost') ? API_URL.replace('/api', '') + '/docs' : API_URL.replace('/api', '') + '/api/docs'}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-white transition-colors">Developers API</a>
+            <div className="hidden md:flex items-center gap-8 text-gray-600 dark:text-gray-300">
+              <Link href="/#features" className="text-sm hover:text-blue-600 dark:hover:text-white transition-colors">Features</Link>
+              <Link href="/pricing" className="text-sm hover:text-blue-600 dark:hover:text-white transition-colors">Pricing</Link>
+              <a href={`${API_URL.includes('localhost') ? API_URL.replace('/api', '') + '/docs' : API_URL.replace('/api', '') + '/api/docs'}`} target="_blank" rel="noopener noreferrer" className="text-sm hover:text-blue-600 dark:hover:text-white transition-colors">Developers API</a>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+               {/* Theme Toggle Button */}
+               <button 
+                 onClick={toggleTheme}
+                 className="p-2 rounded-lg bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white transition-all shadow-sm"
+                 aria-label="Toggle Theme"
+               >
+                 {theme === 'dark' ? '☀️' : '🌙'}
+               </button>
+
               {!isLoggedIn ? (
                 <>
-                  <Link href="/login" className="text-xs sm:text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                  <Link href="/login" className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white transition-colors">
                     Log in
                   </Link>
                   <Link href="/dashboard" className="rounded-full bg-blue-600 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-all hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.5)]">
@@ -80,30 +91,30 @@ export default function Navbar() {
                 </>
               ) : (
                 <div className="relative group">
-                  <button className="flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-all hover:bg-white/20">
+                  <button className="flex items-center gap-2 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/20 px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white transition-all hover:bg-gray-200 dark:hover:bg-white/20">
                     My Account <span className="text-[10px] opacity-50">▼</span>
                   </button>
 
-                  <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[#0a0a0a] border border-white/10 shadow-2xl p-2 hidden group-hover:block transition-all transform origin-top-right z-50 before:absolute before:-top-2 before:left-0 before:w-full before:h-2 before:content-['']">
-                    <div className="px-3 py-2 text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                  <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 shadow-2xl p-2 hidden group-hover:block transition-all transform origin-top-right z-50 before:absolute before:-top-2 before:left-0 before:w-full before:h-2 before:content-['']">
+                    <div className="px-3 py-2 text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
                       Menu Options
                     </div>
 
-                    <Link href="/dashboard" className="block w-full text-left px-3 py-2.5 text-sm text-gray-200 hover:bg-white/10 rounded-lg mb-1 transition-colors">
+                    <Link href="/dashboard" className="block w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg mb-1 transition-colors">
                       User Dashboard
                     </Link>
 
-                    <Link href="/dashboard/profile" className="block w-full text-left px-3 py-2.5 text-sm text-gray-200 hover:bg-white/10 rounded-lg mb-1 transition-colors">
+                    <Link href="/dashboard/profile" className="block w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg mb-1 transition-colors">
                       Profile Settings
                     </Link>
 
-                    <Link href="/dashboard/pricing" className="block w-full text-left px-3 py-2.5 text-sm text-gray-200 hover:bg-white/10 rounded-lg mb-1 transition-colors">
+                    <Link href="/dashboard/pricing" className="block w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg mb-1 transition-colors">
                       Subscription Plan
                     </Link>
 
-                    <div className="h-px w-full bg-white/10 my-1"></div>
+                    <div className="h-px w-full bg-gray-200 dark:bg-white/10 my-1"></div>
 
-                    <button onClick={handleLogout} className="block w-full text-left px-3 py-2 text-sm text-gray-400 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors mt-1">
+                    <button onClick={handleLogout} className="block w-full text-left px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors mt-1">
                       Sign Out
                     </button>
                   </div>
@@ -113,7 +124,7 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="flex md:hidden p-2 text-gray-400 hover:text-white transition-colors"
+                className="flex md:hidden p-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white transition-colors"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? '✕' : '☰'}

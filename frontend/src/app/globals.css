@@ -15,7 +15,7 @@
   --accent: #2563eb;
 }
 
-[data-theme='dark'] {
+.dark {
   --background: #05070a;
   --foreground: #f2f4f7;
   --card: #0c1017;

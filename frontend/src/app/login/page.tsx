@@ -162,11 +162,11 @@ function LoginContent() {
 
   return (
     <div className="flex justify-center px-4 py-24 min-h-[80vh]">
-      <div className="w-full max-w-md p-8 rounded-2xl bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-xl h-fit">
-        <h2 className="text-3xl font-bold text-white mb-2 text-center">
+      <div className="w-full max-w-md p-8 rounded-2xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 shadow-2xl backdrop-blur-xl h-fit">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">
           {isRegistering ? 'Create Account' : 'Welcome Back'}
         </h2>
-        <p className="text-gray-400 text-center mb-8">
+        <p className="text-gray-600 dark:text-gray-400 text-center mb-8">
           {isRegistering ? 'Start extracting data today' : 'Sign in to your account'}
         </p>
 
@@ -178,40 +178,40 @@ function LoginContent() {
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
             <input 
               type="email" 
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com" 
-              className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono text-sm" 
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono text-sm" 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
             <input 
               type="password" 
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••" 
-              className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono" 
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono" 
             />
           </div>
 
           {isRegistering && (
             <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-              <label className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Human Verification</label>
-              <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 shadow-inner">
-                <span className="text-lg font-black text-white italic">{captcha.a} + {captcha.b} = </span>
+              <label className="block text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">Human Verification</label>
+              <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10 shadow-inner">
+                <span className="text-lg font-black text-gray-900 dark:text-white italic">{captcha.a} + {captcha.b} = </span>
                 <input 
                   type="number"
                   required
                   value={captcha.result}
                   onChange={(e) => setCaptcha({ ...captcha, result: e.target.value })}
                   placeholder="?"
-                  className="w-20 px-3 py-2 rounded-lg bg-black/50 border border-white/10 text-white text-center font-black focus:outline-none focus:border-blue-500 transition-all"
+                  className="w-20 px-3 py-2 rounded-lg bg-gray-100 dark:bg-black/50 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-center font-black focus:outline-none focus:border-blue-500 transition-all"
                 />
               </div>
             </div>
@@ -226,7 +226,7 @@ function LoginContent() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
           {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button 
             onClick={() => { setIsRegistering(!isRegistering); setError(''); }}
@@ -237,9 +237,9 @@ function LoginContent() {
         </p>
 
         <div className="mt-8 flex items-center justify-center gap-4">
-          <div className="h-px bg-white/10 flex-1"></div>
-          <span className="text-sm text-gray-600 uppercase font-medium">or continue with</span>
-          <div className="h-px bg-white/10 flex-1"></div>
+          <div className="h-px bg-gray-200 dark:bg-white/10 flex-1"></div>
+          <span className="text-sm text-gray-400 dark:text-gray-600 uppercase font-medium">or continue with</span>
+          <div className="h-px bg-gray-200 dark:bg-white/10 flex-1"></div>
         </div>
 
         <div className="flex justify-center gap-4 mt-6">
@@ -247,7 +247,7 @@ function LoginContent() {
             type="button" 
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-3 w-full justify-center disabled:opacity-50"
+            className="px-6 py-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center gap-3 w-full justify-center disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M11.99 13.9v-3.72h9.36c.14.73.22 1.5.22 2.33 0 6.64-4.59 11.36-11.58 11.36C4.85 23.87 0 19.04 0 12S4.85.13 10.15.13c3.08 0 5.76 1.13 7.82 3.09l-2.84 2.76c-1.39-1.29-3.32-2.07-5.11-2.07-4.14 0-7.53 3.39-7.53 7.53s3.39 7.53 7.53 7.53c4.27 0 6.64-2.88 7.08-5.07h-7.11z"/></svg>
             <span className="font-medium text-sm">Continue with Google</span>

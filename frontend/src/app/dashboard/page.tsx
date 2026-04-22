@@ -226,7 +226,7 @@ export default function DashboardPage() {
           { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald', trend: '+8.4%' },
           { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet', trend: '+22' }
         ].map((card, i) => (
-          <div key={i} className={`group relative bg-[#0a0a0a] border border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-[#0d0d0d] hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
+          <div key={i} className={`group relative bg-white dark:bg-[#0a0a0a] border border-gray-100 dark:border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-gray-50 dark:hover:bg-[#0d0d0d] hover:border-gray-200 dark:hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
             {/* Local Icon Glow */}
             <div className={`absolute left-8 top-8 w-14 h-14 blur-[30px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${
                 card.color === 'blue' ? 'bg-blue-500/50' : 
@@ -255,17 +255,17 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                    <p className="text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors">{card.title}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors">{card.title}</p>
                     <div className="flex items-baseline gap-2 mb-4">
-                        <h4 className="text-5xl font-black text-white tracking-tighter leading-none">
+                        <h4 className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
                             <CountUp value={card.value} />
                         </h4>
                     </div>
-                    <div className="pt-4 border-t border-white/[0.04] flex items-center justify-between">
-                         <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
+                    <div className="pt-4 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
+                         <span className="text-gray-400 dark:text-gray-500 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
                          <div className="flex gap-1 animate-pulse">
-                             <div className="w-1 h-1 rounded-full bg-white/10"></div>
-                             <div className="w-1 h-1 rounded-full bg-white/10"></div>
+                             <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
+                             <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
                              <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
                          </div>
                     </div>
@@ -276,7 +276,7 @@ export default function DashboardPage() {
       </div>
 
       {/* AI TRUST INDICATORS ROW (DIVIDER) */}
-      <div className="flex flex-wrap items-center justify-center gap-12 py-10 bg-white/[0.01] border-y border-white/[0.05] animate-in fade-in slide-in-from-top-4 duration-1200 rounded-3xl">
+      <div className="flex flex-wrap items-center justify-center gap-12 py-10 bg-gray-50 dark:bg-white/[0.01] border-y border-gray-100 dark:border-white/[0.05] animate-in fade-in slide-in-from-top-4 duration-1200 rounded-3xl">
           {[
               { label: 'Neural Accuracy', value: '99.4%', icon: <Icons.Check /> },
               { label: 'Processing Speed', value: '< 5.0s', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
@@ -288,8 +288,8 @@ export default function DashboardPage() {
                       {item.icon}
                   </div>
                   <div className="flex flex-col">
-                      <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-400 transition-colors">{item.label}</span>
-                      <span className="text-xs font-black text-white/50 group-hover:text-white transition-colors">{item.value}</span>
+                      <span className="text-[9px] font-black text-gray-500 dark:text-gray-500 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-900 dark:group-hover:text-gray-400 transition-colors">{item.label}</span>
+                      <span className="text-xs font-black text-gray-400 dark:text-white/50 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{item.value}</span>
                   </div>
               </div>
           ))}
