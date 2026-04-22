@@ -176,8 +176,8 @@ export default function DashboardLayout({
   return (
     <ThemeProvider>
       <DashboardProvider>
-        <DashboardContent>{children}</DashboardProvider>
-      </ThemeProvider>
+        <DashboardContent>{children}</DashboardContent>
+      </DashboardProvider>
     </ThemeProvider>
   );
 }
