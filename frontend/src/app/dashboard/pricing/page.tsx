@@ -35,25 +35,27 @@ export default function PricingPage() {
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
                 <div className="w-8 h-[2px] bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,1)]"></div>
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.6em]">Financial Scaling</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] opacity-40" style={{ color: 'var(--foreground)' }}>Financial Scaling</span>
             </div>
-            <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic">Neural Quota <span className="text-blue-600">Upgrade</span></h2>
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest max-w-xl">
+            <h2 className="text-4xl font-black tracking-tighter uppercase italic" style={{ color: 'var(--foreground)' }}>Neural Quota <span className="text-blue-600">Upgrade</span></h2>
+            <p className="text-xs font-bold uppercase tracking-widest max-w-xl opacity-50" style={{ color: 'var(--foreground)' }}>
                 Scale your extraction intelligence with ultra-low latency processing and high-priority neural batches.
             </p>
         </div>
 
         {/* Global Billing Controller */}
-        <div className="flex items-center justify-between p-1 bg-white/[0.02] border border-white/[0.05] rounded-2xl w-fit">
+        <div className="flex items-center justify-between p-1 border border-[var(--border)] rounded-2xl w-fit" style={{ backgroundColor: 'var(--card)' }}>
             <button 
                 onClick={() => setBillingCycle('month')}
-                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'month' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'text-gray-600 hover:text-gray-400'}`}
+                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'month' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'opacity-40 hover:opacity-100'}`}
+                style={{ color: billingCycle === 'month' ? '' : 'var(--foreground)' }}
             >
                 Monthly Pulse
             </button>
             <button 
                 onClick={() => setBillingCycle('year')}
-                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'year' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'text-gray-600 hover:text-gray-400'}`}
+                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'year' ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]' : 'opacity-40 hover:opacity-100'}`}
+                style={{ color: billingCycle === 'year' ? '' : 'var(--foreground)' }}
             >
                 Annual Stream <span className="ml-2 text-green-400 opacity-60 italic">-20% Economy</span>
             </button>
@@ -71,11 +73,12 @@ export default function PricingPage() {
                     return (
                         <div 
                             key={plan.id} 
-                            className={`group relative flex flex-col p-8 rounded-[2rem] transition-all duration-500 overflow-hidden ${
+                            className={`group relative flex flex-col p-8 rounded-[2rem] transition-all duration-500 overflow-hidden shadow-xl ${
                                 isCurrent 
-                                ? 'bg-blue-600/[0.03] border border-blue-500/30' 
-                                : 'bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] hover:-translate-y-2'
+                                ? 'bg-blue-600/5 border border-blue-500/30' 
+                                : 'bg-white/[0.02] border border-[var(--border)] hover:border-blue-500/30 hover:-translate-y-2'
                             }`}
+                            style={{ backgroundColor: isCurrent ? '' : 'var(--card)' }}
                         >
                             {/* Industrial Accents */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[80px] pointer-events-none group-hover:bg-blue-600/10 transition-all duration-700"></div>
@@ -92,10 +95,10 @@ export default function PricingPage() {
                                     <Icons.Sparkle /> {plan.name} Intelligence
                                 </p>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-black text-white tracking-tighter">
+                                    <span className="text-4xl font-black tracking-tighter" style={{ color: 'var(--foreground)' }}>
                                         {isEnterprise ? 'Elite' : `₹${plan.price}`}
                                     </span>
-                                    {!isEnterprise && <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest">/ {(plan.billingCycle || 'mo').slice(0,2)}</span>}
+                                    {!isEnterprise && <span className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>/ {(plan.billingCycle || 'mo').slice(0,2)}</span>}
                                 </div>
                             </div>
 

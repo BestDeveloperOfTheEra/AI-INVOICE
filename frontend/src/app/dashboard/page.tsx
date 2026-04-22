@@ -300,19 +300,19 @@ export default function DashboardPage() {
         
         {/* RIGHT SIDE: UPLOAD WORKSPACE (REFINED INTERACTIVITY) */}
         <div className="lg:col-span-3">
-            <div className="group relative bg-[#0a0a0a] border border-white/[0.1] rounded-[3rem] p-12 flex flex-col gap-10 overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.5)]">
+            <div className="group relative rounded-[3rem] p-12 flex flex-col gap-10 overflow-hidden shadow-2xl border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
                 
                 {/* Background Luminous Glow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/[0.03] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                 
                 <div className="flex items-center justify-between relative z-10 border-b border-white/[0.04] pb-8">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400 group-hover:rotate-12 transition-transform duration-700 shadow-inner">
+                        <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500 group-hover:rotate-12 transition-transform duration-700 shadow-inner">
                             <Icons.Sparkles />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-black text-white tracking-widest uppercase italic leading-none mb-1">Neural Upload</h3>
-                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">High-Priority Extraction Workspace</p>
+                            <h3 className="text-2xl font-black tracking-widest uppercase italic leading-none mb-1" style={{ color: 'var(--foreground)' }}>Neural Upload</h3>
+                            <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40" style={{ color: 'var(--foreground)' }}>High-Priority Extraction Workspace</p>
                         </div>
                     </div>
                     <div className="flex gap-2">
@@ -340,7 +340,7 @@ export default function DashboardPage() {
 
                     <div className="relative mb-8">
                         <div className="absolute inset-0 bg-blue-500/10 blur-3xl opacity-0 group-hover/uploader:opacity-100 transition-opacity duration-1000"></div>
-                        <div className="relative w-24 h-24 bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center text-6xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
+                        <div className="relative w-24 h-24 bg-white/[0.02] border border-[var(--border)] rounded-[2.5rem] flex items-center justify-center text-6xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
                             <span className="group-hover/uploader:animate-bounce">📄</span>
                         </div>
                     </div>
@@ -371,7 +371,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 flex flex-col gap-16">
             
             {/* UPGRADE CARD (ULTRA PREMIUM CONVERSION FOCUS) */}
-            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-1000 shadow-[0_30px_70px_rgba(0,0,0,0.5)] group/upgrade ${credits <= 5 ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/40 to-black border border-blue-500/40' : 'bg-gradient-to-br from-[#0a0a0a] via-[#0d0d0d] to-black border border-white/[0.12]'}`}>
+            <div className={`relative overflow-hidden rounded-[3rem] p-10 transition-all duration-1000 shadow-2xl group/upgrade ${credits <= 5 ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/40 to-[var(--background)] border border-blue-500/40' : 'border border-[var(--border)]'}`} style={{ backgroundColor: credits <= 5 ? '' : 'var(--card)' }}>
                 
                 {/* Luminous Core Glow */}
                 <div className="absolute -top-32 -right-32 w-80 h-80 bg-blue-600/10 blur-[120px] group-hover/upgrade:bg-indigo-600/20 transition-all duration-1000"></div>
@@ -431,13 +431,13 @@ export default function DashboardPage() {
             </div>
 
             {/* RECENT ACTIVITY REFINED (MICRO-INTERACTIONS ENHANCED) */}
-            <div className="bg-[#0a0a0a] border border-white/[0.12] rounded-[3.5rem] p-12 shadow-[0_30px_70px_rgba(0,0,0,0.5)] animate-in slide-in-from-right-8 duration-1000 delay-150">
+            <div className="rounded-[3.5rem] p-12 border border-[var(--border)] shadow-2xl animate-in slide-in-from-right-8 duration-1000 delay-150 transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
                 <div className="flex items-center justify-between mb-12 px-2">
                     <div className="flex items-center gap-3">
                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(37,99,235,0.6)]"></div>
                          <div>
-                             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.4em] leading-none mb-1">Neural Stream</h4>
-                             <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Real-time processing log</p>
+                             <h4 className="text-[12px] font-black uppercase tracking-[0.4em] leading-none mb-1" style={{ color: 'var(--foreground)' }}>Neural Stream</h4>
+                             <p className="text-[9px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>Real-time processing log</p>
                          </div>
                     </div>
                     <Link href="/dashboard/history" className="text-[10px] font-black text-blue-600 hover:text-blue-400 uppercase tracking-widest transition-all hover:tracking-[0.2em] bg-blue-500/5 px-5 py-2.5 rounded-xl border border-blue-500/10">Full History</Link>
@@ -459,25 +459,25 @@ export default function DashboardPage() {
                     ) : (
                         recentDocs.slice(0, 4).map((doc, i) => {
                             const data = JSON.parse(doc.extractedData || '{}');
-                            return (
-                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-white/[0.08] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl`} style={{ animationDelay: `${i*100}ms` }}>
-                                    <div className="flex items-center gap-7">
-                                        <div className="w-16 h-16 rounded-[1.5rem] bg-[#0a0a0a] border border-white/10 flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
-                                             <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
-                                        </div>
-                                        <div>
-                                            <p className="text-lg font-black text-white tracking-tight group-hover:text-blue-500 transition-colors uppercase truncate max-w-[160px] leading-none mb-3">{data.vendor || data.vendorName || "Active Merchant"}</p>
-                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest transition-colors group-hover:text-gray-400">{new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Secure Neural Log</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-xl font-black text-white tracking-tighter group-hover:text-blue-500 transition-all">₹{(doc.totalAmount || 0).toLocaleString()}</p>
-                                        <div className="flex items-center justify-end gap-2 mt-2">
-                                             <span className="text-[10px] text-gray-600 font-black uppercase tracking-widest group-hover:text-green-500 transition-colors italic">Cloud Verified</span>
-                                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full opacity-40 group-hover:opacity-100 transition-opacity animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                                          <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-[var(--border)] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl transition-colors`} style={{ animationDelay: `${i*100}ms` }}>
+                                     <div className="flex items-center gap-7">
+                                         <div className="w-16 h-16 rounded-[1.5rem] bg-blue-600/5 border border-[var(--border)] flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
+                                              <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
+                                         </div>
+                                         <div>
+                                             <p className="text-lg font-black tracking-tight group-hover:text-blue-500 transition-colors uppercase truncate max-w-[160px] leading-none mb-3" style={{ color: 'var(--foreground)' }}>{data.vendor || data.vendorName || "Active Merchant"}</p>
+                                             <p className="text-[10px] font-bold uppercase tracking-widest transition-colors opacity-40 group-hover:opacity-100" style={{ color: 'var(--foreground)' }}>{new Date(doc.processedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Secure Neural Log</p>
+                                         </div>
+                                     </div>
+                                     <div className="text-right">
+                                         <p className="text-xl font-black tracking-tighter group-hover:text-blue-500 transition-all" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</p>
+                                         <div className="flex items-center justify-end gap-2 mt-2">
+                                              <span className="text-[10px] font-black uppercase tracking-widest transition-colors italic opacity-40 group-hover:text-green-500">Cloud Verified</span>
+                                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full group-hover:animate-ping shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                                         </div>
+                                     </div>
+                                 </div>
+           </div>
                             );
                         })
                     )}
@@ -488,15 +488,15 @@ export default function DashboardPage() {
       </div>
 
       {/* 3. LATEST EXTRACTIONS TABLE (MICRO-INTERACTIONS POLISHED) */}
-      <div className="bg-[#0a0a0a] border border-white/[0.12] rounded-[4rem] overflow-hidden group/table shadow-[0_30px_70px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-12 duration-1200 delay-500">
-          <div className="px-16 py-14 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+      <div className="rounded-[4rem] overflow-hidden group/table shadow-2xl animate-in slide-in-from-bottom-12 duration-1200 delay-500 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
+          <div className="px-16 py-14 border-b border-[var(--border)] flex items-center justify-between bg-white/[0.01]">
               <div className="flex items-center gap-6">
                    <div className="w-5 h-5 bg-blue-500/10 rounded-full flex items-center justify-center">
                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
                    </div>
                    <div>
-                       <h4 className="text-lg font-black text-white uppercase tracking-[0.5em] leading-none mb-1">Neural Archive</h4>
-                       <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Historical Extraction Database</p>
+                       <h4 className="text-lg font-black uppercase tracking-[0.5em] leading-none mb-1" style={{ color: 'var(--foreground)' }}>Neural Archive</h4>
+                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>Historical Extraction Database</p>
                    </div>
               </div>
               <button onClick={() => router.push('/dashboard/history')} className="px-10 py-3 bg-white/5 border border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[11px] font-black text-gray-400 uppercase tracking-widest rounded-2xl transition-all hover:text-blue-400 group/btn shadow-inner">
@@ -535,16 +535,16 @@ export default function DashboardPage() {
                                   <td className="px-16 py-8">
                                       <div className="flex items-center gap-4">
                                           <div className="w-2.5 h-2.5 rounded-full bg-blue-500/20 group-hover/row:bg-blue-500 group-hover/row:shadow-[0_0_8px_rgba(37,99,235,0.6)] transition-all"></div>
-                                          <span className="text-base font-black text-white/70 tracking-tight group-hover/row:text-white transition-colors uppercase">{data.vendor || "Verified Source"}</span>
+                                          <span className="text-base font-black tracking-tight group-hover/row:scale-105 transition-all uppercase" style={{ color: 'var(--foreground)' }}>{data.vendor || "Verified Source"}</span>
                                       </div>
                                   </td>
                                   <td className="px-16 py-8">
-                                      <span className="text-sm font-mono font-bold text-gray-400 group-hover/row:text-gray-300 transition-colors uppercase tracking-widest">{doc.gstin || "NO_SIG_FOUND"}</span>
+                                      <span className="text-sm font-mono font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--foreground)' }}>{doc.gstin || "NO_SIG_FOUND"}</span>
                                   </td>
-                                  <td className="px-16 py-8 text-sm font-black text-gray-500 uppercase tracking-widest group-hover/row:text-gray-400 transition-colors">
+                                  <td className="px-16 py-8 text-sm font-black uppercase tracking-widest opacity-40 transition-colors group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
                                       {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-16 py-8 text-base font-black text-white/60 tracking-tighter group-hover/row:text-blue-400 transition-all group-hover/row:text-lg">₹{(doc.totalAmount || 0).toLocaleString()}</td>
+                                  <td className="px-16 py-8 text-base font-black tracking-tighter group-hover/row:text-blue-500 transition-all group-hover/row:text-lg" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
                                   <td className="px-16 py-8">
                                       <div className={`inline-flex items-center gap-3 px-6 py-2.5 rounded-[1.5rem] text-[10px] font-black uppercase shadow-2xl border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
                                           <div className={`w-2 h-2 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
@@ -561,17 +561,17 @@ export default function DashboardPage() {
 
       {/* OVERLAYS: PROCESSING STATE (ULTRA IMMERSIVE) */}
       {isUploading && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-[#030303]/98 backdrop-blur-[60px] animate-in fade-in duration-1000">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 backdrop-blur-[60px] animate-in fade-in duration-1000" style={{ backgroundColor: 'var(--background)' }}>
           <div className="flex flex-col items-center gap-12 w-full max-w-2xl text-center">
             <div className="relative w-64 h-64">
                 {/* Multi-layered Animated Ripples */}
                 <div className="absolute inset-0 border-[4px] border-blue-500/10 rounded-[4rem] animate-ping opacity-10"></div>
                 <div className="absolute inset-4 border-[2px] border-blue-500/20 rounded-[3rem] animate-pulse"></div>
-                <div className="absolute inset-0 border-[8px] border-white/5 rounded-[4rem]"></div>
+                <div className="absolute inset-0 border-[8px] border-black/5 dark:border-white/5 rounded-[4rem]"></div>
                 <div className="absolute inset-0 border-[8px] border-blue-600 rounded-[4rem] animate-spin border-t-transparent shadow-[0_0_80px_rgba(37,99,235,0.5)]" style={{ animationDuration: '2s' }}></div>
                 
                 <div className="absolute inset-0 flex items-center justify-center flex-col gap-1">
-                    <span className="text-6xl font-black text-white tracking-tighter transition-all duration-300">{progressPercentage}%</span>
+                    <span className="text-6xl font-black tracking-tighter transition-all duration-300" style={{ color: 'var(--foreground)' }}>{progressPercentage}%</span>
                     <div className="bg-blue-600/10 border border-blue-500/20 px-3 py-0.5 rounded-lg">
                         <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] animate-pulse">Analyzing</span>
                     </div>
@@ -579,10 +579,10 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-6">
                 <div className="space-y-2">
-                    <h2 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Extracting Data</h2>
+                    <h2 className="text-5xl font-black tracking-tighter uppercase leading-none" style={{ color: 'var(--foreground)' }}>Extracting Data</h2>
                     <p className="text-blue-500 text-sm font-black uppercase tracking-[0.5em] animate-pulse">Powered by Neural Engine</p>
                 </div>
-                <p className="text-gray-600 text-xs font-bold uppercase tracking-[0.2em] max-w-md mx-auto leading-relaxed border-t border-white/5 pt-6 mt-6">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] max-w-md mx-auto leading-relaxed border-t border-[var(--border)] pt-6 mt-6 opacity-40" style={{ color: 'var(--foreground)' }}>
                     Our AI is currently mapping unstructured fields into your verified database. This usually takes under 5 seconds.
                 </p>
             </div>
@@ -592,8 +592,8 @@ export default function DashboardPage() {
 
       {/* RESULT MODAL (REFINED FOR CLARITY AND FOCUS) */}
       {lastResult && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/85 backdrop-blur-[20px] animate-in fade-in duration-700">
-            <div className="bg-[#080808]/70 border border-white/10 rounded-[3rem] p-12 max-w-6xl w-full shadow-[0_0_100px_rgba(0,0,0,0.9)] backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal">
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-md animate-in fade-in duration-700">
+            <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] p-12 max-w-6xl w-full shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
                 
                 {/* Subtle Luminous Accent */}
                 <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 blur-[150px]"></div>
@@ -623,34 +623,36 @@ export default function DashboardPage() {
                 <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
                     {/* LEFT DATA COLUMN */}
                     <div className="lg:col-span-12 xl:col-span-7 space-y-8">
-                        <div className="bg-white/[0.01] rounded-[2.5rem] p-10 border border-white/[0.05] shadow-inner group/card hover:bg-white/[0.02] transition-colors duration-700">
-                            <div className="flex items-center justify-between mb-8 text-[10px] font-black text-gray-700 uppercase tracking-[0.4em]">
+                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
                                 <span>Entity Profile</span>
-                                <div className="flex gap-1 opacity-20">
-                                    {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-white"></div>)}
+                                <div className="flex gap-1">
+                                    {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-blue-500/40"></div>)}
                                 </div>
                             </div>
-                            <h4 className="text-4xl font-black text-white tracking-tight uppercase leading-none mb-6">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
+                            <h4 className="text-4xl font-black tracking-tight uppercase leading-none mb-6">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
                             <div className="flex items-center gap-4">
-                                <p className="text-xs font-mono font-bold text-gray-500 tracking-[0.2em] uppercase py-2 px-4 bg-white/[0.02] rounded-xl border border-white/[0.05]">{lastResult.gstin || "NO_GST_DETECTED"}</p>
+                                <p className="text-xs font-mono font-bold tracking-[0.2em] uppercase py-2.5 px-5 bg-blue-500/5 rounded-xl border border-blue-500/10 text-blue-500">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
                         </div>
 
-                        {/* LINE ITEMS TABLE */}
-                        <div className="bg-white/[0.01] rounded-[2.5rem] p-10 border border-white/[0.03]">
-                            <div className="text-[10px] font-black text-gray-700 uppercase tracking-[0.4em] mb-8">Neural Item Log</div>
+                        {/* LINE ITEMS TABLE (ENHANCED SCAN-ABILITY) */}
+                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
+                            <div className="text-[10px] font-black uppercase tracking-[0.4em] mb-8 opacity-40">Neural Item Log</div>
                             <div className="space-y-4">
                                 {[
-                                    { name: "Executive Consulting Sequence", qty: 1, total: "₹24,000" },
-                                    { name: "High-Frequency Core Nodes", qty: 4, total: "₹1,20,000" },
-                                    { name: "Neural Maintenance Cycle", qty: 1, total: "₹14,500" }
+                                    { name: "Executive Consulting Sequence", qty: 1, total: "24,000" },
+                                    { name: "High-Frequency Core Nodes", qty: 4, total: "1,20,000" },
+                                    { name: "Neural Maintenance Cycle", qty: 1, total: "14,500" }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between py-4 border-b border-white/[0.03] last:border-0 group/item">
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-[11px] font-black text-gray-800 uppercase tracking-widest">Node {idx+1}</span>
-                                            <p className="text-sm font-bold text-gray-500 transition-colors group-hover/item:text-gray-300">{item.name}</p>
+                                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-transparent hover:border-[var(--border)] group/item transition-all hover:bg-white/[0.03]">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-10 h-10 rounded-xl bg-blue-600/5 flex items-center justify-center text-[10px] font-black text-blue-500">
+                                                0{idx+1}
+                                            </div>
+                                            <p className="text-base font-bold transition-colors group-hover/item:text-blue-500">{item.name}</p>
                                         </div>
-                                        <p className="text-base font-black text-white">{item.total}</p>
+                                        <p className="text-lg font-black tracking-tighter">₹{item.total}</p>
                                     </div>
                                 ))}
                             </div>
@@ -659,33 +661,33 @@ export default function DashboardPage() {
 
                     {/* RIGHT TOTAL COLUMN */}
                     <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-8">
-                        <div className="bg-gradient-to-br from-blue-700/10 to-transparent rounded-[3rem] p-12 border border-blue-500/20 relative group/amount h-full flex flex-col justify-between">
+                        <div className="rounded-[3rem] p-12 border border-[var(--border)] relative group/amount h-full flex flex-col justify-between shadow-sm transition-all duration-500" style={{ backgroundColor: 'var(--card)' }}>
                             <div>
-                                <p className="text-[11px] font-black text-blue-500/60 uppercase tracking-[0.4em] mb-10">Verified Payable</p>
+                                <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10 opacity-60">Verified Payable</p>
                                 <div className="space-y-4">
-                                    <h2 className="text-7xl font-black text-white tracking-widest leading-none">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
-                                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em]">Confirmed Amount Node</p>
+                                    <h2 className="text-7xl font-black tracking-widest leading-none">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Confirmed Amount Node</p>
                                 </div>
                             </div>
 
-                            <div className="pt-10 border-t border-white/[0.04] space-y-8">
+                            <div className="pt-10 border-t border-[var(--border)] space-y-8">
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Tax Net</p>
-                                        <p className="text-xl font-black text-white tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
+                                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Tax Net</p>
+                                        <p className="text-xl font-black tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">Log Date</p>
-                                        <p className="text-xl font-black text-white tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
+                                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Log Date</p>
+                                        <p className="text-xl font-black tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-5 px-6 py-5 bg-white/[0.01] rounded-[2rem] border border-white/[0.05] group/export cursor-pointer hover:bg-white/[0.03] transition-colors">
-                                    <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/15 rounded-xl flex items-center justify-center text-blue-400">
+                                <div className="flex items-center gap-5 px-6 py-5 rounded-[2rem] border border-[var(--border)] group/export cursor-pointer hover:bg-blue-600/5 transition-all" style={{ backgroundColor: 'var(--background)' }}>
+                                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                                         <Icons.Download />
                                     </div>
                                     <div>
-                                         <p className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-0.5">Binary Export</p>
-                                         <p className="text-[9px] text-gray-700 font-black uppercase tracking-widest">Neural PDF + Excel</p>
+                                         <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-0.5">Binary Export</p>
+                                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Neural PDF + Excel</p>
                                     </div>
                                 </div>
                             </div>

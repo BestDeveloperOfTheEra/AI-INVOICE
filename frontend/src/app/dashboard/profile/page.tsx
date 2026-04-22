@@ -66,40 +66,64 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-2xl bg-white/[0.02] border border-white/10 rounded-2xl p-8 animate-in slide-in-from-bottom-4 duration-500">               
-      <div className="mb-8">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Profile Image</h3>
-        <div className="flex items-center gap-6">
-          {avatarUrl ? (
-            <img src={`${API_URL}${avatarUrl}`} alt="Avatar" className="w-24 h-24 rounded-full border border-white/20 object-cover bg-black" />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-3xl">👤</div>
-          )}
+    <div className="max-w-2xl border border-[var(--border)] rounded-3xl p-10 animate-in slide-in-from-bottom-6 duration-700 shadow-sm transition-colors" style={{ backgroundColor: 'var(--card)' }}>               
+      <div className="mb-10">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] mb-8 opacity-40">Profile Signature</h3>
+        <div className="flex items-center gap-10">
+          <div className="relative group">
+            {avatarUrl ? (
+                <img src={`${API_URL}${avatarUrl}`} alt="Avatar" className="w-28 h-28 rounded-3xl border border-[var(--border)] object-cover bg-[var(--background)] shadow-xl transition-transform group-hover:scale-105 duration-500" />
+            ) : (
+                <div className="w-28 h-28 rounded-3xl border border-[var(--border)] flex items-center justify-center text-4xl shadow-xl" style={{ backgroundColor: 'var(--background)' }}>👤</div>
+            )}
+            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full border-4 border-[var(--card)] flex items-center justify-center text-white text-[10px] font-bold shadow-lg">✓</div>
+          </div>
           <div>
             <input type="file" ref={avatarInputRef} onChange={handleAvatarChange} className="hidden" accept=".jpg,.jpeg,.png" />
-            <button onClick={() => avatarInputRef.current?.click()} disabled={isUploadingAvatar} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors">
-              {isUploadingAvatar ? 'Uploading...' : 'Change Image'}
+            <button 
+                onClick={() => avatarInputRef.current?.click()} 
+                disabled={isUploadingAvatar} 
+                className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+            >
+              {isUploadingAvatar ? 'Syncing...' : 'Binary Update'}
             </button>
-            <p className="text-xs text-gray-500 mt-2">JPG, PNG allowed. Max size of 5MB.</p>
+            <p className="text-[9px] font-bold uppercase tracking-widest mt-4 opacity-40">JPG, PNG allowed • Max 5MB Path</p>
           </div>
         </div>
       </div>
 
-      <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4 border-t border-white/5 pt-8">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Personal Details</h3>
+      <form onSubmit={handleUpdateProfile} className="flex flex-col gap-8 border-t border-[var(--border)] pt-10">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-40">Personal Parameters</h3>
         
-        <div>
-          <label className="text-xs text-gray-500 font-semibold mb-1 block">Email Address (Cannot be changed)</label>
-          <input type="text" defaultValue={userEmail} disabled className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-gray-400 outline-none cursor-not-allowed" />
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Archive ID (Immutable)</label>
+          <input 
+            type="text" 
+            defaultValue={userEmail} 
+            disabled 
+            className="w-full border border-[var(--border)] rounded-2xl p-4 text-xs font-black uppercase tracking-widest outline-none cursor-not-allowed opacity-30" 
+            style={{ backgroundColor: 'var(--background)' }}
+          />
         </div>
 
-        <div>
-          <label className="text-xs text-gray-500 font-semibold mb-1 block">Full Name</label>
-          <input type="text" value={profileName} onChange={e => setProfileName(e.target.value)} placeholder="e.g. Jane Doe" className="w-full bg-black border border-white/10 rounded-lg p-3 text-white outline-none focus:border-blue-500" />
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Profile Alias</label>
+          <input 
+            type="text" 
+            value={profileName} 
+            onChange={e => setProfileName(e.target.value)} 
+            placeholder="e.g. CORE_ADMIN" 
+            className="w-full border border-[var(--border)] rounded-2xl p-4 text-xs font-black uppercase tracking-widest outline-none focus:border-blue-500 transition-all shadow-inner" 
+            style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
+          />
         </div>
 
-        <button type="submit" disabled={isSavingProfile} className="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg font-medium transition-colors self-start w-full sm:w-auto">
-          {isSavingProfile ? 'Saving...' : 'Save Profile Details'}
+        <button 
+            type="submit" 
+            disabled={isSavingProfile} 
+            className="mt-6 px-10 py-5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-2xl text-xs font-black uppercase tracking-[0.3em] transition-all self-start w-full sm:w-auto shadow-xl shadow-blue-500/20 active:scale-95"
+        >
+          {isSavingProfile ? 'Deploying...' : 'Save Configuration'}
         </button>
       </form>
     </div>

@@ -6,8 +6,23 @@
 }
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  --background: #fafbfc;
+  --foreground: #020408;
+  --card: #ffffff;
+  --border: #f0f1f4;
+  --muted: #6b7280;
+  --sidebar: #f5f6f8;
+  --accent: #2563eb;
+}
+
+[data-theme='dark'] {
+  --background: #05070a;
+  --foreground: #f2f4f7;
+  --card: #0c1017;
+  --border: #1a222e;
+  --muted: #94a3b8;
+  --sidebar: #070a0f;
+  --accent: #3b82f6;
 }
 
 body {
@@ -15,12 +30,28 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Subtle animated background gradient */
 .bg-mesh {
-  background-image: radial-gradient(at 40% 20%, hsla(228,100%,74%,0.15) 0px, transparent 50%),
-                    radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
-                    radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(221, 83%, 53%, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(221, 83%, 53%, 0.03) 0px, transparent 50%);
   background-attachment: fixed;
+}
+
+/* Custom Scrollbar for Long Sitting Sessions */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
 }

@@ -82,31 +82,32 @@ export default function HistoryPage() {
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
                 <div className="w-8 h-[2px] bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,1)]"></div>
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.6em]">Audit Analytics</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] opacity-40" style={{ color: 'var(--foreground)' }}>Audit Analytics</span>
             </div>
-            <h2 className="text-4xl font-black text-white tracking-tighter uppercase italic">Neural <span className="text-blue-600">Archive</span></h2>
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest max-w-xl">
+            <h2 className="text-4xl font-black tracking-tighter uppercase italic" style={{ color: 'var(--foreground)' }}>Neural <span className="text-blue-600">Archive</span></h2>
+            <p className="text-xs font-bold uppercase tracking-widest max-w-xl opacity-50" style={{ color: 'var(--foreground)' }}>
                 Cryptographically tracked extraction history. Index, filter, and export your global financial signatures in real-time.
             </p>
         </div>
 
         {/* Action Infrastructure */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="col-span-2 flex items-center gap-4 bg-white/[0.02] border border-white/[0.05] p-6 rounded-[2rem] backdrop-blur-sm">
-                <div className="flex-1 flex items-center gap-4 bg-[#050505] border border-white/5 rounded-2xl px-6 py-4">
-                    <span className="text-gray-600 pr-2 border-r border-white/5 opacity-40 italic">ID_SEARCH</span>
+            <div className="col-span-2 flex items-center gap-4 border border-[var(--border)] p-6 rounded-[2rem] transition-colors" style={{ backgroundColor: 'var(--card)' }}>
+                <div className="flex-1 flex items-center gap-4 border border-[var(--border)] rounded-2xl px-6 py-4" style={{ backgroundColor: 'var(--background)' }}>
+                    <span className="text-gray-600 pr-2 border-r border-[var(--border)] opacity-40 italic">ID_SEARCH</span>
                     <input 
                         type="text" 
                         placeholder="SEARCH NEURAL SIGNATURE..." 
-                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black text-white uppercase tracking-widest placeholder:text-gray-700"
+                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-widest placeholder:text-gray-700"
+                        style={{ color: 'var(--foreground)' }}
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
-            <div className="flex gap-4 p-4 bg-white/[0.02] border border-white/[0.05] rounded-[2rem]">
-                 <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.2)]">Export Excel</button>
-                 <button className="flex-1 bg-white/[0.02] border border-white/5 text-gray-400 hover:text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
+            <div className="flex gap-4 p-4 border border-[var(--border)] rounded-[2rem]" style={{ backgroundColor: 'var(--card)' }}>
+                 <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">Export Excel</button>
+                 <button className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-500 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
             </div>
         </div>
 
@@ -130,15 +131,15 @@ export default function HistoryPage() {
                            </tr>
                          ) : filteredData.map((data, i) => (
                            <tr key={i} className="hover:bg-white/[0.01] transition-all group">
-                             <td className="px-12 py-8 text-[11px] font-black text-gray-500 uppercase italic">{data.date}</td>
+                             <td className="px-12 py-8 text-[11px] font-black uppercase italic opacity-60" style={{ color: 'var(--foreground)' }}>{data.date}</td>
                              <td className="px-12 py-8">
                                  <div className="flex flex-col">
-                                     <span className="text-[13px] font-black text-white uppercase tracking-tight group-hover:text-blue-500 transition-colors">{data.vendor}</span>
-                                     <span className="text-[9px] text-gray-600 font-bold uppercase tracking-widest opacity-60">To: {data.customerName || 'N/A'}</span>
+                                     <span className="text-[13px] font-black uppercase tracking-tight group-hover:text-blue-500 transition-colors" style={{ color: 'var(--foreground)' }}>{data.vendor}</span>
+                                     <span className="text-[9px] font-bold uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>To: {data.customerName || 'N/A'}</span>
                                  </div>
                              </td>
-                             <td className="px-12 py-8 text-[11px] font-mono text-blue-500/60 uppercase tracking-tighter truncate max-w-[150px]">{data.invoiceNumber || 'SIG_PENDING'}</td>
-                             <td className="px-12 py-8 text-[13px] font-black text-white italic">₹{data.totalAmount}</td>
+                             <td className="px-12 py-8 text-[11px] font-mono text-blue-500 uppercase tracking-tighter truncate max-w-[150px]">{data.invoiceNumber || 'SIG_PENDING'}</td>
+                             <td className="px-12 py-8 text-[13px] font-black italic" style={{ color: 'var(--foreground)' }}>₹{data.totalAmount}</td>
                              <td className="px-12 py-8">
                                  <div className="flex items-center gap-4">
                                      <button 
