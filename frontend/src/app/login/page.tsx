@@ -8,7 +8,7 @@ import { API_URL } from '@/lib/constants';
 declare global {
   interface Window {
     google: any;
-    AppleID: any;
+
     googleTokenClient: any;
   }
 }
@@ -44,17 +44,6 @@ function LoginContent() {
       });
     }
 
-    // Initialize Apple Sign In
-    const appleClientId = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID;
-    if (typeof window !== 'undefined' && window.AppleID && appleClientId) {
-      window.AppleID.auth.init({
-        clientId: appleClientId,
-        scope: 'name email',
-        redirectURI: window.location.origin + '/login',
-        usePopup: true,
-      });
-    }
-
     generateCaptcha();
   }, [isRegistering]);
 
@@ -77,7 +66,7 @@ function LoginContent() {
       if (!res.ok) throw new Error('Google sign-in failed');
 
       const data = await res.json();
-      completeLogin(data.access_token);
+      completeLogin(data.access_token, isRegistering);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -103,7 +92,7 @@ function LoginContent() {
       if (!res.ok) throw new Error('Google sign-in failed');
 
       const data = await res.json();
-      completeLogin(data.access_token);
+      completeLogin(data.access_token, isRegistering);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -124,40 +113,8 @@ function LoginContent() {
     }
   };
 
-  const handleAppleLogin = async () => {
-    if (!process.env.NEXT_PUBLIC_APPLE_CLIENT_ID) {
-      setError('Apple Client ID not configured');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    try {
-      const response = await window.AppleID.auth.signIn();
-      // response contains { authorization: { code, id_token, state }, user }
-      
-      const res = await fetch(`${API_URL}/auth/apple/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          id_token: response.authorization.id_token,
-          user: response.user 
-        }),
-      });
 
-      if (!res.ok) throw new Error('Apple sign-in failed');
-
-      const data = await res.json();
-      completeLogin(data.access_token);
-    } catch (err: any) {
-      if (err.error !== 'popup_closed_by_user') {
-        setError(err.message || 'Apple sign-in failed');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const completeLogin = (token: string) => {
+  const completeLogin = (token: string, isNewUser: boolean = false) => {
     const payloadJSON = atob(token.split('.')[1]);
     const payload = JSON.parse(payloadJSON);
     
@@ -166,7 +123,7 @@ function LoginContent() {
     }
 
     localStorage.setItem('access_token', token);
-    router.push('/dashboard');
+    router.push(isNewUser ? '/pricing' : '/dashboard');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -195,7 +152,7 @@ function LoginContent() {
       }
 
       const data = await res.json();
-      completeLogin(data.access_token);
+      completeLogin(data.access_token, isRegistering);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -293,16 +250,7 @@ function LoginContent() {
             className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-3 w-full justify-center disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M11.99 13.9v-3.72h9.36c.14.73.22 1.5.22 2.33 0 6.64-4.59 11.36-11.58 11.36C4.85 23.87 0 19.04 0 12S4.85.13 10.15.13c3.08 0 5.76 1.13 7.82 3.09l-2.84 2.76c-1.39-1.29-3.32-2.07-5.11-2.07-4.14 0-7.53 3.39-7.53 7.53s3.39 7.53 7.53 7.53c4.27 0 6.64-2.88 7.08-5.07h-7.11z"/></svg>
-            <span className="font-medium text-sm">Google</span>
-          </button>
-          <button 
-            type="button" 
-            onClick={handleAppleLogin}
-            disabled={loading}
-            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-3 w-full justify-center disabled:opacity-50"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 17 19"><path fill="currentColor" d="M12.44.1A6.74 6.74 0 0011 2.92a6.43 6.43 0 00-2 4.19 5.86 5.86 0 001.5 0 6.66 6.66 0 001.37-2.73 6.51 6.51 0 002-4.28 5.75 5.75 0 00-1.43 0zM17 14.54c0 1.94-1.35 4.09-3 4.09-1 0-1.57-.65-3-.65s-1.89.65-3 .65c-1.63 0-3-2.15-3-4.09v-.53c0-3.6 2.31-5.5 4.54-5.5a4.23 4.23 0 012.82 1.35 4 4 0 012.78-1.35C16.51 8.5 17 10 17 10s-1.82.72-1.82 2.65a2.53 2.53 0 001.44 2.21v-.32H17zM1.77 15C1 13.9.52 12.16.52 10.3c0-2 .69-4.2 1.9-5.5a5.45 5.45 0 014.24-1.92c1 0 1.57.65 3 .65s1.89-.65 3-.65a5.43 5.37 0 014.15 1.83 5.17 5.17 0 01-1.25 3.32c-1.12 1.44-2.78 2.29-4.52 2.29a4.83 4.83 0 01-2.91-1 4.5 4.5 0 00-2.82 1.13A4 4 0 001.77 15z"/></svg>
-            <span className="font-medium text-sm">Apple</span>
+            <span className="font-medium text-sm">Continue with Google</span>
           </button>
         </div>
       </div>
