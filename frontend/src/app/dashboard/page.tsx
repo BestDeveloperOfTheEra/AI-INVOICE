@@ -257,7 +257,7 @@ export default function DashboardPage() {
                 <div>
                     <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors">{card.title}</p>
                     <div className="flex items-baseline gap-2 mb-4">
-                        <h4 className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
+                        <h4 className="text-5xl font-black text-foreground tracking-tighter leading-none">
                             <CountUp value={card.value} />
                         </h4>
                     </div>
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex flex-col">
                       <span className="text-[9px] font-black text-gray-500 dark:text-gray-500 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-900 dark:group-hover:text-gray-400 transition-colors">{item.label}</span>
-                      <span className="text-xs font-black text-gray-400 dark:text-white/50 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{item.value}</span>
+                      <span className="text-xs font-black text-gray-400 dark:text-white/50 group-hover:text-foreground transition-colors">{item.value}</span>
                   </div>
               </div>
           ))}
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex gap-2">
                         {['PDF', 'JPG', 'PNG'].map(fmt => (
-                            <span key={fmt} className="px-4 py-1.5 bg-white/[0.02] border border-white/5 rounded-xl text-[10px] font-black text-gray-500 tracking-tighter hover:text-gray-400 transition-colors cursor-default">{fmt}</span>
+                            <span key={fmt} className="px-4 py-1.5 bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl text-[10px] font-black text-gray-500 tracking-tighter hover:text-gray-400 dark:hover:text-gray-400 transition-colors cursor-default">{fmt}</span>
                         ))}
                     </div>
                 </div>
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                             handleFileChange({ target: { files: e.dataTransfer.files } } as any);
                         }
                     }}
-                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-[2.5rem] py-16 px-10 hover:border-blue-500/40 hover:bg-white/[0.01] transition-all cursor-pointer group/uploader overflow-hidden"
+                    className="relative z-10 w-full flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] py-16 px-10 hover:border-blue-500/40 hover:bg-gray-50 dark:hover:bg-white/[0.01] transition-all cursor-pointer group/uploader overflow-hidden"
                 >
                     {/* Animated Floating Gradient Border */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
@@ -340,7 +340,7 @@ export default function DashboardPage() {
 
                     <div className="relative mb-8">
                         <div className="absolute inset-0 bg-blue-500/10 blur-3xl opacity-0 group-hover/uploader:opacity-100 transition-opacity duration-1000"></div>
-                        <div className="relative w-24 h-24 bg-white/[0.02] border border-[var(--border)] rounded-[2.5rem] flex items-center justify-center text-6xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
+                        <div className="relative w-24 h-24 bg-gray-50 dark:bg-white/[0.02] border border-[var(--border)] rounded-[2.5rem] flex items-center justify-center text-6xl shadow-2xl group-hover/uploader:scale-110 group-hover/uploader:-translate-y-2 transition-all duration-700 ease-out">
                             <span className="group-hover/uploader:animate-bounce">📄</span>
                         </div>
                     </div>
@@ -351,7 +351,7 @@ export default function DashboardPage() {
                     </button>
                     
                     <div className="text-center space-y-3 relative z-10">
-                        <p className="text-gray-400 text-base font-bold tracking-tight">Bulk upload up to <span className="text-white">20 invoices</span></p>
+                        <p className="text-gray-500 dark:text-gray-400 text-base font-bold tracking-tight">Bulk upload up to <span className="text-gray-900 dark:text-white">20 invoices</span></p>
                         <div className="flex items-center justify-center gap-2">
                              <div className="flex gap-[2px]">
                                  {[1,2,3].map(i => <div key={i} className="w-1.5 h-3.5 bg-blue-500/20 rounded-full group-hover/uploader:animate-pulse" style={{ animationDelay: `${i*100}ms` }}></div>)}
@@ -385,11 +385,11 @@ export default function DashboardPage() {
                                  {credits <= 0 ? 'Quota Depleted' : 'Account Tier'}
                              </h4>
                         </div>
-                        <span className="px-4 py-1.5 bg-white/5 border border-white/5 rounded-full text-[10px] font-black text-gray-400 uppercase tracking-widest backdrop-blur-md">{credits} Credits</span>
+                        <span className="px-4 py-1.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-full text-[10px] font-black text-gray-500 uppercase tracking-widest backdrop-blur-md">{credits} Credits</span>
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-white tracking-tighter leading-none uppercase">
+                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none uppercase">
                             {credits <= 0 ? "You've reached your limit" : "Scale your extraction"}
                         </h3>
                         <p className="text-sm font-medium text-gray-500 leading-relaxed">
@@ -499,7 +499,7 @@ export default function DashboardPage() {
                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>Historical Extraction Database</p>
                    </div>
               </div>
-              <button onClick={() => router.push('/dashboard/history')} className="px-10 py-3 bg-white/5 border border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[11px] font-black text-gray-400 uppercase tracking-widest rounded-2xl transition-all hover:text-blue-400 group/btn shadow-inner">
+              <button onClick={() => router.push('/dashboard/history')} className="px-10 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest rounded-2xl transition-all hover:text-blue-600 dark:hover:text-blue-400 group/btn shadow-inner">
                   View Full Stack 
                   <span className="inline-block transition-transform group-hover/btn:translate-x-2 ml-2">→</span>
               </button>
@@ -522,7 +522,7 @@ export default function DashboardPage() {
                                         <Icons.EmptyBox />
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-lg font-black text-white/70 uppercase tracking-[0.5em]">System Log Empty</p>
+                                        <p className="text-lg font-black text-foreground opacity-70 uppercase tracking-[0.5em]">System Log Empty</p>
                                         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
                                     </div>
                                 </div>
