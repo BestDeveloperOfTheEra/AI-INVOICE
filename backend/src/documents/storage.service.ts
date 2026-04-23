@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
 
 @Injectable()
 export class StorageService {
@@ -28,10 +29,15 @@ export class StorageService {
     const key = `${uuidv4()}-${file.originalname}`;
     
     try {
+      const fileContent = file.buffer || (file.path ? fs.readFileSync(file.path) : null);
+      if (!fileContent) {
+          throw new Error("File content is missing. Ensure file was uploaded correctly.");
+      }
+
       const command = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: key,
-        Body: file.buffer, // We need to ensure Multer uses memoryStorage or we read the file
+        Body: fileContent,
         ContentType: file.mimetype,
       });
 
