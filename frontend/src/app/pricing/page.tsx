@@ -63,6 +63,12 @@ export default function Pricing() {
       }
 
       if (!res.ok) throw new Error(data.message || "Checkout failed");
+      
+      if (data.isFree) {
+        alert("Free plan activated! You can now start extracted documents.");
+        router.push('/dashboard');
+        return;
+      }
 
       if (data.razorpayOrderId) {
         openRazorpayCheckout(data);

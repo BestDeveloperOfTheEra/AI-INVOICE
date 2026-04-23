@@ -57,6 +57,17 @@ export class SubscriptionsService {
             throw new BadRequestException("User or Subscription Plan not found in database.");
         }
 
+        // IF FREE PLAN (Price 0) -> FULFILL IMMEDIATELY
+        if (plan.price === 0) {
+            console.log(`[SubscriptionsService] Handling Free Plan for user: ${userId}`);
+            await this.fulfillSubscription(userId, planId, 'free_' + Date.now());
+            return {
+                isFree: true,
+                message: "Free plan activated successfully",
+                planId: plan.id
+            };
+        }
+
         // RAZORPAY ORDER CREATION
         const order = await this.razorpayService.createOrder(
             plan.price, 
