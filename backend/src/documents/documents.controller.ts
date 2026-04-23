@@ -1,4 +1,4 @@
-import { Controller, Post, Get, UseInterceptors, UploadedFiles, UseGuards, Req, Res, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, UseInterceptors, UploadedFiles, UseGuards, Req, Res, Param, BadRequestException, Logger } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CombinedAuthGuard } from '../auth/combined-auth.guard';
 import { DocumentsService } from './documents.service';
@@ -11,6 +11,8 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger
 @ApiBearerAuth()
 @Controller('documents')
 export class DocumentsController {
+  private readonly logger = new Logger(DocumentsController.name);
+
   constructor(
     private readonly documentsService: DocumentsService,
     private readonly exportsService: ExportsService,
