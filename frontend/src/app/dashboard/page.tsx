@@ -226,7 +226,7 @@ export default function DashboardPage() {
           { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald', trend: '+8.4%' },
           { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet', trend: '+22' }
         ].map((card, i) => (
-          <div key={i} className={`group relative bg-card border border-gray-100 dark:border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-gray-50 dark:hover:bg-[#0d0d0d] hover:border-gray-200 dark:hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
+          <div key={i} className={`group relative bg-card border border-gray-100 dark:border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:border-gray-200 dark:hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
             {/* Local Icon Glow */}
             <div className={`absolute left-8 top-8 w-14 h-14 blur-[30px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${
                 card.color === 'blue' ? 'bg-blue-500/50' : 
@@ -255,9 +255,9 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors">{card.title}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors group-hover:text-blue-500">{card.title}</p>
                     <div className="flex items-baseline gap-2 mb-4">
-                        <h4 className="text-5xl font-black text-foreground tracking-tighter leading-none">
+                        <h4 className="text-5xl font-black text-foreground tracking-tighter leading-none group-hover:scale-[1.02] transition-transform duration-500">
                             <CountUp value={card.value} />
                         </h4>
                     </div>
@@ -508,15 +508,15 @@ export default function DashboardPage() {
               <table className="w-full text-left border-separate border-spacing-0">
                   <thead>
                       <tr className="bg-white/[0.01]">
-                           {['Neural Identity', 'Global Signature', 'Capture Timestamp', 'Liquid Asset Value', 'Validation Status'].map(h => (
-                               <th key={h} className="px-16 py-8 text-[9px] font-black text-gray-400 uppercase tracking-[0.5em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
+                           {['Identity', 'GSTIN', 'Date', 'Amount', 'Tax', 'Total', 'Status'].map(h => (
+                               <th key={h} className="px-8 py-8 text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
                            ))}
                       </tr>
                   </thead>
                   <tbody className="divide-y divide-white/[0.015]">
                       {recentDocs.length === 0 ? (
                         <tr>
-                            <td colSpan={5} className="px-16 py-40">
+                            <td colSpan={7} className="px-16 py-40">
                                 <div className="flex flex-col items-center gap-8 opacity-40 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
                                     <div className="w-20 h-20 bg-white/[0.02] border border-white/10 rounded-3xl flex items-center justify-center text-white/30">
                                         <Icons.EmptyBox />
@@ -533,23 +533,22 @@ export default function DashboardPage() {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
                               <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>
-                                  <td className="px-16 py-8">
-                                      <div className="flex items-center gap-4">
-                                          <div className="w-2.5 h-2.5 rounded-full bg-blue-500/20 group-hover/row:bg-blue-500 group-hover/row:shadow-[0_0_8px_rgba(37,99,235,0.6)] transition-all"></div>
-                                          <span className="text-base font-black tracking-tight group-hover/row:scale-105 transition-all uppercase" style={{ color: 'var(--foreground)' }}>{data.vendor || "Verified Source"}</span>
-                                      </div>
+                                  <td className="px-8 py-8">
+                                      <span className="text-[13px] font-black tracking-tight uppercase line-clamp-1" style={{ color: 'var(--foreground)' }}>{data.vendor || "Verified Source"}</span>
                                   </td>
-                                  <td className="px-16 py-8">
-                                      <span className="text-sm font-mono font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--foreground)' }}>{doc.gstin || "NO_SIG_FOUND"}</span>
+                                  <td className="px-8 py-8">
+                                      <span className="text-[11px] font-mono font-bold uppercase opacity-60" style={{ color: 'var(--foreground)' }}>{doc.gstin || "NO_SIG"}</span>
                                   </td>
-                                  <td className="px-16 py-8 text-sm font-black uppercase tracking-widest opacity-40 transition-colors group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
+                                  <td className="px-8 py-8 text-[11px] font-black uppercase opacity-40 group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
                                       {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-16 py-8 text-base font-black tracking-tighter group-hover/row:text-blue-500 transition-all group-hover/row:text-lg" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
-                                  <td className="px-16 py-8">
-                                      <div className={`inline-flex items-center gap-3 px-6 py-2.5 rounded-[1.5rem] text-[10px] font-black uppercase shadow-2xl border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
-                                          <div className={`w-2 h-2 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
-                                          {doc.status === 'completed' ? 'Neural Verified' : 'Sig Failed'}
+                                  <td className="px-8 py-8 text-[11px] font-bold" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount - (data.taxAmount || 0)).toLocaleString()}</td>
+                                  <td className="px-8 py-8 text-[11px] font-bold text-red-500/50" style={{ color: '' }}>₹{(data.taxAmount || 0).toLocaleString()}</td>
+                                  <td className="px-8 py-8 text-[13px] font-black italic" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
+                                  <td className="px-8 py-8">
+                                      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-[1.5rem] text-[9px] font-black uppercase border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
+                                          <div className={`w-1.5 h-1.5 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
+                                          {doc.status === 'completed' ? 'Verified' : 'Failed'}
                                       </div>
                                   </td>
                               </tr>
