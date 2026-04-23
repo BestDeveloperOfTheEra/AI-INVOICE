@@ -138,7 +138,14 @@ export default function PricingPage() {
                                         body: JSON.stringify({ planId: plan.id })
                                     })
                                     .then(res => res.ok ? res.json() : res.json().then(e => { throw e }))
-                                    .then(data => openRazorpayCheckout(data))
+                                    .then(data => {
+                                        if (data.isFree) {
+                                            alert("Free Intelligence Node activated successfully.");
+                                            refreshUserData();
+                                            return;
+                                        }
+                                        openRazorpayCheckout(data);
+                                    })
                                     .catch(err => alert(`System Override: ${err.message}`))
                                     .finally(() => setIsProcessingUpgrade(null));
                                 }}
