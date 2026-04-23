@@ -58,8 +58,8 @@ export class DocumentsService {
         }
 
         // Real AI Extraction
-        const fileContent = fs.readFileSync(file.path, 'utf8'); // Assuming text-based for now
-        const aiResult = await this.aiService.extractInvoiceData(fileContent, file.originalname);
+        const fileBuffer = fs.readFileSync(file.path);
+        const aiResult = await this.aiService.extractInvoiceData(fileBuffer, file.originalname, file.mimetype);
         
         extractedData = JSON.stringify(aiResult);
         totalAmount = aiResult.totalAmount || 0;

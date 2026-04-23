@@ -17,41 +17,39 @@ export class AiService {
     }
   }
 
-  async extractInvoiceData(fileContent: string, fileName: string) {
-    this.logger.log(`Extracting data from: ${fileName}`);
+  async extractInvoiceData(fileBuffer: Buffer, fileName: string, mimetype: string) {
+    this.logger.log(`Extracting data from: ${fileName} (${mimetype})`);
 
-    const prompt = `
-      Extract structured data from the following invoice text. 
-      Focus on Indian GST requirements and provide a confidence score (0 to 1).
-      Return ONLY a JSON object with the following structure:
+    const systemPrompt = `
+      You are an expert Indian GST Invoice Extractor. 
+      Extract structured data from the provided invoice document.
+      Ensure amounts are numbers and dates are in YYYY-MM-DD format.
+      Focus on accurately capturing GSTINs and Tax Breakdowns.
+      Return ONLY a JSON object.
+    `;
+
+    const userPrompt = `
+      Return ONLY a JSON object with this structure:
       {
         "invoiceNumber": "string",
         "vendor": "string",
         "vendorGstin": "string",
         "customerName": "string",
-        "customerGstin": "string (optional)",
+        "customerGstin": "string",
         "address": "string",
         "email": "string",
         "phone": "string",
         "date": "string (YYYY-MM-DD)",
         "totalAmount": number,
         "taxAmount": number,
-        "taxBreakdown": {
-          "cgst": number,
-          "sgst": number,
-          "igst": number
-        },
+        "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
         "confidence": number,
         "isGstReady": boolean
       }
-
-      Invoice Text:
-      ${fileContent}
     `;
 
     if (!this.openai || process.env.USE_AI_MOCK === 'true') {
       this.logger.log(`Using mock extraction for: ${fileName}`);
-      // Add a small delay so the user can actually see the premium loader and progress bar
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       return {
@@ -66,35 +64,59 @@ export class AiService {
         date: new Date().toISOString().split('T')[0],
         totalAmount: 1250.50,
         taxAmount: 225.10,
-        taxBreakdown: {
-          cgst: 112.55,
-          sgst: 112.55,
-          igst: 0
-        },
+        taxBreakdown: { cgst: 112.55, sgst: 112.55, igst: 0 },
         confidence: 0.95,
         isGstReady: true
       };
     }
 
     try {
+      const messages: any[] = [
+        { role: "system", content: systemPrompt }
+      ];
+
+      if (mimetype.startsWith('image/')) {
+        const base64Image = fileBuffer.toString('base64');
+        messages.push({
+          role: "user",
+          content: [
+            { type: "text", text: userPrompt },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:${mimetype};base64,${base64Image}`,
+              },
+            },
+          ],
+        });
+      } else {
+        // Fallback for text/PDF - For PDF, we'd ideally use a library to convert to text first
+        // But to fix the token error, we'll at least truncate or read as safe string
+        const textContent = fileBuffer.toString('utf8').slice(0, 10000); // Truncate to avoid overflow
+        messages.push({
+          role: "user",
+          content: `${userPrompt}\n\nInvoice Content (Truncated if too long):\n${textContent}`
+        });
+      }
+
       const completion = await this.openai.chat.completions.create({
         model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+        messages: messages,
         response_format: { type: "json_object" },
       });
 
       const content = completion.choices[0].message.content;
       if (!content) throw new Error("AI returned empty content");
       return JSON.parse(content);
-    } catch (error) {
-      this.logger.error('AI Extraction failed:', error);
+    } catch (error: any) {
+      this.logger.error('AI Extraction failed:', error.message);
       if (error.status === 401) {
-        throw new BadRequestException('Invalid OpenAI API Key. Please check your .env file or use mock mode.');
+        throw new BadRequestException('Invalid OpenAI API Key. Please check your .env file.');
       }
-      if (error.status === 429 && error.message.includes('quota')) {
-        throw new BadRequestException('OpenAI API quota exceeded. Please check your billing or use mock mode.');
+      if (error.status === 429) {
+          throw new BadRequestException('OpenAI Quota exceeded or Rate limited.');
       }
-      throw new BadRequestException('Failed to extract data from document. ' + (error.message || ''));
+      throw new BadRequestException('Failed to extract data. ' + (error.message || ''));
     }
   }
 }
