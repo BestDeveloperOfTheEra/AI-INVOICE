@@ -28,6 +28,23 @@ export class StorageService {
   async uploadFile(file: Express.Multer.File): Promise<{ key: string; url: string }> {
     const key = `${uuidv4()}-${file.originalname}`;
     
+    // Check if R2 is configured with real credentials
+    const isR2Configured = 
+        process.env.R2_ACCESS_KEY_ID && 
+        process.env.R2_ACCESS_KEY_ID !== 'your_access_key_id' &&
+        process.env.R2_SECRET_ACCESS_KEY && 
+        process.env.R2_SECRET_ACCESS_KEY !== 'your_secret_access_key';
+
+    if (!isR2Configured) {
+        this.logger.warn(`Storage Service: R2 is not configured. Falling back to local storage for: ${file.originalname}`);
+        // Return local path (or a relative URL if your frontend can serve it)
+        // For now, return the absolute path or relative path from uploads
+        return { 
+            key: `local-${key}`, 
+            url: file.path // Fallback to local disk path
+        };
+    }
+
     try {
       const fileContent = file.buffer || (file.path ? fs.readFileSync(file.path) : null);
       if (!fileContent) {
@@ -43,7 +60,7 @@ export class StorageService {
 
       await this.s3Client.send(command);
       
-      this.logger.log(`File uploaded successfully: ${key}`);
+      this.logger.log(`File uploaded successfully to R2: ${key}`);
       
       // Return the key and a signed URL (or public URL if configured)
       const url = await this.generatePresignedUrl(key);

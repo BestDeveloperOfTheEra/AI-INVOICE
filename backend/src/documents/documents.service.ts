@@ -67,8 +67,8 @@ export class DocumentsService {
         gstin = aiResult.vendorGstin || null;
         taxBreakdown = aiResult.taxBreakdown || taxBreakdown;
 
-        // Cleanup local temp file after processing
-        if (fs.existsSync(file.path)) {
+        // Cleanup local temp file ONLY if it was successfully moved to persistent cloud storage
+        if (fileKey && !fileKey.startsWith('local-') && fs.existsSync(file.path)) {
             fs.unlinkSync(file.path);
         }
     } else {
