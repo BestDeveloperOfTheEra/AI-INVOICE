@@ -54,7 +54,12 @@ export default function HistoryPage() {
         const res = await fetch(`${API_URL}/documents/download/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error("File not found");
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error("Download response error:", errorText);
+            throw new Error(`Server returned ${res.status}: ${errorText}`);
+        }
 
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -69,8 +74,31 @@ export default function HistoryPage() {
         a.href = url;
         a.download = fileName || 'document.pdf';
         a.click();
-        URL.revokeObjectURL(url);
-    } catch (err) { alert("Download failed"); }
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (err: any) { 
+        console.error("Download process failed:", err);
+        alert(`Download failed: ${err.message || 'Check connection'}`); 
+    }
+  };
+
+  const handleExport = async (type: 'excel' | 'pdf') => {
+    const token = localStorage.getItem('access_token');
+    try {
+        const res = await fetch(`${API_URL}/documents/export/${type}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error(`Export failed (${res.status})`);
+        
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Invoice_Report_${new Date().toISOString().split('T')[0]}.${type === 'excel' ? 'xlsx' : 'pdf'}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (err: any) {
+        alert(`Export failed: ${err.message}`);
+    }
   };
 
   const filteredData = extractedData.filter(doc => {
@@ -114,9 +142,9 @@ export default function HistoryPage() {
                     />
                 </div>
             </div>
-            <div className="flex gap-4 p-4 border border-[var(--border)] rounded-[2rem]" style={{ backgroundColor: 'var(--card)' }}>
-                 <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">Export Excel</button>
-                 <button className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-500 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
+            <div className="flex gap-4 p-4 border border-[var(--border)] rounded-[2.5rem]" style={{ backgroundColor: 'var(--card)' }}>
+                 <button onClick={() => handleExport('excel')} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">Export Excel</button>
+                 <button onClick={() => handleExport('pdf')} className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-500 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
             </div>
         </div>
 
