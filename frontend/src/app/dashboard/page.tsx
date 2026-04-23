@@ -632,7 +632,7 @@ export default function DashboardPage() {
                                     {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-blue-500/40"></div>)}
                                 </div>
                             </div>
-                            <h4 className="text-4xl font-black tracking-tight uppercase leading-none mb-6">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
+                            <h4 className="text-3xl md:text-4xl font-black tracking-tight uppercase leading-tight mb-6 break-words">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
                             <div className="flex items-center gap-4">
                                 <p className="text-xs font-mono font-bold tracking-[0.2em] uppercase py-2.5 px-5 bg-blue-500/5 rounded-xl border border-blue-500/10 text-blue-500">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
@@ -667,7 +667,7 @@ export default function DashboardPage() {
                             <div>
                                 <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10 opacity-60">Verified Payable</p>
                                 <div className="space-y-4">
-                                    <h2 className="text-7xl font-black tracking-widest leading-none">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
+                                    <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-none break-all">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
                                     <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Confirmed Amount Node</p>
                                 </div>
                             </div>

@@ -55,12 +55,21 @@ export default function HistoryPage() {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("File not found");
+
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const { url } = await res.json();
+            window.open(url, '_blank');
+            return;
+        }
+
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName || 'document.pdf';
         a.click();
+        URL.revokeObjectURL(url);
     } catch (err) { alert("Download failed"); }
   };
 
@@ -115,9 +124,9 @@ export default function HistoryPage() {
         <div className="bg-white/[0.02] border border-white/[0.04] rounded-[2.5rem] overflow-hidden">
              <div className="overflow-x-auto">
                  <table className="w-full text-left border-separate border-spacing-0">
-                     <thead>
+                      <thead>
                          <tr className="bg-white/[0.01]">
-                             {['Signature Date', 'Neural Identity', 'Global Signature', 'Liquid Value', 'Action'].map(h => (
+                             {['Signature Date', 'Neural Identity', 'Global Signature', 'Amount', 'Tax', 'Total', 'Action'].map(h => (
                                  <th key={h} className="px-12 py-8 text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] border-b border-white/[0.03] whitespace-nowrap">{h}</th>
                              ))}
                          </tr>
@@ -125,7 +134,7 @@ export default function HistoryPage() {
                      <tbody className="divide-y divide-white/[0.015]">
                          {filteredData.length === 0 ? (
                            <tr>
-                               <td colSpan={5} className="px-12 py-32 text-center">
+                               <td colSpan={7} className="px-12 py-32 text-center">
                                    <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
                                </td>
                            </tr>
@@ -139,7 +148,9 @@ export default function HistoryPage() {
                                  </div>
                              </td>
                              <td className="px-12 py-8 text-[11px] font-mono text-blue-500 uppercase tracking-tighter truncate max-w-[150px]">{data.invoiceNumber || 'SIG_PENDING'}</td>
-                             <td className="px-12 py-8 text-[13px] font-black italic" style={{ color: 'var(--foreground)' }}>₹{data.totalAmount}</td>
+                             <td className="px-12 py-8 text-[12px] font-bold" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount - (data.taxAmount || 0)).toLocaleString()}</td>
+                             <td className="px-12 py-8 text-[12px] font-bold text-red-500/60" style={{ color: '' }}>₹{(data.taxAmount || 0).toLocaleString()}</td>
+                             <td className="px-12 py-8 text-[13px] font-black italic" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount || 0).toLocaleString()}</td>
                              <td className="px-12 py-8">
                                  <div className="flex items-center gap-4">
                                      <button 

@@ -102,13 +102,13 @@ export class DocumentsController {
     const document = await this.documentsService.getDocumentById(id, req.user.id);
     if (!document) throw new BadRequestException("Document not found");
     
-    // 1. If file is in R2/S3, generate a fresh signed URL and redirect
-    if (document.fileKey) {
+    // 1. If file is in R2/S3 (NOT local fallback), return the signed URL for client-side download
+    if (document.fileKey && !document.fileKey.startsWith('local-')) {
       try {
         const signedUrl = await this.storageService.generatePresignedUrl(document.fileKey);
-        return res.redirect(signedUrl);
+        return res.json({ url: signedUrl });
       } catch (error) {
-        console.error("Error generating signed URL for download:", error);
+        this.logger.error("Error generating signed URL for download:", error);
         throw new BadRequestException("Failed to generate download link.");
       }
     }
