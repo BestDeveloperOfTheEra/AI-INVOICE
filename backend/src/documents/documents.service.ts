@@ -36,11 +36,6 @@ export class DocumentsService {
             throw new BadRequestException("Insufficient credits. Please upgrade your subscription plan.");
         }
 
-        // 2. Decrement actual Credits Database balance
-        await this.prisma.userSubscription.update({
-            where: { id: userSub.id },
-            data: { creditsRemaining: userSub.creditsRemaining - 1 }
-        });
     }
 
     let totalAmount = 0;
@@ -86,6 +81,19 @@ export class DocumentsService {
           date: new Date().toLocaleDateString(),
           isSandbox: true
         });
+    }
+
+    // 3. Deduction ONLY on success
+    if (!isSandbox) {
+        const userSub = await this.prisma.userSubscription.findFirst({
+            where: { userId, status: 'active', creditsRemaining: { gt: 0 } }
+        });
+        if (userSub) {
+            await this.prisma.userSubscription.update({
+                where: { id: userSub.id },
+                data: { creditsRemaining: userSub.creditsRemaining - 1 }
+            });
+        }
     }
 
     // Directly save to DB ensuring user keeps a history of extracted files

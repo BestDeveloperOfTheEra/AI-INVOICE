@@ -174,10 +174,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider>
-      <DashboardProvider>
-        <DashboardContent>{children}</DashboardContent>
-      </DashboardProvider>
-    </ThemeProvider>
+    <DashboardProvider>
+      <DashboardContent>{children}</DashboardContent>
+    </DashboardProvider>
   );
 }
