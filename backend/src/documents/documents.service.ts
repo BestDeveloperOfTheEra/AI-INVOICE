@@ -75,11 +75,15 @@ export class DocumentsService {
         // Sandbox Mock
         totalAmount = Math.random() * 5000 + 100;
         extractedData = JSON.stringify({
-          invoiceNumber: "SANDBOX-INV-00000",
+          invoiceNumber: "SANDBOX-INV-" + Math.floor(Math.random() * 10000),
           totalAmount: totalAmount.toFixed(2),
           vendor: "Sandbox Vendor Inc.",
           date: new Date().toLocaleDateString(),
-          isSandbox: true
+          isSandbox: true,
+          items: [
+            { name: "Sandbox Product A", quantity: 2, amount: (totalAmount * 0.6).toFixed(2) },
+            { name: "Sandbox Service B", quantity: 1, amount: (totalAmount * 0.4).toFixed(2) }
+          ]
         });
     }
 
@@ -144,5 +148,41 @@ export class DocumentsService {
       thisMonthCount: thisMonthAggregate._count || 0,
       exportsGenerated: Math.floor(totalInvoices * 0.15) // Mock: 15% of invoices have been exported
     };
+  }
+
+  async updateDocument(id: string, userId: string, updateData: any) {
+    const document = await this.getDocumentById(id, userId);
+    if (!document) throw new BadRequestException("Document not found");
+
+    const extractedData = JSON.parse(document.extractedData || '{}');
+    const newExtractedData = { ...extractedData, ...updateData };
+
+    return this.prisma.documentProcess.update({
+      where: { id },
+      data: {
+        extractedData: JSON.stringify(newExtractedData),
+        totalAmount: updateData.totalAmount !== undefined ? updateData.totalAmount : document.totalAmount,
+        gstin: updateData.vendorGstin !== undefined ? updateData.vendorGstin : document.gstin,
+        cgst: updateData.taxBreakdown?.cgst !== undefined ? updateData.taxBreakdown.cgst : document.cgst,
+        sgst: updateData.taxBreakdown?.sgst !== undefined ? updateData.taxBreakdown.sgst : document.sgst,
+        igst: updateData.taxBreakdown?.igst !== undefined ? updateData.taxBreakdown.igst : document.igst,
+      }
+    });
+  }
+
+  async deleteDocument(id: string, userId: string) {
+    const document = await this.getDocumentById(id, userId);
+    if (!document) throw new BadRequestException("Document not found");
+
+    const data = JSON.parse(document.extractedData || '{}');
+    data.status = 'deleted';
+
+    return this.prisma.documentProcess.update({
+      where: { id },
+      data: { 
+        status: 'deleted',
+        extractedData: JSON.stringify(data)
+      }
+    });
   }
 }

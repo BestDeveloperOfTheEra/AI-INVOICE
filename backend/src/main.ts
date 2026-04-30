@@ -37,7 +37,7 @@ async function bootstrap() {
   app.use(compression());
 
   // Prefix all routes with /api
-  //app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
 
   // Explicitly configure body-parser to avoid charset issues
   const express = require('express');

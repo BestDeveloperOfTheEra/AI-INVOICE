@@ -123,4 +123,18 @@ export class DocumentsController {
 
     res.download(document.fileUrl, document.fileName);
   }
+  
+  @Post(':id')
+  @UseGuards(CombinedAuthGuard)
+  @ApiOperation({ summary: 'Update extracted document data' })
+  async updateDocument(@Param('id') id: string, @Req() req: any) {
+    return this.documentsService.updateDocument(id, req.user.id, req.body);
+  }
+
+  @Delete(':id')
+  @UseGuards(CombinedAuthGuard)
+  @ApiOperation({ summary: 'Soft-delete a document' })
+  async deleteDocument(@Param('id') id: string, @Req() req: any) {
+    return this.documentsService.deleteDocument(id, req.user.id);
+  }
 }

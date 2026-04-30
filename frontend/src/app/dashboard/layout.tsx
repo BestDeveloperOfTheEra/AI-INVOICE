@@ -37,20 +37,20 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-blue-600/5 to-transparent"></div>
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1700px] mx-auto min-h-screen">
+      <div className="relative z-10 flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto min-h-screen">
         {/* Elite Unified Sidebar */}
-        <aside className="w-full lg:w-80 lg:h-screen lg:sticky lg:top-0 flex flex-col shrink-0 border-r border-[var(--border)] py-16 px-8 z-20 overflow-y-auto no-scrollbar transition-colors duration-500" style={{ backgroundColor: 'var(--sidebar)' }}>
-          <div className="flex items-center gap-4 mb-24 px-4 group cursor-pointer" onClick={() => router.push('/dashboard')}>
+        <aside className="w-full lg:w-64 lg:h-screen lg:sticky lg:top-0 flex flex-col shrink-0 border-r border-[var(--border)] py-10 px-6 z-20 overflow-y-auto no-scrollbar transition-colors duration-500" style={{ backgroundColor: 'var(--sidebar)' }}>
+          <div className="flex items-center gap-4 mb-16 px-4 group cursor-pointer" onClick={() => router.push('/dashboard')}>
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:scale-110 transition-transform duration-500">
               <Icons.Sparkles />
             </div>
             <span className="text-xl font-black tracking-widest uppercase italic" style={{ color: 'var(--foreground)' }}>AutoExtract</span>
           </div>
 
-          <div className="flex flex-col gap-12 w-full flex-1">
+          <div className="flex flex-col gap-8 w-full flex-1">
             <div className="px-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-10 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Menu</p>
-                <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Menu</p>
+                <div className="flex flex-col gap-2">
                     {[
                       { label: 'Extract Invoices', path: '/dashboard' },
                       { label: 'Invoice History', path: '/dashboard/history' },
@@ -75,8 +75,8 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="px-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-10 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Settings</p>
-                <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Settings</p>
+                <div className="flex flex-col gap-2">
                     {[
                       { label: 'Update Profile', path: '/dashboard/profile' },
                       { label: 'Developer Portal', path: '/dashboard/developer' },
@@ -149,7 +149,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
         {/* Content Area */}
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center justify-between px-10 py-8 border-b border-[var(--border)] sticky top-0 z-50 transition-colors backdrop-blur-3xl" style={{ backgroundColor: 'var(--background)' }}>
+          <header className="flex items-center justify-between px-8 py-6 border-b border-[var(--border)] sticky top-0 z-50 transition-colors backdrop-blur-3xl" style={{ backgroundColor: 'var(--background)' }}>
             <div>
                 <h1 className="text-[10px] font-black uppercase tracking-[0.5em] italic opacity-40">
                    {pathname === '/dashboard' ? 'Neural Workspace' : 
@@ -159,7 +159,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="flex-1 p-10 overflow-x-hidden no-scrollbar">
+          <main className="flex-1 p-8 overflow-x-hidden no-scrollbar">
             {children}
           </main>
         </div>

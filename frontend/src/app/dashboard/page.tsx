@@ -68,12 +68,39 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [recentDocs, setRecentDocs] = useState<any[]>([]);
   const [lastResult, setLastResult] = useState<any>(null);
+  const [editableData, setEditableData] = useState<any>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchStats();
     fetchRecentDocs();
   }, []);
+
+  useEffect(() => {
+    if (lastResult || isUploading || isConfirming || isInsufficient) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [lastResult, isUploading, isConfirming, isInsufficient]);
+
+  // Auto-calculate total amount based on items and taxes
+  useEffect(() => {
+    if (editableData && (editableData.items || editableData.taxBreakdown)) {
+      const itemsTotal = (editableData.items || []).reduce((sum: number, item: any) => sum + (parseFloat(item.amount) || 0), 0);
+      const taxTotal = (editableData.taxBreakdown?.cgst || 0) + 
+                       (editableData.taxBreakdown?.sgst || 0) + 
+                       (editableData.taxBreakdown?.igst || 0);
+      const newTotal = itemsTotal + taxTotal;
+      
+      // Only update if the difference is significant (to avoid float issues)
+      if (Math.abs(newTotal - (editableData.totalAmount || 0)) > 0.01) {
+        setEditableData({ ...editableData, totalAmount: newTotal });
+      }
+    }
+  }, [editableData?.items, editableData?.taxBreakdown]);
 
   const fetchStats = async () => {
     try {
@@ -179,6 +206,7 @@ export default function DashboardPage() {
 
             if (files.length === 1) {
                 setLastResult(result);
+                setEditableData(JSON.parse(result.extractedData || '{}'));
             }
 
             setUploadProgress({ current: i + 1, total: files.length });
@@ -206,6 +234,48 @@ export default function DashboardPage() {
   const progressPercentage = uploadProgress 
     ? Math.round((uploadProgress.current / uploadProgress.total) * 100) 
     : 0;
+
+  const handleItemChange = (index: number, field: string, value: any) => {
+    if (!editableData) return;
+    const newItems = [...(editableData.items || [])];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setEditableData({ ...editableData, items: newItems });
+  };
+
+  const handleAddItem = () => {
+    if (!editableData) return;
+    const newItems = [...(editableData.items || []), { name: 'New Item', quantity: 1, amount: 0 }];
+    setEditableData({ ...editableData, items: newItems });
+  };
+
+  const handleSave = async () => {
+    if (!lastResult || !editableData) return;
+    setIsSaving(true);
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch(`${API_URL}/documents/${lastResult.id}`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editableData)
+      });
+      if (res.ok) {
+        const updatedDoc = await res.json();
+        setLastResult(updatedDoc);
+        setEditableData(JSON.parse(updatedDoc.extractedData || '{}'));
+        fetchRecentDocs();
+        fetchStats();
+        alert("Changes saved successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save changes.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-12 animate-in fade-in duration-1000 pb-20">
@@ -257,7 +327,7 @@ export default function DashboardPage() {
                 <div>
                     <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors group-hover:text-blue-500">{card.title}</p>
                     <div className="flex items-baseline gap-2 mb-4">
-                        <h4 className="text-5xl font-black text-foreground tracking-tighter leading-none group-hover:scale-[1.02] transition-transform duration-500">
+                        <h4 className="text-3xl md:text-4xl font-black text-foreground tracking-tighter leading-none group-hover:scale-[1.02] transition-transform duration-500 truncate max-w-full">
                             <CountUp value={card.value} />
                         </h4>
                     </div>
@@ -593,14 +663,14 @@ export default function DashboardPage() {
 
       {/* RESULT MODAL (REFINED FOR CLARITY AND FOCUS) */}
       {lastResult && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-md animate-in fade-in duration-700">
-            <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] p-12 max-w-6xl w-full shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
+            <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
                 
                 {/* Subtle Luminous Accent */}
                 <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 blur-[150px]"></div>
                 <div className="absolute top-0 right-0 p-10 text-gray-600 hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setLastResult(null)}>✕</div>
                 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-12 px-2">
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-8 px-12 pt-12">
                     <div className="flex items-center gap-8">
                         <div className="relative">
                             <div className="absolute inset-0 bg-green-500/10 blur-2xl"></div>
@@ -621,6 +691,8 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
+                <div className="flex-1 overflow-y-auto px-12 py-4 custom-scrollbar">
+
                 <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
                     {/* LEFT DATA COLUMN */}
                     <div className="lg:col-span-12 xl:col-span-7 space-y-8">
@@ -631,7 +703,11 @@ export default function DashboardPage() {
                                     {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-blue-500/40"></div>)}
                                 </div>
                             </div>
-                            <h4 className="text-3xl md:text-4xl font-black tracking-tight uppercase leading-tight mb-6 break-words">{JSON.parse(lastResult.extractedData || '{}').vendor || lastResult.fileName}</h4>
+                            <input 
+                                value={editableData?.vendor || ''} 
+                                onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
+                                className="text-3xl md:text-4xl font-black tracking-tight uppercase leading-tight mb-6 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                            />
                             <div className="flex items-center gap-4">
                                 <p className="text-xs font-mono font-bold tracking-[0.2em] uppercase py-2.5 px-5 bg-blue-500/5 rounded-xl border border-blue-500/10 text-blue-500">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
@@ -639,21 +715,57 @@ export default function DashboardPage() {
 
                         {/* LINE ITEMS TABLE (ENHANCED SCAN-ABILITY) */}
                         <div className="rounded-[2.5rem] p-10 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
-                            <div className="text-[10px] font-black uppercase tracking-[0.4em] mb-8 opacity-40">Neural Item Log</div>
-                            <div className="space-y-4">
-                                {[
-                                    { name: "Executive Consulting Sequence", qty: 1, total: "24,000" },
-                                    { name: "High-Frequency Core Nodes", qty: 4, total: "1,20,000" },
-                                    { name: "Neural Maintenance Cycle", qty: 1, total: "14,500" }
-                                ].map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-transparent hover:border-[var(--border)] group/item transition-all hover:bg-white/[0.03]">
-                                        <div className="flex items-center gap-6">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Neural Item Log</div>
+                                <button 
+                                    onClick={handleAddItem}
+                                    className="px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-xl text-[10px] font-black text-blue-500 uppercase tracking-widest hover:bg-blue-600/20 transition-all"
+                                >
+                                    + Add Item
+                                </button>
+                            </div>
+                            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                {(editableData?.items || []).map((item: any, idx: number) => (
+                                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-[var(--border)] group/item transition-all hover:bg-white/[0.03]">
+                                        <div className="flex items-center gap-6 flex-1">
                                             <div className="w-10 h-10 rounded-xl bg-blue-600/5 flex items-center justify-center text-[10px] font-black text-blue-500">
                                                 0{idx+1}
                                             </div>
-                                            <p className="text-base font-bold transition-colors group-hover/item:text-blue-500">{item.name}</p>
+                                            <div className="flex flex-col gap-1 flex-1">
+                                                <input 
+                                                    value={item.name} 
+                                                    onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
+                                                    className="text-base font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                />
+                                                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest opacity-40">
+                                                    <span>Qty: </span>
+                                                    <input 
+                                                        type="number"
+                                                        value={item.quantity} 
+                                                        onChange={(e) => handleItemChange(idx, 'quantity', parseFloat(e.target.value))}
+                                                        className="w-12 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="text-lg font-black tracking-tighter">₹{item.total}</p>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-lg font-black tracking-tighter">₹</span>
+                                            <input 
+                                                type="number"
+                                                value={item.amount} 
+                                                onChange={(e) => handleItemChange(idx, 'amount', parseFloat(e.target.value))}
+                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-24 text-right"
+                                            />
+                                            <button 
+                                                onClick={() => {
+                                                    const newItems = editableData.items.filter((_: any, i: number) => i !== idx);
+                                                    setEditableData({...editableData, items: newItems});
+                                                }}
+                                                className="text-red-500/40 hover:text-red-500 p-2 transition-colors"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -666,22 +778,73 @@ export default function DashboardPage() {
                             <div>
                                 <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10 opacity-60">Verified Payable</p>
                                 <div className="space-y-4">
-                                    <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-none break-all">₹{(lastResult.totalAmount || 0).toLocaleString()}</h2>
+                                    <div className="flex items-center gap-3">
+                                        <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">₹</h2>
+                                        <input 
+                                            type="number"
+                                            value={editableData?.totalAmount || 0} 
+                                            onChange={(e) => setEditableData({...editableData, totalAmount: parseFloat(e.target.value)})}
+                                            className="text-3xl md:text-5xl font-black tracking-tighter leading-none bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full overflow-hidden"
+                                        />
+                                    </div>
                                     <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Confirmed Amount Node</p>
                                 </div>
-                            </div>
+                               <div className="pt-10 border-t border-[var(--border)] space-y-8">
+                                <div className="space-y-6">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Tax Breakdown</p>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div className="space-y-2">
+                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">CGST</p>
+                                            <input 
+                                                type="number"
+                                                value={editableData?.taxBreakdown?.cgst || 0}
+                                                onChange={(e) => setEditableData({
+                                                    ...editableData, 
+                                                    taxBreakdown: { ...editableData.taxBreakdown, cgst: parseFloat(e.target.value) }
+                                                })}
+                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">SGST</p>
+                                            <input 
+                                                type="number"
+                                                value={editableData?.taxBreakdown?.sgst || 0}
+                                                onChange={(e) => setEditableData({
+                                                    ...editableData, 
+                                                    taxBreakdown: { ...editableData.taxBreakdown, sgst: parseFloat(e.target.value) }
+                                                })}
+                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">IGST</p>
+                                            <input 
+                                                type="number"
+                                                value={editableData?.taxBreakdown?.igst || 0}
+                                                onChange={(e) => setEditableData({
+                                                    ...editableData, 
+                                                    taxBreakdown: { ...editableData.taxBreakdown, igst: parseFloat(e.target.value) }
+                                                })}
+                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="pt-10 border-t border-[var(--border)] space-y-8">
-                                <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-2 gap-8 border-t border-[var(--border)] pt-8">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Tax Net</p>
-                                        <p className="text-xl font-black tracking-tighter">₹{(lastResult.cgst || 0) + (lastResult.sgst || 0) + (lastResult.igst || 0)}</p>
+                                        <p className="text-xl font-black tracking-tighter text-blue-500">
+                                            ₹{((editableData?.taxBreakdown?.cgst || 0) + (editableData?.taxBreakdown?.sgst || 0) + (editableData?.taxBreakdown?.igst || 0)).toLocaleString()}
+                                        </p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Log Date</p>
                                         <p className="text-xl font-black tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
                                     </div>
                                 </div>
+                             </div>
                                 <div className="flex items-center gap-5 px-6 py-5 rounded-[2rem] border border-[var(--border)] group/export cursor-pointer hover:bg-blue-600/5 transition-all" style={{ backgroundColor: 'var(--background)' }}>
                                     <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                                         <Icons.Download />
@@ -696,9 +859,15 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="relative z-10 flex gap-6">
-                    <button onClick={() => setLastResult(null)} className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-xl hover:translate-y-[-1px] active:translate-y-0">
-                        Confirm Data Entry
+                </div>
+
+                <div className="relative z-10 flex gap-6 px-12 pb-12 pt-6 border-t border-[var(--border)] bg-inherit">
+                    <button 
+                        onClick={handleSave} 
+                        disabled={isSaving}
+                        className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-xl hover:translate-y-[-1px] active:translate-y-0 disabled:opacity-50"
+                    >
+                        {isSaving ? 'Saving...' : 'Confirm & Save Changes'}
                     </button>
                     <button onClick={() => setLastResult(null)} className="px-12 py-6 bg-white/[0.02] border border-white/[0.08] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase hover:bg-white/[0.05] transition-all">
                         Abort

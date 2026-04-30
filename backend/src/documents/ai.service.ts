@@ -43,6 +43,9 @@ export class AiService {
         "totalAmount": number,
         "taxAmount": number,
         "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
+        "items": [
+          { "name": "string", "quantity": number, "amount": number }
+        ],
         "confidence": number,
         "isGstReady": boolean
       }
@@ -65,6 +68,10 @@ export class AiService {
         totalAmount: 1250.50,
         taxAmount: 225.10,
         taxBreakdown: { cgst: 112.55, sgst: 112.55, igst: 0 },
+        items: [
+          { name: "Executive Consulting Sequence", quantity: 1, amount: 1000.00 },
+          { name: "Cloud Infrastructure Setup", quantity: 1, amount: 250.50 }
+        ],
         confidence: 0.95,
         isGstReady: true
       };
