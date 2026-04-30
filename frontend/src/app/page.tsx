@@ -167,11 +167,11 @@ export default function Home() {
 
       {/* Create Account Section */}
       <section className="w-full max-w-6xl mx-auto mt-40 px-6">
-        <div className="grid md:grid-cols-2 gap-16 items-center bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-[4rem] p-16 relative overflow-hidden">
+        <div className="grid md:grid-cols-2 gap-16 items-center bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-[4rem] p-16 relative overflow-hidden shadow-2xl dark:shadow-none">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px]"></div>
           
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-none">
+            <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
               CREATE <br /> ACCOUNT
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
@@ -179,11 +179,11 @@ export default function Home() {
               Setup takes less than 60 seconds.
             </p>
             <div className="space-y-4">
-               <div className="flex items-center gap-4 text-green-500 font-black uppercase tracking-widest text-xs bg-green-500/5 w-fit px-6 py-3 rounded-2xl border border-green-500/10">
+               <div className="flex items-center gap-4 text-green-600 dark:text-green-500 font-black uppercase tracking-widest text-xs bg-green-500/5 w-fit px-6 py-3 rounded-2xl border border-green-500/10">
                  <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                  Spam Protected
                </div>
-               <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold italic">Bot detection & Neural Captcha active</p>
+               <p className="text-[10px] text-gray-500 dark:text-gray-500 uppercase tracking-[0.3em] font-bold italic">Bot detection & Neural Captcha active</p>
             </div>
             <Link href="/login?register=true" className="inline-block px-12 py-5 bg-blue-600 text-white font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-blue-500 transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95">
               Initialize Signup
@@ -192,7 +192,7 @@ export default function Home() {
 
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500/20 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-            <div className="relative bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-white/10 rounded-[3rem] p-10 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-1000">
+            <div className="relative bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-[3rem] p-10 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-1000">
                <div className="space-y-6">
                   <div className="w-12 h-1 bg-blue-600/50 rounded-full"></div>
                   <div className="space-y-2">
@@ -214,7 +214,7 @@ export default function Home() {
                </div>
             </div>
             {/* Floating Badges */}
-            <div className="absolute -top-6 -right-6 bg-[#1a1a1a] border border-white/10 p-4 rounded-2xl shadow-2xl animate-bounce duration-[3000ms]">
+            <div className="absolute -top-6 -right-6 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 p-4 rounded-2xl shadow-2xl animate-bounce duration-[3000ms]">
                <span className="text-xl">🔒</span>
             </div>
           </div>
