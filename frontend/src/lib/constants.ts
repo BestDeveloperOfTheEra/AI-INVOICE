@@ -1,1 +1,1 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.autoextract.in';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://autoextract.in/api';
