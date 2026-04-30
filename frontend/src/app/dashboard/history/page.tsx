@@ -235,7 +235,7 @@ export default function HistoryPage() {
                     <input 
                         type="text" 
                         placeholder="SEARCH NEURAL SIGNATURE..." 
-                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-widest placeholder:text-gray-700"
+                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-widest placeholder:text-gray-500"
                         style={{ color: 'var(--foreground)' }}
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
@@ -244,7 +244,7 @@ export default function HistoryPage() {
             </div>
             <div className="flex gap-4 p-4 border border-[var(--border)] rounded-[2.5rem]" style={{ backgroundColor: 'var(--card)' }}>
                  <button onClick={() => handleExport('excel')} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">Export Excel</button>
-                 <button onClick={() => handleExport('pdf')} className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-500 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
+                 <button onClick={() => handleExport('pdf')} className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-600 dark:text-gray-400 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
             </div>
         </div>
 
@@ -255,7 +255,7 @@ export default function HistoryPage() {
                       <thead>
                          <tr className="bg-white/[0.01]">
                              {['Signature Date', 'Neural Identity', 'Global Signature', 'Amount', 'Tax', 'Total', 'Action'].map(h => (
-                                 <th key={h} className="px-6 py-6 text-[9px] font-black text-gray-600 uppercase tracking-[0.5em] border-b border-white/[0.03] whitespace-nowrap">{h}</th>
+                                 <th key={h} className="px-6 py-6 text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.5em] border-b border-white/[0.03] whitespace-nowrap">{h}</th>
                              ))}
                          </tr>
                      </thead>
@@ -263,7 +263,7 @@ export default function HistoryPage() {
                          {filteredData.length === 0 ? (
                            <tr>
                                <td colSpan={7} className="px-6 py-32 text-center">
-                                   <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
+                                   <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
                                </td>
                            </tr>
                          ) : filteredData.map((data, i) => (
@@ -290,21 +290,21 @@ export default function HistoryPage() {
                                          <>
                                              <button 
                                                  onClick={() => handleEdit(data)}
-                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 hover:text-blue-500 hover:border-blue-500/30 transition-all hover:scale-110"
+                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-blue-500 hover:border-blue-500/30 transition-all hover:scale-110"
                                                  title="View & Edit Details"
                                              >
                                                  <Icons.Eye />
                                              </button>
                                              <button 
                                                  onClick={() => downloadOriginal(data.id, data.fileName)}
-                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 hover:text-blue-500 hover:border-blue-500/30 transition-all hover:scale-110"
+                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-blue-500 hover:border-blue-500/30 transition-all hover:scale-110"
                                                  title="Download Original"
                                              >
                                                  <Icons.Download />
                                              </button>
                                              <button 
                                                  onClick={() => handleDelete(data.id)}
-                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 hover:text-red-500 hover:border-red-500/30 transition-all hover:scale-110"
+                                                 className="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-red-500 hover:border-red-500/30 transition-all hover:scale-110"
                                                  title="Mark Deleted"
                                              >
                                                  <Icons.Trash />
@@ -325,7 +325,7 @@ export default function HistoryPage() {
            <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
                <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
                    
-                   <div className="absolute top-0 right-0 p-10 text-gray-600 hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setEditingDoc(null)}>✕</div>
+                   <div className="absolute top-0 right-0 p-10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setEditingDoc(null)}>✕</div>
                    
                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-8 px-12 pt-12">
                        <div className="flex items-center gap-8">
@@ -336,8 +336,8 @@ export default function HistoryPage() {
                                </div>
                            </div>
                            <div>
-                               <p className="text-[9px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
-                               <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">Neural Insights</h3>
+                               <p className="text-[9px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
+                               <h3 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">Neural Insights</h3>
                            </div>
                        </div>
                        <div className="flex flex-col items-end gap-3">

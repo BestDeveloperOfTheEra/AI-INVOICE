@@ -332,7 +332,7 @@ export default function DashboardPage() {
                         </h4>
                     </div>
                     <div className="pt-4 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
-                         <span className="text-gray-400 dark:text-gray-500 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
+                         <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
                          <div className="flex gap-1 animate-pulse">
                              <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
                              <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
@@ -358,8 +358,8 @@ export default function DashboardPage() {
                       {item.icon}
                   </div>
                   <div className="flex flex-col">
-                      <span className="text-[9px] font-black text-gray-500 dark:text-gray-500 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-900 dark:group-hover:text-gray-400 transition-colors">{item.label}</span>
-                      <span className="text-xs font-black text-gray-400 dark:text-white/50 group-hover:text-foreground transition-colors">{item.value}</span>
+                      <span className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-900 dark:group-hover:text-gray-300 transition-colors">{item.label}</span>
+                      <span className="text-xs font-black text-gray-400 dark:text-white/70 group-hover:text-foreground transition-colors">{item.value}</span>
                   </div>
               </div>
           ))}
@@ -462,7 +462,7 @@ export default function DashboardPage() {
                         <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none uppercase">
                             {credits <= 0 ? "You've reached your limit" : "Scale your extraction"}
                         </h3>
-                        <p className="text-sm font-medium text-gray-500 leading-relaxed">
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
                             {credits <= 0 
                                 ? "Each extraction costs 1 credit. Unlock unlimited invoice processing and continue managing your workspace instantly." 
                                 : "Upgrade today to unlock unlimited invoice processing and priority access to our Neural AI extraction queue."}
@@ -579,7 +579,7 @@ export default function DashboardPage() {
                   <thead>
                       <tr className="bg-white/[0.01]">
                            {['Identity', 'GSTIN', 'Date', 'Amount', 'Tax', 'Total', 'Status'].map(h => (
-                               <th key={h} className="px-8 py-8 text-[9px] font-black text-gray-400 uppercase tracking-[0.4em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
+                               <th key={h} className="px-8 py-8 text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.4em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
                            ))}
                       </tr>
                   </thead>

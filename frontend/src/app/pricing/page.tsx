@@ -108,7 +108,7 @@ export default function Pricing() {
 
       <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-8 duration-700 pt-12">
         <div className="text-center mb-12 flex flex-col items-center">
-          <h1 className="text-5xl font-bold text-foreground mb-6 tracking-tight">Simple, transparent pricing</h1>
+          <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter uppercase italic">Simple, transparent <span className="text-blue-600">pricing</span></h1>
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4 bg-gray-100 dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 mb-8 backdrop-blur-md">
@@ -141,7 +141,7 @@ export default function Pricing() {
               {plan.name === 'Business' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.1em] border border-indigo-400/30 z-20 whitespace-nowrap">Scaleup</div>}
 
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-foreground mb-1 tracking-tight">{plan.name}</h3>
+                <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 tracking-tight uppercase">{plan.name}</h3>
                 <p className="text-gray-500 dark:text-gray-500 text-[10px] leading-relaxed">
                   {plan.name === 'Free' && "Best For: Testing AI OCR"}
                   {plan.name === 'Starter' && "Best For: Freelancers & Small Shops"}
@@ -153,7 +153,7 @@ export default function Pricing() {
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-foreground tracking-tighter">
+                  <span className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
                     {plan.name === 'Enterprise' ? 'Custom' : `₹${plan.price}`}
                   </span>
                   {plan.name !== 'Enterprise' && (
@@ -170,7 +170,7 @@ export default function Pricing() {
               <ul className="flex flex-col gap-3 text-gray-600 dark:text-gray-400 mb-8 flex-1 border-t border-gray-100 dark:border-white/5 pt-6">
                 <li className="flex items-center gap-2 text-[13px]">
                   <span className="text-blue-600 dark:text-blue-500 font-bold">✓</span>
-                  <span className="font-bold text-foreground">{plan.name === 'Enterprise' ? 'Unlimited' : plan.quotaPages.toLocaleString()}</span> Pages {plan.name === 'Enterprise' ? '' : (plan.billingCycle === 'year' ? '/yr' : '/mo')}
+                  <span className="font-black text-gray-900 dark:text-white">{plan.name === 'Enterprise' ? 'Unlimited' : plan.quotaPages.toLocaleString()}</span> Pages {plan.name === 'Enterprise' ? '' : (plan.billingCycle === 'year' ? '/yr' : '/mo')}
                 </li>
                 {plan.name === 'Free' ? (
                   <li className="flex items-center gap-2 text-[13px] text-gray-600">

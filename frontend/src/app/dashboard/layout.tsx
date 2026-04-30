@@ -49,7 +49,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
           <div className="flex flex-col gap-8 w-full flex-1">
             <div className="px-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Menu</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 text-gray-500 dark:text-gray-400" style={{ color: 'var(--foreground)' }}>Menu</p>
                 <div className="flex flex-col gap-2">
                     {[
                       { label: 'Extract Invoices', path: '/dashboard' },
@@ -75,7 +75,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="px-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 opacity-40" style={{ color: 'var(--foreground)' }}>Settings</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-6 text-gray-500 dark:text-gray-400" style={{ color: 'var(--foreground)' }}>Settings</p>
                 <div className="flex flex-col gap-2">
                     {[
                       { label: 'Update Profile', path: '/dashboard/profile' },
@@ -133,8 +133,8 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                       {avatarUrl ? <img src={avatarUrl} className="w-full h-full rounded-2xl object-cover" /> : <Icons.User />}
                   </div>
                   <div className="flex flex-col overflow-hidden">
-                      <span className="text-xs font-black uppercase tracking-tight truncate max-w-[120px]">{profileName || 'Main Admin'}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest italic opacity-40">Owner</span>
+                      <span className="text-xs font-black uppercase tracking-tight truncate max-w-[120px] text-gray-900 dark:text-white">{profileName || 'Main Admin'}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest italic text-gray-500 dark:text-gray-400">Owner</span>
                   </div>
              </div>
 
