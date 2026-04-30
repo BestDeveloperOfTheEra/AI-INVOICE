@@ -1,4 +1,4 @@
-import { Controller, Post, Get, UseInterceptors, UploadedFiles, UseGuards, Req, Res, Param, BadRequestException, Logger } from '@nestjs/common';
+import { Controller, Post, Get, Delete, UseInterceptors, UploadedFiles, UseGuards, Req, Res, Param, BadRequestException, Logger } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CombinedAuthGuard } from '../auth/combined-auth.guard';
 import { DocumentsService } from './documents.service';
