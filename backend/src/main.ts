@@ -36,8 +36,8 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
 
-  // Prefix all routes with /api (exclude health check)
-  app.setGlobalPrefix('api', { exclude: ['health'] });
+  // Global prefix is handled by Nginx proxy, do not set it here to avoid 404s
+  // app.setGlobalPrefix('api', { exclude: ['health'] });
 
   // Explicitly configure body-parser to avoid charset issues
   const express = require('express');
