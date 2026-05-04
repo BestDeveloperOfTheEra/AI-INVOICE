@@ -33,8 +33,21 @@ async function bootstrap() {
   });
 
   // Security and Performance Middleware
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "frame-ancestors": ["'self'", process.env.FRONTEND_URL || "http://localhost:3000"],
+      },
+    },
+  }));
   app.use(compression());
+
+  // Serve Static Uploads (Local Fallback)
+  const express = require('express');
+  const path = require('path');
+  app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
   // Global prefix is handled by Nginx proxy, do not set it here to avoid 404s
   // app.setGlobalPrefix('api', { exclude: ['health'] });

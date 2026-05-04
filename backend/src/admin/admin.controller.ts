@@ -139,4 +139,18 @@ export class AdminController {
       data: { isBlocked: body.isBlocked }
     });
   }
+
+  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  @Permissions('manage_users')
+  @Get('invoices')
+  async getInvoices() {
+    return this.adminService.getAllInvoices();
+  }
+
+  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  @Permissions('manage_users')
+  @Get('orders')
+  async getOrders() {
+    return this.adminService.getAllOrders();
+  }
 }

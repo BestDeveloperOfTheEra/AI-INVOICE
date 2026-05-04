@@ -27,7 +27,21 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { credits, planName, profileName, handleLogout, avatarUrl } = useDashboard();
+  const { credits, planName, profileName, handleLogout, avatarUrl, userRole, isLoading } = useDashboard();
+
+  useEffect(() => {
+    if (!isLoading && userRole === 'Admin') {
+      router.push('/neural-hq-core');
+    }
+  }, [userRole, isLoading, router]);
+
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+       <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+    </div>
+  );
+
+  if (userRole === 'Admin') return null;
 
   return (
     <div className="relative min-h-screen transition-colors duration-500 overflow-x-hidden selection:bg-blue-500/30" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>

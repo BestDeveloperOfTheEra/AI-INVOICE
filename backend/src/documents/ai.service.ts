@@ -25,6 +25,7 @@ export class AiService {
       Extract structured data from the provided invoice document.
       Ensure amounts are numbers and dates are in YYYY-MM-DD format.
       Focus on accurately capturing GSTINs and Tax Breakdowns.
+      IMPORTANT: Extract EVERY single line item exactly as it appears on the invoice. Do NOT group, merge, or omit any items, even if they have the same name. Keep the exact order and names.
       Return ONLY a JSON object.
     `;
 
@@ -39,12 +40,26 @@ export class AiService {
         "address": "string",
         "email": "string",
         "phone": "string",
-        "date": "string (YYYY-MM-DD)",
+        "invoiceDate": "string (The actual date printed on the invoice, YYYY-MM-DD)",
+        "bankDetails": {
+          "accountName": "string",
+          "bankName": "string",
+          "accountNumber": "string",
+          "branch": "string",
+          "ifscCode": "string"
+        },
+        "storeInfo": {
+          "address": "string",
+          "msme": "string",
+          "email": "string",
+          "website": "string",
+          "phone": "string"
+        },
         "totalAmount": number,
         "taxAmount": number,
         "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
         "items": [
-          { "name": "string", "quantity": number, "amount": number }
+          { "name": "string", "quantity": number, "rate": number, "amount": number }
         ],
         "confidence": number,
         "isGstReady": boolean
@@ -64,7 +79,21 @@ export class AiService {
         address: "123 Tech Park, Delhi, India",
         email: "support@antigravity.com",
         phone: "+91 98765 43210",
-        date: new Date().toISOString().split('T')[0],
+        invoiceDate: "2024-05-01",
+        bankDetails: {
+          accountName: "Antigravity Corp",
+          bankName: "HDFC Bank",
+          accountNumber: "50200012345678",
+          branch: "Cyber City",
+          ifscCode: "HDFC0001234"
+        },
+        storeInfo: {
+          address: "123 Tech Park, Delhi, India",
+          msme: "UDYAM-DL-01-0012345",
+          email: "support@antigravity.com",
+          website: "www.antigravity.com",
+          phone: "+91 98765 43210"
+        },
         totalAmount: 1250.50,
         taxAmount: 225.10,
         taxBreakdown: { cgst: 112.55, sgst: 112.55, igst: 0 },

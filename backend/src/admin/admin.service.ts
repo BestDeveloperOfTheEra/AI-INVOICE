@@ -59,4 +59,18 @@ export class AdminService {
       recentOrders: recentOrders.map(o => ({ id: o.id, amount: o.amount, email: o.user?.email || 'Deleted User', date: o.createdAt, status: o.status, txId: o.transactionId }))
     };
   }
+
+  async getAllInvoices() {
+    return this.prisma.documentProcess.findMany({
+      include: { user: { select: { email: true, name: true } } },
+      orderBy: { processedAt: 'desc' }
+    });
+  }
+
+  async getAllOrders() {
+    return this.prisma.order.findMany({
+      include: { user: { select: { email: true, name: true } } },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
 }

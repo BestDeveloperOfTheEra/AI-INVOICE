@@ -70,6 +70,7 @@ export default function DashboardPage() {
   const [lastResult, setLastResult] = useState<any>(null);
   const [editableData, setEditableData] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [fontSize, setFontSize] = useState(12);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -244,7 +245,7 @@ export default function DashboardPage() {
 
   const handleAddItem = () => {
     if (!editableData) return;
-    const newItems = [...(editableData.items || []), { name: 'New Item', quantity: 1, amount: 0 }];
+    const newItems = [...(editableData.items || []), { name: 'New Item', quantity: 1, rate: 0, amount: 0 }];
     setEditableData({ ...editableData, items: newItems });
   };
 
@@ -558,66 +559,84 @@ export default function DashboardPage() {
       </div>
 
       {/* 3. LATEST EXTRACTIONS TABLE (MICRO-INTERACTIONS POLISHED) */}
-      <div className="rounded-[4rem] overflow-hidden group/table shadow-2xl animate-in slide-in-from-bottom-12 duration-1200 delay-500 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
-          <div className="px-16 py-14 border-b border-[var(--border)] flex items-center justify-between bg-white/[0.01]">
-              <div className="flex items-center gap-6">
-                   <div className="w-5 h-5 bg-blue-500/10 rounded-full flex items-center justify-center">
-                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
+      <div className="rounded-[2.5rem] overflow-hidden group/table shadow-inner border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
+          <div className="px-8 py-6 border-b border-[var(--border)] flex items-center justify-between bg-white/[0.01]">
+              <div className="flex items-center gap-4">
+                   <div className="w-3 h-3 bg-blue-500/10 rounded-full flex items-center justify-center">
+                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></div>
                    </div>
                    <div>
-                       <h4 className="text-lg font-black uppercase tracking-[0.5em] leading-none mb-1" style={{ color: 'var(--foreground)' }}>Neural Archive</h4>
-                       <p className="text-[10px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>Historical Extraction Database</p>
+                       <h4 className="text-sm font-black uppercase tracking-[0.5em] leading-none mb-1" style={{ color: 'var(--foreground)' }}>Neural Archive</h4>
+                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40" style={{ color: 'var(--foreground)' }}>Historical Extraction Database</p>
                    </div>
               </div>
-              <button onClick={() => router.push('/dashboard/history')} className="px-10 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest rounded-2xl transition-all hover:text-blue-600 dark:hover:text-blue-400 group/btn shadow-inner">
-                  View Full Stack 
-                  <span className="inline-block transition-transform group-hover/btn:translate-x-2 ml-2">→</span>
-              </button>
+              <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 px-2 border-r border-[var(--border)]">
+                     <button onClick={() => setFontSize(f => Math.max(8, f - 1))} className="w-6 h-6 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-white font-bold transition-colors shadow-inner">-</button>
+                     <span className="text-[10px] font-black w-8 text-center text-gray-500">{fontSize}px</span>
+                     <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-6 h-6 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-white font-bold transition-colors shadow-inner">+</button>
+                 </div>
+                  <button onClick={() => router.push('/dashboard/history')} className="px-6 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest rounded-xl transition-all hover:text-blue-600 dark:hover:text-blue-400 group/btn shadow-inner">
+                      View Full Stack 
+                      <span className="inline-block transition-transform group-hover/btn:translate-x-2 ml-2">→</span>
+                  </button>
+              </div>
           </div>
-          <div className="overflow-x-auto">
-              <table className="w-full text-left border-separate border-spacing-0">
+          <div className="overflow-x-auto w-full custom-scrollbar">
+              <table className="w-full text-left border-collapse" style={{ fontSize: `${fontSize}px` }}>
                   <thead>
-                      <tr className="bg-white/[0.01]">
+                      <tr className="bg-white/[0.04]">
                            {['Identity', 'GSTIN', 'Date', 'Amount', 'Tax', 'Total', 'Status'].map(h => (
-                               <th key={h} className="px-8 py-8 text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.4em] border-b border-white/[0.04] whitespace-nowrap">{h}</th>
+                               <th key={h} className="px-4 py-2 font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider border border-[var(--border)] whitespace-nowrap" style={{ fontSize: `${fontSize * 0.8}px` }}>{h}</th>
                            ))}
                       </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.015]">
+                  <tbody className="bg-white/[0.01]">
                       {recentDocs.length === 0 ? (
                         <tr>
-                            <td colSpan={7} className="px-16 py-40">
-                                <div className="flex flex-col items-center gap-8 opacity-40 text-center scale-90 group-hover/table:scale-100 transition-transform duration-1000">
-                                    <div className="w-20 h-20 bg-white/[0.02] border border-white/10 rounded-3xl flex items-center justify-center text-white/30">
-                                        <Icons.EmptyBox />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-lg font-black text-foreground opacity-70 uppercase tracking-[0.5em]">System Log Empty</p>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Awaiting first extraction sequence...</p>
-                                    </div>
-                                </div>
+                            <td colSpan={7} className="px-4 py-16 text-center border border-[var(--border)]">
+                                <p className="text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest italic opacity-40">System Log Empty</p>
                             </td>
                         </tr>
                       ) : (
                         recentDocs.slice(0, 6).map((doc, i) => {
                           const data = JSON.parse(doc.extractedData || '{}');
                           return (
-                              <tr key={i} className="hover:bg-white/[0.02] transition-colors cursor-pointer group/row animate-in fade-in slide-in-from-bottom-2 fill-mode-both" style={{ animationDelay: `${500 + i*50}ms` }}>
-                                  <td className="px-8 py-8">
-                                      <span className="text-[13px] font-black tracking-tight uppercase line-clamp-1" style={{ color: 'var(--foreground)' }}>{data.vendor || "Verified Source"}</span>
+                              <tr key={i} className="hover:bg-blue-500/10 transition-colors cursor-pointer group/row" onClick={() => {
+                                  const docData = JSON.parse(doc.extractedData || '{}');
+                                  const fullData = {
+                                      ...docData,
+                                      id: doc.id,
+                                      totalAmount: doc.totalAmount,
+                                      taxBreakdown: { cgst: doc.cgst || 0, sgst: doc.sgst || 0, igst: doc.igst || 0 },
+                                      processedAt: doc.processedAt,
+                                      gstin: doc.gstin
+                                  };
+                                  setLastResult(fullData);
+                                  setEditableData(fullData);
+                              }}>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap">
+                                      <div className="flex flex-col gap-0.5">
+                                          <span className="font-black tracking-tight uppercase line-clamp-1" style={{ color: 'var(--foreground)' }}>{data.vendor || "Verified Source"}</span>
+                                          <div className="flex gap-2 opacity-50 font-bold" style={{ fontSize: `${fontSize * 0.75}px` }}>
+                                              <span className="text-blue-500/80">{data.storeInfo?.email || 'NO_EMAIL'}</span>
+                                              <span className="text-gray-600">|</span>
+                                              <span className="text-green-500/80">{data.bankDetails?.accountNumber || 'NO_BANK_AC'}</span>
+                                          </div>
+                                      </div>
                                   </td>
-                                  <td className="px-8 py-8">
-                                      <span className="text-[11px] font-mono font-bold uppercase opacity-60" style={{ color: 'var(--foreground)' }}>{doc.gstin || "NO_SIG"}</span>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap">
+                                      <span className="font-mono font-bold uppercase opacity-60" style={{ color: 'var(--foreground)' }}>{doc.gstin || "NO_SIG"}</span>
                                   </td>
-                                  <td className="px-8 py-8 text-[11px] font-black uppercase opacity-40 group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-black uppercase opacity-40 group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
                                       {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-8 py-8 text-[11px] font-bold" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount - (data.taxAmount || 0)).toLocaleString()}</td>
-                                  <td className="px-8 py-8 text-[11px] font-bold text-red-500/50" style={{ color: '' }}>₹{(data.taxAmount || 0).toLocaleString()}</td>
-                                  <td className="px-8 py-8 text-[13px] font-black italic" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
-                                  <td className="px-8 py-8">
-                                      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-[1.5rem] text-[9px] font-black uppercase border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`}>
-                                          <div className={`w-1.5 h-1.5 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount - (data.taxAmount || 0)).toLocaleString()}</td>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono text-right text-red-500/80" style={{ color: '' }}>₹{(data.taxAmount || 0).toLocaleString()}</td>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono font-black italic text-right bg-white/[0.02]" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
+                                  <td className="px-4 py-1.5 border border-[var(--border)] whitespace-nowrap text-center">
+                                      <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[1.5rem] font-black uppercase border transition-all duration-500 ${doc.status === 'completed' ? 'bg-green-600/5 text-green-500 border-green-500/20 group-hover/row:bg-green-500/20' : 'bg-red-600/5 text-red-500 border-red-500/20'}`} style={{ fontSize: `${fontSize * 0.7}px` }}>
+                                          <div className={`w-1 h-1 rounded-full ${doc.status === 'completed' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></div>
                                           {doc.status === 'completed' ? 'Verified' : 'Failed'}
                                       </div>
                                   </td>
@@ -699,16 +718,27 @@ export default function DashboardPage() {
                         <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
                             <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
                                 <span>Entity Profile</span>
-                                <div className="flex gap-1">
-                                    {[1,2,3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-blue-500/40"></div>)}
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Vendor Name</p>
+                                    <input 
+                                        value={editableData?.vendor || ''} 
+                                        onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
+                                        className="text-2xl font-black tracking-tight uppercase bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Invoice Date</p>
+                                    <input 
+                                        type="date"
+                                        value={editableData?.invoiceDate || editableData?.date || ''} 
+                                        onChange={(e) => setEditableData({...editableData, invoiceDate: e.target.value})}
+                                        className="text-2xl font-black tracking-tight uppercase bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
                                 </div>
                             </div>
-                            <input 
-                                value={editableData?.vendor || ''} 
-                                onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
-                                className="text-3xl md:text-4xl font-black tracking-tight uppercase leading-tight mb-6 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                            />
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4 mt-6">
                                 <p className="text-xs font-mono font-bold tracking-[0.2em] uppercase py-2.5 px-5 bg-blue-500/5 rounded-xl border border-blue-500/10 text-blue-500">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
                         </div>
@@ -745,6 +775,13 @@ export default function DashboardPage() {
                                                         onChange={(e) => handleItemChange(idx, 'quantity', parseFloat(e.target.value))}
                                                         className="w-12 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none"
                                                     />
+                                                    <span className="ml-2">Rate: </span>
+                                                    <input 
+                                                        type="number"
+                                                        value={item.rate || 0} 
+                                                        onChange={(e) => handleItemChange(idx, 'rate', parseFloat(e.target.value))}
+                                                        className="w-16 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -768,6 +805,104 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+
+                        {/* STORE INFORMATION */}
+                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
+                                <span>Store Information</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Address</p>
+                                    <input 
+                                        value={editableData?.storeInfo?.address || ''} 
+                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, address: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">MSME / Udyam No</p>
+                                    <input 
+                                        value={editableData?.storeInfo?.msme || ''} 
+                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, msme: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Email</p>
+                                    <input 
+                                        value={editableData?.storeInfo?.email || ''} 
+                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, email: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Website</p>
+                                    <input 
+                                        value={editableData?.storeInfo?.website || ''} 
+                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, website: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Mobile No</p>
+                                    <input 
+                                        value={editableData?.storeInfo?.phone || ''} 
+                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, phone: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* BANK DETAILS */}
+                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
+                                <span>Bank Details</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c Name</p>
+                                    <input 
+                                        value={editableData?.bankDetails?.accountName || ''} 
+                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountName: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Bank Name</p>
+                                    <input 
+                                        value={editableData?.bankDetails?.bankName || ''} 
+                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, bankName: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c No</p>
+                                    <input 
+                                        value={editableData?.bankDetails?.accountNumber || ''} 
+                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountNumber: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Branch</p>
+                                    <input 
+                                        value={editableData?.bankDetails?.branch || ''} 
+                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, branch: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">IFS Code</p>
+                                    <input 
+                                        value={editableData?.bankDetails?.ifscCode || ''} 
+                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})}
+                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

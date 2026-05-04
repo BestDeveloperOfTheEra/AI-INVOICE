@@ -119,7 +119,7 @@ function LoginContent() {
     const payload = JSON.parse(payloadJSON);
     
     if (payload.role === 'Admin') {
-        throw new Error('Administrators must log in through the secure HQ Portal.');
+        throw new Error('Neural HQ detected. Please log in via the Secure Operator Portal.');
     }
 
     localStorage.setItem('access_token', token);

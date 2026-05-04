@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { API_URL } from '@/lib/constants';
 
 interface DashboardContextType {
@@ -10,6 +10,7 @@ interface DashboardContextType {
   profileName: string;
   avatarUrl: string;
   userEmail: string;
+  userRole: string;
   isLoading: boolean;
   refreshUserData: () => Promise<void>;
   setProfileName: (name: string) => void;
@@ -26,11 +27,17 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const [profileName, setProfileName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [userRole, setUserRole] = useState('');
+
+  const pathname = usePathname();
 
   const refreshUserData = async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      router.push('/login');
+      if (!pathname?.includes('/login')) {
+        router.push('/login');
+      }
+      setIsLoading(false);
       return;
     }
 
@@ -46,7 +53,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
       if (statusRes.status === 401 || userRes.status === 401) {
         localStorage.removeItem('access_token');
-        router.push('/login');
+        if (!pathname?.includes('/login')) {
+            router.push('/login');
+        }
+        setIsLoading(false);
         return;
       }
 
@@ -62,6 +72,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       setProfileName(userData.name || '');
       setAvatarUrl(userData.avatarUrl || '');
       setUserEmail(userData.email || '');
+      setUserRole(userData.role?.name || 'Customer');
     } catch (err) {
       console.error(err);
     } finally {
@@ -80,6 +91,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       profileName,
       avatarUrl,
       userEmail,
+      userRole,
       isLoading,
       refreshUserData,
       setProfileName,

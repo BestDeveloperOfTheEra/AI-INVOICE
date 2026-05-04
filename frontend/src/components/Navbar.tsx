@@ -35,6 +35,9 @@ export default function Navbar() {
     window.location.href = '/login'; // Hard redirect clears states securely
   };
 
+  // Skip rendering Navbar on HQ routes to avoid conflicts with HQ Sidebar
+  if (pathname?.startsWith('/neural-hq-core')) return null;
+
   return (
     <nav className={`sticky top-0 z-50 w-full border-b backdrop-blur-md ${role === 'Admin' ? 'bg-red-950/20 border-red-500/20' : 'bg-white/70 dark:bg-black/50 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white'}`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
