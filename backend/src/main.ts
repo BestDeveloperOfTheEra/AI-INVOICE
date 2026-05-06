@@ -53,7 +53,6 @@ async function bootstrap() {
   // app.setGlobalPrefix('api', { exclude: ['health'] });
 
   // Explicitly configure body-parser to avoid charset issues
-  const express = require('express');
   app.use(express.json({ limit: '50mb', type: ['application/json', 'text/plain'] }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
