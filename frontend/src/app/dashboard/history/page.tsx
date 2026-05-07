@@ -326,39 +326,39 @@ export default function HistoryPage() {
         {/* EDIT MODAL - PORTED FROM DASHBOARD */}
         {editingDoc && (
            <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
-               <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
+               <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[2rem] max-w-6xl w-full max-h-[95vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
                    
-                   <div className="absolute top-0 right-0 p-10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setEditingDoc(null)}>✕</div>
+                   <div className="absolute top-0 right-0 p-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-all duration-300 z-50 text-xl" onClick={() => setEditingDoc(null)}>✕</div>
                    
-                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-8 px-12 pt-12">
-                       <div className="flex items-center gap-8">
+                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4 px-8 pt-8">
+                       <div className="flex items-center gap-4">
                            <div className="relative">
-                               <div className="absolute inset-0 bg-blue-500/10 blur-2xl"></div>
-                               <div className="relative w-20 h-20 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-blue-500 shadow-xl">
+                               <div className="absolute inset-0 bg-blue-500/10 blur-xl"></div>
+                               <div className="relative w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-500 shadow-lg">
                                    <Icons.Sparkles />
                                </div>
                            </div>
                            <div>
-                               <p className="text-[9px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
-                               <h3 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">Neural Insights</h3>
+                               <p className="text-[8px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
+                               <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">Neural Insights</h3>
                            </div>
                        </div>
                        <div className="flex flex-col items-end gap-3">
                            <button 
                                onClick={() => downloadOriginal(editingDoc.id, editingDoc.fileName)}
-                               className="flex items-center gap-3 px-6 py-3 bg-blue-600/10 border border-blue-500/20 rounded-xl text-blue-500 hover:bg-blue-600/20 transition-all"
+                               className="flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-lg text-blue-500 hover:bg-blue-600/20 transition-all"
                            >
                                <Icons.FileText />
-                               <span className="text-[10px] font-black uppercase tracking-widest">View Original File</span>
+                               <span className="text-[9px] font-black uppercase tracking-widest">View Original File</span>
                            </button>
                        </div>
                    </div>
 
-                   <div className="flex-1 overflow-y-auto px-12 py-4 custom-scrollbar">
-                       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
-                           <div className="lg:col-span-12 xl:col-span-7 space-y-8">
-                               <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                                   <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-8">Entity Profile</p>
+                   <div className="flex-1 overflow-y-auto px-8 py-2 custom-scrollbar">
+                       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+                           <div className="lg:col-span-12 xl:col-span-8 space-y-6">
+                               <div className="rounded-[1.5rem] p-6 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                                   <p className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 mb-4">Entity Profile</p>
                                    <div className="grid grid-cols-2 gap-4">
                                        <div className="space-y-1">
                                            <p className="text-[8px] font-black opacity-30 uppercase tracking-widest">Vendor</p>
@@ -419,129 +419,132 @@ export default function HistoryPage() {
                                     <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
                                         <span>Store Information</span>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Address</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Address</p>
                                             <input 
                                                 value={editableData?.storeInfo?.address || ''} 
                                                 onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, address: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">MSME / Udyam No</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">MSME / Udyam No</p>
                                             <input 
                                                 value={editableData?.storeInfo?.msme || ''} 
                                                 onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, msme: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Email</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Email</p>
                                             <input 
                                                 value={editableData?.storeInfo?.email || ''} 
                                                 onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, email: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Website</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Website</p>
                                             <input 
                                                 value={editableData?.storeInfo?.website || ''} 
                                                 onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, website: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Mobile No</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Mobile No</p>
                                             <input 
                                                 value={editableData?.storeInfo?.phone || ''} 
                                                 onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, phone: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* BANK DETAILS */}
-                                <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                                    <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
+                                <div className="rounded-[1.5rem] p-6 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                                    <div className="flex items-center justify-between mb-4 text-[9px] font-black uppercase tracking-[0.4em] opacity-40">
                                         <span>Bank Details</span>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c Name</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">A/c Name</p>
                                             <input 
                                                 value={editableData?.bankDetails?.accountName || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountName: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Bank Name</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Bank Name</p>
                                             <input 
                                                 value={editableData?.bankDetails?.bankName || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, bankName: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c No</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">A/c No</p>
                                             <input 
                                                 value={editableData?.bankDetails?.accountNumber || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountNumber: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Branch</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Branch</p>
                                             <input 
                                                 value={editableData?.bankDetails?.branch || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, branch: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">IFS Code</p>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">IFS Code</p>
                                             <input 
                                                 value={editableData?.bankDetails?.ifscCode || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})}
-                                                className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                           <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-8">
-                               <div className="rounded-[3rem] p-12 border border-[var(--border)] h-full flex flex-col justify-between shadow-sm transition-all duration-500" style={{ backgroundColor: 'var(--card)' }}>
+                            <div className="lg:col-span-12 xl:col-span-4 flex flex-col gap-6">
+                               <div className="rounded-[2rem] p-8 border border-[var(--border)] flex flex-col justify-between shadow-sm transition-all duration-500" style={{ backgroundColor: 'var(--card)' }}>
                                    <div>
-                                       <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10 opacity-60">Verified Payable</p>
-                                       <div className="flex items-center gap-3">
-                                           <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">₹</h2>
-                                           <input type="number" value={editableData?.totalAmount || 0} readOnly className="text-3xl md:text-5xl font-black tracking-tighter leading-none bg-transparent border-none outline-none w-full" />
+                                       <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-6 opacity-60">Verified Payable</p>
+                                       <div className="flex items-center gap-2">
+                                           <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-none">₹</h2>
+                                           <input type="number" value={editableData?.totalAmount || 0} readOnly className="text-2xl md:text-4xl font-black tracking-tighter leading-none bg-transparent border-none outline-none w-full" />
                                        </div>
                                    </div>
-                                   <div className="pt-10 border-t border-[var(--border)] space-y-8">
-                                       <div className="space-y-6">
-                                           <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Tax Breakdown</p>
-                                           <div className="grid grid-cols-3 gap-4">
+                                   <div className="pt-6 mt-6 border-t border-[var(--border)] space-y-6">
+                                       <div className="space-y-4">
+                                           <p className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40">Tax Breakdown</p>
+                                           <div className="grid grid-cols-1 gap-3">
                                                {['cgst', 'sgst', 'igst'].map(tax => (
-                                                   <div key={tax} className="space-y-2">
-                                                       <p className="text-[9px] font-black uppercase tracking-widest opacity-40">{tax.toUpperCase()}</p>
-                                                       <input type="number" value={editableData?.taxBreakdown?.[tax] || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: { ...editableData.taxBreakdown, [tax]: parseFloat(e.target.value) }})} className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full" />
+                                                   <div key={tax} className="flex items-center justify-between px-3 py-2 bg-white/[0.02] border border-[var(--border)] rounded-lg">
+                                                       <p className="text-[8px] font-black uppercase tracking-widest opacity-40">{tax.toUpperCase()}</p>
+                                                       <div className="flex items-center gap-1">
+                                                           <span className="text-[10px] font-black">₹</span>
+                                                           <input type="number" value={editableData?.taxBreakdown?.[tax] || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: { ...editableData.taxBreakdown, [tax]: parseFloat(e.target.value) }})} className="text-sm font-black tracking-tighter bg-transparent border-none outline-none w-16 text-right" />
+                                                       </div>
                                                    </div>
                                                ))}
                                            </div>
                                        </div>
-                                       <div className="grid grid-cols-2 gap-8 border-t border-[var(--border)] pt-8">
+                                       <div className="grid grid-cols-2 gap-4 border-t border-[var(--border)] pt-6">
                                            <div className="space-y-1">
-                                               <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Tax Net</p>
-                                               <p className="text-xl font-black tracking-tighter text-blue-500">₹{((editableData?.taxBreakdown?.cgst || 0) + (editableData?.taxBreakdown?.sgst || 0) + (editableData?.taxBreakdown?.igst || 0)).toLocaleString()}</p>
+                                               <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Tax Net</p>
+                                               <p className="text-lg font-black tracking-tighter text-blue-500">₹{((editableData?.taxBreakdown?.cgst || 0) + (editableData?.taxBreakdown?.sgst || 0) + (editableData?.taxBreakdown?.igst || 0)).toLocaleString()}</p>
                                            </div>
                                            <div className="space-y-1">
-                                               <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Log Date</p>
-                                               <p className="text-xl font-black tracking-tighter">{new Date(editingDoc.processedAt).toLocaleDateString('en-GB')}</p>
+                                               <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Log Date</p>
+                                               <p className="text-lg font-black tracking-tighter">{new Date(editingDoc.processedAt).toLocaleDateString('en-GB')}</p>
                                            </div>
                                        </div>
                                    </div>
@@ -550,9 +553,9 @@ export default function HistoryPage() {
                        </div>
                    </div>
 
-                   <div className="relative z-10 flex gap-6 px-12 pb-12 pt-6 border-t border-[var(--border)] bg-inherit">
-                       <button onClick={handleSave} disabled={isSaving} className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-xl disabled:opacity-50">{isSaving ? 'Synchronizing...' : 'Confirm Update'}</button>
-                       <button onClick={() => setEditingDoc(null)} className="px-12 py-6 bg-white/[0.02] border border-white/[0.08] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase hover:bg-white/[0.05] transition-all">Cancel</button>
+                   <div className="relative z-10 flex gap-4 px-8 pb-8 pt-4 border-t border-[var(--border)] bg-inherit">
+                       <button onClick={handleSave} disabled={isSaving} className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs tracking-[0.4em] uppercase transition-all shadow-xl disabled:opacity-50">{isSaving ? 'Synchronizing...' : 'Confirm Update'}</button>
+                       <button onClick={() => setEditingDoc(null)} className="px-8 py-4 bg-white/[0.02] border border-white/[0.08] text-white rounded-2xl font-black text-[10px] tracking-widest uppercase hover:bg-white/[0.05] transition-all">Cancel</button>
                    </div>
                </div>
            </div>
