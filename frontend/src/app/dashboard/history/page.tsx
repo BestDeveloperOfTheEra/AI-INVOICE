@@ -202,6 +202,20 @@ export default function HistoryPage() {
     }
   }, [editableData?.items, editableData?.taxBreakdown]);
 
+  useEffect(() => {
+    if (editingDoc) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.classList.remove('modal-open');
+    };
+  }, [editingDoc]);
+
   const filteredData = extractedData.filter(doc => {
      const searchStr = searchTerm.toLowerCase();
      if (searchTerm === '') return true;
@@ -219,7 +233,7 @@ export default function HistoryPage() {
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40 animate-in fade-in duration-700">
         <div className="w-12 h-12 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
-        <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.4em] mt-6">Indexing Archive...</p>
+        <p className="text-muted text-[10px] font-black uppercase tracking-[0.4em] mt-6">Indexing Archive...</p>
     </div>
   );
 
@@ -239,54 +253,54 @@ export default function HistoryPage() {
 
         {/* Action Infrastructure */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="col-span-2 flex items-center gap-4 border border-[var(--border)] p-6 rounded-[2rem] transition-colors" style={{ backgroundColor: 'var(--card)' }}>
-                <div className="flex-1 flex items-center gap-4 border border-[var(--border)] rounded-2xl px-6 py-4" style={{ backgroundColor: 'var(--background)' }}>
-                    <span className="text-gray-600 pr-2 border-r border-[var(--border)] opacity-40 italic">ID_SEARCH</span>
+            <div className="col-span-2 flex items-center gap-4 border border-border p-6 rounded-[2rem] transition-colors" style={{ backgroundColor: 'var(--card)' }}>
+                <div className="flex-1 flex items-center gap-4 border border-border rounded-2xl px-6 py-4" style={{ backgroundColor: 'var(--background)' }}>
+                    <span className="text-muted pr-2 border-r border-border opacity-40 italic">ID_SEARCH</span>
                     <input 
                         type="text" 
                         placeholder="SEARCH NEURAL SIGNATURE..." 
-                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-widest placeholder:text-gray-500"
+                        className="flex-1 bg-transparent border-none outline-none text-[11px] font-black uppercase tracking-widest placeholder:text-muted/50"
                         style={{ color: 'var(--foreground)' }}
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
-            <div className="flex gap-4 p-4 border border-[var(--border)] rounded-[2.5rem]" style={{ backgroundColor: 'var(--card)' }}>
-                 <div className="flex items-center gap-2 px-2 border-r border-[var(--border)]">
-                     <button onClick={() => setFontSize(f => Math.max(8, f - 1))} className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl text-white font-bold transition-colors shadow-inner">-</button>
-                     <span className="text-[11px] font-black w-10 text-center text-gray-500">{fontSize}px</span>
-                     <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl text-white font-bold transition-colors shadow-inner">+</button>
+            <div className="flex gap-4 p-4 border border-border rounded-[2.5rem]" style={{ backgroundColor: 'var(--card)' }}>
+                 <div className="flex items-center gap-2 px-2 border-r border-border">
+                     <button onClick={() => setFontSize(f => Math.max(8, f - 1))} className="w-8 h-8 flex items-center justify-center bg-muted/10 hover:bg-muted/20 rounded-xl text-foreground font-bold transition-colors shadow-inner">-</button>
+                     <span className="text-[11px] font-black w-10 text-center text-muted">{fontSize}px</span>
+                     <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-8 h-8 flex items-center justify-center bg-muted/10 hover:bg-muted/20 rounded-xl text-foreground font-bold transition-colors shadow-inner">+</button>
                  </div>
                  <button onClick={() => handleExport('excel')} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg">Export Excel</button>
-                 <button onClick={() => handleExport('pdf')} className="flex-1 bg-white/[0.02] border border-[var(--border)] text-gray-600 dark:text-gray-400 hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
+                 <button onClick={() => handleExport('pdf')} className="flex-1 bg-muted/5 border border-border text-muted hover:text-blue-500 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">Export PDF</button>
             </div>
         </div>
 
         {/* Data Stream - Excel Like UI */}
-        <div className="bg-white/[0.02] border border-white/[0.1] rounded-2xl overflow-hidden shadow-inner">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-inner">
              <div className="overflow-x-auto w-full custom-scrollbar">
                  <table className="w-full text-left border-collapse" style={{ fontSize: `${fontSize}px` }}>
                       <thead>
-                         <tr className="bg-white/[0.04]">
+                         <tr className="bg-muted/5">
                              {['Invoice Date', 'Neural Identity', 'Global Signature', 'Amount', 'Tax', 'Total', 'Action'].map(h => (
-                                 <th key={h} className="px-4 py-2 font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider border border-white/[0.05] whitespace-nowrap" style={{ fontSize: `${fontSize * 0.8}px` }}>{h}</th>
+                                 <th key={h} className="px-4 py-2 font-black text-muted uppercase tracking-wider border border-border whitespace-nowrap" style={{ fontSize: `${fontSize * 0.8}px` }}>{h}</th>
                              ))}
                          </tr>
                      </thead>
-                     <tbody className="bg-white/[0.01]">
+                     <tbody className="bg-muted/5">
                          {filteredData.length === 0 ? (
                            <tr>
-                               <td colSpan={7} className="px-6 py-16 text-center border border-white/[0.05]">
-                                   <p className="text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
+                               <td colSpan={7} className="px-6 py-16 text-center border border-border">
+                                   <p className="text-muted font-black uppercase tracking-widest italic opacity-40">No Neural Records Found</p>
                                </td>
                            </tr>
                          ) : filteredData.map((data, i) => (
                            <tr key={i} className={`hover:bg-blue-500/10 transition-colors group ${data.status === 'deleted' ? 'opacity-40 grayscale-[0.5]' : ''}`}>
-                             <td className={`px-4 py-2 border border-white/[0.05] whitespace-nowrap font-mono opacity-80 ${data.status === 'deleted' ? 'line-through' : ''}`} style={{ color: 'var(--foreground)' }}>
+                             <td className={`px-4 py-2 border border-border whitespace-nowrap font-mono opacity-80 ${data.status === 'deleted' ? 'line-through' : ''}`} style={{ color: 'var(--foreground)' }}>
                                  {data.invoiceDate || data.date || 'N/A'}
                              </td>
-                             <td className="px-4 py-2 border border-white/[0.05] whitespace-nowrap">
+                             <td className="px-4 py-2 border border-border whitespace-nowrap">
                                  <div className="flex flex-col gap-0.5">
                                      <div className="flex items-center gap-2">
                                          <span className={`font-black uppercase tracking-tight group-hover:text-blue-400 transition-colors ${data.status === 'deleted' ? 'line-through' : ''}`} style={{ color: 'var(--foreground)' }}>{data.vendor || 'N/A'}</span>
@@ -296,22 +310,22 @@ export default function HistoryPage() {
                                      </div>
                                      <div className="flex gap-2 opacity-50 font-bold" style={{ fontSize: `${fontSize * 0.75}px` }}>
                                          <span className="text-blue-500/80">{data.storeInfo?.email || 'NO_EMAIL'}</span>
-                                         <span className="text-gray-600">|</span>
+                                         <span className="text-muted">|</span>
                                          <span className="text-green-500/80">{data.bankDetails?.accountNumber || 'NO_BANK_AC'}</span>
                                      </div>
                                  </div>
                              </td>
-                             <td className="px-4 py-2 border border-white/[0.05] whitespace-nowrap font-mono text-blue-500">{data.invoiceNumber || 'SIG_PENDING'}</td>
-                             <td className="px-4 py-2 border border-white/[0.05] whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount - ((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0))).toLocaleString()}</td>
-                             <td className="px-4 py-2 border border-white/[0.05] whitespace-nowrap font-mono text-right text-red-500/80">₹{((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0)).toLocaleString()}</td>
-                             <td className="px-4 py-2 border border-white/[0.05] whitespace-nowrap font-mono font-black italic text-right bg-white/[0.02]" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount || 0).toLocaleString()}</td>
-                             <td className="px-4 py-1.5 border border-white/[0.05] whitespace-nowrap text-center">
+                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-blue-500">{data.invoiceNumber || 'SIG_PENDING'}</td>
+                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount - ((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0))).toLocaleString()}</td>
+                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-right text-red-500/80">₹{((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0)).toLocaleString()}</td>
+                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono font-black italic text-right bg-muted/5" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount || 0).toLocaleString()}</td>
+                             <td className="px-4 py-1.5 border border-border whitespace-nowrap text-center">
                                  <div className="inline-flex items-center gap-2">
                                      {data.status !== 'deleted' && (
                                          <>
-                                             <button onClick={() => handleEdit(data)} className="p-1.5 bg-white/[0.05] hover:bg-blue-500/20 rounded text-gray-400 hover:text-blue-400 transition-colors" title="View & Edit Details"><Icons.Eye /></button>
-                                             <button onClick={() => downloadOriginal(data.id, data.fileName)} className="p-1.5 bg-white/[0.05] hover:bg-blue-500/20 rounded text-gray-400 hover:text-blue-400 transition-colors" title="Download Original"><Icons.Download /></button>
-                                             <button onClick={() => handleDelete(data.id)} className="p-1.5 bg-white/[0.05] hover:bg-red-500/20 rounded text-gray-400 hover:text-red-400 transition-colors" title="Mark Deleted"><Icons.Trash /></button>
+                                             <button onClick={() => handleEdit(data)} className="p-1.5 bg-muted/10 hover:bg-blue-500/20 rounded text-muted hover:text-blue-400 transition-colors" title="View & Edit Details"><Icons.Eye /></button>
+                                             <button onClick={() => downloadOriginal(data.id, data.fileName)} className="p-1.5 bg-muted/10 hover:bg-blue-500/20 rounded text-muted hover:text-blue-400 transition-colors" title="Download Original"><Icons.Download /></button>
+                                             <button onClick={() => handleDelete(data.id)} className="p-1.5 bg-muted/10 hover:bg-red-500/20 rounded text-muted hover:text-red-400 transition-colors" title="Mark Deleted"><Icons.Trash /></button>
                                          </>
                                      )}
                                  </div>
@@ -325,10 +339,10 @@ export default function HistoryPage() {
 
         {/* EDIT MODAL - PORTED FROM DASHBOARD */}
         {editingDoc && (
-           <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
-               <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[2rem] max-w-6xl w-full max-h-[95vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
+           <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-background/60 backdrop-blur-md animate-in fade-in duration-700">
+               <div className="bg-card border border-border rounded-[2rem] max-w-6xl w-full max-h-[95vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
                    
-                   <div className="absolute top-0 right-0 p-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-all duration-300 z-50 text-xl" onClick={() => setEditingDoc(null)}>✕</div>
+                   <div className="absolute top-0 right-0 p-6 text-muted hover:text-foreground cursor-pointer transition-all duration-300 z-50 text-xl" onClick={() => setEditingDoc(null)}>✕</div>
                    
                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4 px-8 pt-8">
                        <div className="flex items-center gap-4">
@@ -339,8 +353,8 @@ export default function HistoryPage() {
                                </div>
                            </div>
                            <div>
-                               <p className="text-[8px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
-                               <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">Neural Insights</h3>
+                               <p className="text-[8px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.4em] mb-1">Archive Record Data</p>
+                               <h3 className="text-2xl font-black text-foreground tracking-tighter uppercase leading-none">Neural Insights</h3>
                            </div>
                        </div>
                        <div className="flex flex-col items-end gap-3">
@@ -358,10 +372,10 @@ export default function HistoryPage() {
                        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
                            <div className="lg:col-span-12 xl:col-span-8 space-y-6">
                                <div className="rounded-[1.5rem] p-6 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                                   <p className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 mb-4">Entity Profile</p>
+                                   <p className="text-[9px] font-black uppercase tracking-[0.4em] opacity-60 mb-4">Entity Profile</p>
                                    <div className="grid grid-cols-2 gap-4">
                                        <div className="space-y-1">
-                                           <p className="text-[8px] font-black opacity-30 uppercase tracking-widest">Vendor</p>
+                                           <p className="text-[8px] font-black opacity-50 uppercase tracking-widest">Vendor</p>
                                            <input 
                                                value={editableData?.vendor || ''} 
                                                onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
@@ -369,7 +383,7 @@ export default function HistoryPage() {
                                            />
                                        </div>
                                        <div className="space-y-1">
-                                           <p className="text-[8px] font-black opacity-30 uppercase tracking-widest">Invoice Date</p>
+                                           <p className="text-[8px] font-black opacity-50 uppercase tracking-widest">Invoice Date</p>
                                            <input 
                                                type="date"
                                                value={editableData?.invoiceDate || editableData?.date || ''} 
@@ -382,12 +396,12 @@ export default function HistoryPage() {
 
                                <div className="rounded-[2.5rem] p-10 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
                                    <div className="flex items-center justify-between mb-8">
-                                       <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Neural Item Log</div>
+                                       <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Neural Item Log</div>
                                        <button onClick={handleAddItem} className="px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-xl text-[10px] font-black text-blue-500 uppercase tracking-widest hover:bg-blue-600/20 transition-all">+ Add Item</button>
                                    </div>
                                    <div className="space-y-4">
                                        {(editableData?.items || []).map((item: any, idx: number) => (
-                                           <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-[var(--border)] group/item transition-all hover:bg-white/[0.03]">
+                                           <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-border group/item transition-all hover:bg-muted/5">
                                                <div className="flex items-center gap-6 flex-1">
                                                    <div className="w-10 h-10 rounded-xl bg-blue-600/5 flex items-center justify-center text-[10px] font-black text-blue-500">0{idx+1}</div>
                                                    <div className="flex flex-col gap-1 flex-1">
@@ -553,9 +567,9 @@ export default function HistoryPage() {
                        </div>
                    </div>
 
-                   <div className="relative z-10 flex gap-4 px-8 pb-8 pt-4 border-t border-[var(--border)] bg-inherit">
+                   <div className="relative z-10 flex gap-4 px-8 pb-8 pt-4 border-t border-border bg-inherit">
                        <button onClick={handleSave} disabled={isSaving} className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs tracking-[0.4em] uppercase transition-all shadow-xl disabled:opacity-50">{isSaving ? 'Synchronizing...' : 'Confirm Update'}</button>
-                       <button onClick={() => setEditingDoc(null)} className="px-8 py-4 bg-white/[0.02] border border-white/[0.08] text-white rounded-2xl font-black text-[10px] tracking-widest uppercase hover:bg-white/[0.05] transition-all">Cancel</button>
+                       <button onClick={() => setEditingDoc(null)} className="px-8 py-4 bg-muted/5 border border-border text-foreground rounded-2xl font-black text-[10px] tracking-widest uppercase hover:bg-muted/10 transition-all">Cancel</button>
                    </div>
                </div>
            </div>

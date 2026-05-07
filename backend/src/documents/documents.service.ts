@@ -25,7 +25,7 @@ export class DocumentsService {
     });
   }
 
-  async processDocument(userId: string, file: Express.Multer.File, isSandbox = false) {
+  async processDocument(userId: string, file: Express.Multer.File, isSandbox = false, docHint = 'Standard Invoice') {
     if (!isSandbox) {
         // 1. VERY STRICT SUBSCRIPTION / CREDIT VALIDATION
         const userSub = await this.prisma.userSubscription.findFirst({
@@ -35,7 +35,6 @@ export class DocumentsService {
         if (!userSub) {
             throw new BadRequestException("Insufficient credits. Please upgrade your subscription plan.");
         }
-
     }
 
     let totalAmount = 0;
@@ -45,6 +44,7 @@ export class DocumentsService {
     let taxBreakdown = { cgst: 0, sgst: 0, igst: 0 };
     let fileUrl = file.path;
     let fileKey = null;
+    let currency = 'INR';
 
     if (!isSandbox) {
         // 1. Upload to Persistent Storage (Cloudflare R2/S3)
@@ -59,13 +59,14 @@ export class DocumentsService {
 
         // Real AI Extraction
         const fileBuffer = fs.readFileSync(file.path);
-        const aiResult = await this.aiService.extractInvoiceData(fileBuffer, file.originalname, file.mimetype);
+        const aiResult = await this.aiService.extractInvoiceData(fileBuffer, file.originalname, file.mimetype, docHint);
         
         extractedData = JSON.stringify(aiResult);
         totalAmount = aiResult.totalAmount || 0;
         confidence = aiResult.confidence || 0.5;
         gstin = aiResult.vendorGstin || null;
         taxBreakdown = aiResult.taxBreakdown || taxBreakdown;
+        currency = aiResult.currency || 'INR';
 
         // Cleanup local temp file ONLY if it was successfully moved to persistent cloud storage
         if (fileKey && !fileKey.startsWith('local-') && fs.existsSync(file.path)) {
@@ -74,16 +75,20 @@ export class DocumentsService {
     } else {
         // Sandbox Mock
         totalAmount = Math.random() * 5000 + 100;
+        currency = Math.random() > 0.5 ? 'INR' : 'USD';
         extractedData = JSON.stringify({
           invoiceNumber: "SANDBOX-INV-" + Math.floor(Math.random() * 10000),
           totalAmount: totalAmount.toFixed(2),
+          currency,
           vendor: "Sandbox Vendor Inc.",
+          vendorGstin: "27AAACR1234A1Z1",
           date: new Date().toLocaleDateString(),
           isSandbox: true,
           items: [
             { name: "Sandbox Product A", quantity: 2, amount: (totalAmount * 0.6).toFixed(2) },
             { name: "Sandbox Service B", quantity: 1, amount: (totalAmount * 0.4).toFixed(2) }
-          ]
+          ],
+          taxBreakdown: { cgst: 0, sgst: 0, igst: 0, vat: 0, cess: 0, other: 0 }
         });
     }
 
@@ -115,6 +120,7 @@ export class DocumentsService {
         cgst: taxBreakdown.cgst,
         sgst: taxBreakdown.sgst,
         igst: taxBreakdown.igst,
+        currency: currency,
         totalAmount: totalAmount,
         confidence: confidence,
         extractedData: extractedData,

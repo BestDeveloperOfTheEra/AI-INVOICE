@@ -41,12 +41,13 @@ export class DocumentsController {
     if (!files || files.length === 0) throw new Error("No files uploaded");
     const userId = req.user.id;
     const isSandbox = req.headers['x-sandbox'] === 'true';
+    const docHint = req.body.docHint || 'Standard Invoice';
     
     // Process all files. For real production, this should be a queue/background job.
     const results = [];
     for (const file of files) {
       try {
-        const result = await this.documentsService.processDocument(userId, file, isSandbox);
+        const result = await this.documentsService.processDocument(userId, file, isSandbox, docHint);
         results.push(result);
       } catch (error) {
         // Individual file error - Log it but don't crash the whole batch if possible

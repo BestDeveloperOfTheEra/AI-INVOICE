@@ -28,9 +28,9 @@ export default function Home() {
           🚀 The AI-First Invoice Processing Solution
         </div>
 
-        <h1 className="text-5xl md:text-8xl font-black text-gray-900 dark:text-white tracking-tighter leading-[0.9] mb-8 uppercase italic">
+        <h1 className="text-5xl md:text-8xl font-black text-foreground tracking-tighter leading-[0.9] mb-8 uppercase italic">
           EXTRACT <br /> 
-          <span className="text-blue-600 dark:text-blue-400 drop-shadow-[0_0_30px_rgba(37,99,235,0.3)]">INVOICES</span> <br /> 
+          <span className="text-blue-600 dark:text-blue-500 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]">INVOICES</span> <br /> 
           INSTANTLY
         </h1>
 
@@ -40,10 +40,10 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          <Link href="/dashboard" className="px-10 py-5 rounded-2xl bg-blue-600 text-white font-black uppercase tracking-[0.2em] hover:bg-blue-500 transition-all shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95">
+          <Link href="/dashboard" className="px-10 py-5 rounded-2xl bg-blue-600 text-white font-black uppercase tracking-[0.2em] hover:bg-blue-500 transition-all shadow-lg hover:scale-105 active:scale-95">
             Start Free Trial
           </Link>
-          <a href="/api/docs" className="px-10 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-black uppercase tracking-[0.1em] hover:bg-gray-200 dark:hover:bg-white/10 transition-all backdrop-blur-sm">
+          <a href="/api/docs" className="px-10 py-5 rounded-2xl bg-card border border-border text-foreground font-black uppercase tracking-[0.1em] hover:bg-muted/10 transition-all backdrop-blur-sm">
             API Documentation
           </a>
         </div>
@@ -56,8 +56,8 @@ export default function Home() {
           <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl mb-6">
             📄
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Line Item Extraction</h3>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+          <h3 className="text-xl font-semibold text-foreground mb-3">Line Item Extraction</h3>
+          <p className="text-muted leading-relaxed">
             Our AI model goes beyond simple OCR. It understands the context of your invoices, extracting line items, descriptions, quantities, and unit prices with precision.
           </p>
         </div>
@@ -67,8 +67,8 @@ export default function Home() {
           <div className="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-6">
             ⚡
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Bulk Batch Processing</h3>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+          <h3 className="text-xl font-semibold text-foreground mb-3">Bulk Batch Processing</h3>
+          <p className="text-muted leading-relaxed">
             Stop uploading one by one. Process hundreds of invoices in a single batch. Perfect for monthly accounting and audit preparations.
           </p>
         </div>
@@ -78,8 +78,8 @@ export default function Home() {
           <div className="w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl mb-6">
             🔗
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">ERP Integration API</h3>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+          <h3 className="text-xl font-semibold text-foreground mb-3">ERP Integration API</h3>
+          <p className="text-muted leading-relaxed">
             Seamlessly push extracted invoice data directly into Tally, QuickBooks, Zoho, or your custom internal systems via our robust API.
           </p>
         </div>
@@ -87,24 +87,24 @@ export default function Home() {
 
       {/* SEO Content Section: Why Choose AutoExtract AI */}
       <section className="w-full max-w-4xl mx-auto mt-40 px-6 text-center">
-        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter uppercase italic"> why businesses use our <span className="text-blue-600 dark:text-blue-500">AI Invoice Reader</span></h2>
-        <p className="text-gray-600 dark:text-gray-100 text-lg leading-relaxed mb-12 font-medium">
+        <h2 className="text-3xl md:text-5xl font-black text-foreground mb-8 tracking-tighter uppercase italic"> why businesses use our <span className="text-blue-600">AI Invoice Reader</span></h2>
+        <p className="text-muted text-lg leading-relaxed mb-12 font-medium">
           Manual data entry is prone to human error and costs your business hundreds of productive hours. 
           AutoExtract AI leverages advanced Large Language Models (LLMs) to read and understand invoices just like a human accountant would, but 100x faster.
         </p>
 
         <div className="grid md:grid-cols-2 gap-12 text-left mt-16">
           <div>
-            <h4 className="text-gray-900 dark:text-white font-black uppercase tracking-tight mb-4 flex items-center gap-2">
+            <h4 className="text-foreground font-black uppercase tracking-tight mb-4 flex items-center gap-2">
               <span className="text-green-600 dark:text-green-500 text-xl">✓</span> Reduce Manual Entry by 95%
             </h4>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Automate your workflow and let your team focus on high-value tasks instead of copying numbers from PDFs.</p>
+            <p className="text-muted font-medium leading-relaxed">Automate your workflow and let your team focus on high-value tasks instead of copying numbers from PDFs.</p>
           </div>
           <div>
-            <h4 className="text-gray-900 dark:text-white font-black uppercase tracking-tight mb-4 flex items-center gap-2">
+            <h4 className="text-foreground font-black uppercase tracking-tight mb-4 flex items-center gap-2">
               <span className="text-green-600 dark:text-green-500 text-xl">✓</span> 99.9% Extraction Accuracy
             </h4>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Our AI identifies vendor names, dates, SGST/CGST, and totals even on poorly scanned or hand-written invoices.</p>
+            <p className="text-muted font-medium leading-relaxed">Our AI identifies vendor names, dates, SGST/CGST, and totals even on poorly scanned or hand-written invoices.</p>
           </div>
           <div>
             <h4 className="text-gray-900 dark:text-white font-black uppercase tracking-tight mb-4 flex items-center gap-2">
@@ -113,23 +113,23 @@ export default function Home() {
             <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Whether it's an invoice from Europe, Asia, or the USA, AutoExtract handles global formats with ease.</p>
           </div>
           <div>
-            <h4 className="text-gray-900 dark:text-white font-black uppercase tracking-tight mb-4 flex items-center gap-2">
+            <h4 className="text-foreground font-black uppercase tracking-tight mb-4 flex items-center gap-2">
               <span className="text-green-600 dark:text-green-500 text-xl">✓</span> ISO-Grade Security
             </h4>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Your documents are processed securely and encrypted. We prioritize your privacy and data sovereignty.</p>
+            <p className="text-muted font-medium leading-relaxed">Your documents are processed securely and encrypted. We prioritize your privacy and data sovereignty.</p>
           </div>
         </div>
       </section>
 
       {/* How it Works Section */}
-      <section className="w-full max-w-6xl mx-auto mt-40 px-6 py-24 bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-[4rem] shadow-xl dark:shadow-none relative overflow-hidden">
+      <section className="w-full max-w-6xl mx-auto mt-40 px-6 py-24 bg-card border border-border rounded-[4rem] shadow-xl dark:shadow-none relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-blue-600/[0.02] pointer-events-none" />
-        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white text-center mb-20 tracking-tighter uppercase italic">How it <span className="text-blue-600">Works</span></h2>
+        <h2 className="text-3xl md:text-5xl font-black text-foreground text-center mb-20 tracking-tighter uppercase italic">How it <span className="text-blue-600">Works</span></h2>
         <div className="grid md:grid-cols-3 gap-16 relative z-10">
           <div className="text-center group">
             <div className="w-20 h-20 rounded-[2rem] bg-blue-600 text-white flex items-center justify-center text-3xl font-black mx-auto mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-500 italic">01</div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Upload Documents</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed px-4">Drag and drop your PDF, JPG, or PNG invoices directly into our dashboard or use the API.</p>
+            <h3 className="text-xl font-black text-foreground mb-4 uppercase tracking-tight">Upload Documents</h3>
+            <p className="text-muted font-medium leading-relaxed px-4">Drag and drop your PDF, JPG, or PNG invoices directly into our dashboard or use the API.</p>
           </div>
           <div className="text-center group">
             <div className="w-20 h-20 rounded-[2rem] bg-blue-600 text-white flex items-center justify-center text-3xl font-black mx-auto mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-500 italic">02</div>
@@ -138,22 +138,22 @@ export default function Home() {
           </div>
           <div className="text-center group">
             <div className="w-20 h-20 rounded-[2rem] bg-blue-600 text-white flex items-center justify-center text-3xl font-black mx-auto mb-8 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-500 italic">03</div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4 uppercase tracking-tight">Export & Sync</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed px-4">Download your data as Excel, CSV, or PDF, or let our API push it directly to your ERP software.</p>
+            <h3 className="text-xl font-black text-foreground mb-4 uppercase tracking-tight">Export & Sync</h3>
+            <p className="text-muted font-medium leading-relaxed px-4">Download your data as Excel, CSV, or PDF, or let our API push it directly to your ERP software.</p>
           </div>
         </div>
       </section>
 
       {/* Create Account Section */}
       <section className="w-full max-w-6xl mx-auto mt-40 px-6">
-        <div className="grid md:grid-cols-2 gap-16 items-center bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-[4rem] p-16 relative overflow-hidden shadow-2xl dark:shadow-none">
+        <div className="grid md:grid-cols-2 gap-16 items-center bg-card border border-border rounded-[4rem] p-16 relative overflow-hidden shadow-2xl dark:shadow-none">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px]"></div>
           
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
+            <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-none">
               CREATE <br /> ACCOUNT
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+            <p className="text-xl text-muted font-medium leading-relaxed">
               Start extracting data today with our enterprise-grade neural engine. 
               Setup takes less than 60 seconds.
             </p>
@@ -171,16 +171,16 @@ export default function Home() {
 
           <div className="relative group">
             <div className="absolute inset-0 bg-blue-500/20 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-            <div className="relative bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-[3rem] p-10 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-1000">
+            <div className="relative bg-card border border-border rounded-[3rem] p-10 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-1000">
                <div className="space-y-6">
                   <div className="w-12 h-1 bg-blue-600/50 rounded-full"></div>
                   <div className="space-y-2">
-                    <div className="h-4 w-3/4 bg-gray-100 dark:bg-white/5 rounded-md"></div>
-                    <div className="h-10 w-full bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"></div>
+                    <div className="h-4 w-3/4 bg-muted/10 rounded-md"></div>
+                    <div className="h-10 w-full bg-muted/5 rounded-xl border border-border"></div>
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 w-1/2 bg-gray-100 dark:bg-white/5 rounded-md"></div>
-                    <div className="h-10 w-full bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10"></div>
+                    <div className="h-4 w-1/2 bg-muted/10 rounded-md"></div>
+                    <div className="h-10 w-full bg-muted/5 rounded-xl border border-border"></div>
                   </div>
                   <div className="pt-4 space-y-4">
                     <div className="h-3 w-1/3 bg-blue-500/10 dark:bg-blue-500/20 rounded-md"></div>
@@ -193,7 +193,7 @@ export default function Home() {
                </div>
             </div>
             {/* Floating Badges */}
-            <div className="absolute -top-6 -right-6 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 p-4 rounded-2xl shadow-2xl animate-bounce duration-[3000ms]">
+            <div className="absolute -top-6 -right-6 bg-card border border-border p-4 rounded-2xl shadow-2xl animate-bounce duration-[3000ms]">
                <span className="text-xl">🔒</span>
             </div>
           </div>
@@ -205,20 +205,20 @@ export default function Home() {
         <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white text-center mb-16 tracking-tighter uppercase italic">Frequently Asked <span className="text-blue-600">Questions</span></h2>
         <div className="space-y-6">
           <div className="p-8 rounded-3xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-gray-50 dark:hover:bg-white/[0.05] transition-colors">
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-3 uppercase tracking-tight">What is an AI Invoice Reader?</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">An AI Invoice Reader is a software that uses Artificial Intelligence and Machine Learning to automatically identify and extract data from invoices and receipts. Unlike traditional OCR, it understands the context and layout of different vendors.</p>
+            <h3 className="text-lg font-black text-foreground mb-3 uppercase tracking-tight">What is an AI Invoice Reader?</h3>
+            <p className="text-muted font-medium leading-relaxed">An AI Invoice Reader is a software that uses Artificial Intelligence and Machine Learning to automatically identify and extract data from invoices and receipts. Unlike traditional OCR, it understands the context and layout of different vendors.</p>
           </div>
-          <div className="p-8 rounded-3xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-gray-50 dark:hover:bg-white/[0.05] transition-colors">
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-3 uppercase tracking-tight">How accurate is the data extraction?</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">AutoExtract AI achieves up to 99.9% accuracy on standard invoices. It can handle line items, tax details, vendor information, and totals even on complex layouts or scanned documents.</p>
+          <div className="p-8 rounded-3xl bg-card border border-border shadow-sm dark:shadow-none hover:bg-muted/5 transition-colors">
+            <h3 className="text-lg font-black text-foreground mb-3 uppercase tracking-tight">How accurate is the data extraction?</h3>
+            <p className="text-muted font-medium leading-relaxed">AutoExtract AI achieves up to 99.9% accuracy on standard invoices. It can handle line items, tax details, vendor information, and totals even on complex layouts or scanned documents.</p>
           </div>
-          <div className="p-8 rounded-3xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-gray-50 dark:hover:bg-white/[0.05] transition-colors">
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-3 uppercase tracking-tight">Can I export extraction results to Excel?</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Yes! You can export your processed invoices directly to Excel, CSV, or PDF formats with a single click from your dashboard.</p>
+          <div className="p-8 rounded-3xl bg-card border border-border shadow-sm dark:shadow-none hover:bg-muted/5 transition-colors">
+            <h3 className="text-lg font-black text-foreground mb-3 uppercase tracking-tight">Can I export extraction results to Excel?</h3>
+            <p className="text-muted font-medium leading-relaxed">Yes! You can export your processed invoices directly to Excel, CSV, or PDF formats with a single click from your dashboard.</p>
           </div>
-          <div className="p-8 rounded-3xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-gray-50 dark:hover:bg-white/[0.05] transition-colors">
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-3 uppercase tracking-tight">Does it support Tally or Zoho Integration?</h3>
-            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">Absolutely. You can use our Developer API to push data directly into accounting software like Tally, Zoho Books, QuickBooks, and SAP.</p>
+          <div className="p-8 rounded-3xl bg-card border border-border shadow-sm dark:shadow-none hover:bg-muted/5 transition-colors">
+            <h3 className="text-lg font-black text-foreground mb-3 uppercase tracking-tight">Does it support Tally or Zoho Integration?</h3>
+            <p className="text-muted font-medium leading-relaxed">Absolutely. You can use our Developer API to push data directly into accounting software like Tally, Zoho Books, QuickBooks, and SAP.</p>
           </div>
         </div>
       </section>

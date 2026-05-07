@@ -17,30 +17,43 @@ export class AiService {
     }
   }
 
-  async extractInvoiceData(fileBuffer: Buffer, fileName: string, mimetype: string) {
-    this.logger.log(`Extracting data from: ${fileName} (${mimetype})`);
+  async extractInvoiceData(fileBuffer: Buffer, fileName: string, mimetype: string, docHint = 'Standard Invoice') {
+    this.logger.log(`Extracting data from: ${fileName} (${mimetype}) using hint: ${docHint}`);
 
     const systemPrompt = `
-      You are an expert Indian GST Invoice Extractor. 
-      Extract structured data from the provided invoice document.
-      Ensure amounts are numbers and dates are in YYYY-MM-DD format.
-      Focus on accurately capturing GSTINs and Tax Breakdowns.
-      IMPORTANT: Extract EVERY single line item exactly as it appears on the invoice. Do NOT group, merge, or omit any items, even if they have the same name. Keep the exact order and names.
-      Return ONLY a JSON object.
+      You are an elite AI Invoice Extractor specialized in Global Tax Compliance (GST, VAT, Sales Tax). 
+      Your goal is 100% accuracy in financial data extraction.
+      
+      CRITICAL INSTRUCTIONS:
+      1. Extract EVERY single line item exactly as it appears. Do NOT merge rows.
+      2. Capture the HSN/SAC code if available.
+      3. For rates and amounts, use the EXACT numbers printed. Do NOT round or estimate.
+      4. Distinguish between Taxable Value (Base) and Total Value (including Tax).
+      5. Capture full Tax Breakdowns (CGST, SGST, IGST, VAT, CESS).
+      6. Support hand-written receipts by carefully analyzing strokes.
+      7. Handle multi-lingual invoices (e.g., French, Hindi, Arabic) by translating labels to the target JSON schema.
+      8. Detect the Currency Code (e.g., INR, USD, EUR, PKR).
+      9. If a value is missing but can be calculated (e.g., Total = Base + Tax), do the math to ensure consistency.
+      10. Confidence score must reflect the legibility of the document.
+      
+      Return ONLY a clean JSON object.
     `;
 
     const userPrompt = `
-      Return ONLY a JSON object with this structure:
+      DOCUMENT CONTEXT: This is a ${docHint}. Please optimize your extraction strategy for this type.
+      
+      Analyze the attached invoice image and return a JSON object with this EXACT structure:
       {
         "invoiceNumber": "string",
         "vendor": "string",
-        "vendorGstin": "string",
+        "vendorGstin": "string (Tax ID / GSTIN / VAT ID)",
         "customerName": "string",
         "customerGstin": "string",
-        "address": "string",
+        "address": "string (Full billing address)",
         "email": "string",
         "phone": "string",
-        "invoiceDate": "string (The actual date printed on the invoice, YYYY-MM-DD)",
+        "invoiceDate": "string (YYYY-MM-DD)",
+        "currency": "string (ISO code, e.g., INR, USD)",
         "bankDetails": {
           "accountName": "string",
           "bankName": "string",
@@ -55,53 +68,44 @@ export class AiService {
           "website": "string",
           "phone": "string"
         },
-        "totalAmount": number,
-        "taxAmount": number,
-        "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
+        "totalAmount": number (The final payable amount),
+        "taxAmount": number (Total tax sum),
+        "taxBreakdown": { 
+          "cgst": number, 
+          "sgst": number, 
+          "igst": number,
+          "vat": number,
+          "cess": number,
+          "other": number
+        },
         "items": [
-          { "name": "string", "quantity": number, "rate": number, "amount": number }
+          { 
+            "name": "string", 
+            "hsn": "string",
+            "quantity": number, 
+            "rate": number, 
+            "taxRate": number (percentage),
+            "amount": number (Total for this item, usually Qty * Rate)
+          }
         ],
-        "confidence": number,
+        "confidence": number (0.0 to 1.0),
         "isGstReady": boolean
       }
     `;
 
     if (!this.openai || process.env.USE_AI_MOCK === 'true') {
-      this.logger.log(`Using mock extraction for: ${fileName}`);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      // Mock remains same but updated to new schema if needed
       return {
-        invoiceNumber: `MOCK-INV-${Math.floor(Math.random() * 100000)}`,
-        vendor: "Mock Vendor Services",
+        invoiceNumber: "INV-SAMPLE-001",
+        vendor: "Mock Vendor",
         vendorGstin: "27AAACR1234A1Z1",
-        customerName: "Antigravity Labs",
-        customerGstin: "27BBBSR5678B2Z2",
-        address: "123 Tech Park, Delhi, India",
-        email: "support@antigravity.com",
-        phone: "+91 98765 43210",
-        invoiceDate: "2024-05-01",
-        bankDetails: {
-          accountName: "Antigravity Corp",
-          bankName: "HDFC Bank",
-          accountNumber: "50200012345678",
-          branch: "Cyber City",
-          ifscCode: "HDFC0001234"
-        },
-        storeInfo: {
-          address: "123 Tech Park, Delhi, India",
-          msme: "UDYAM-DL-01-0012345",
-          email: "support@antigravity.com",
-          website: "www.antigravity.com",
-          phone: "+91 98765 43210"
-        },
-        totalAmount: 1250.50,
-        taxAmount: 225.10,
-        taxBreakdown: { cgst: 112.55, sgst: 112.55, igst: 0 },
-        items: [
-          { name: "Executive Consulting Sequence", quantity: 1, amount: 1000.00 },
-          { name: "Cloud Infrastructure Setup", quantity: 1, amount: 250.50 }
-        ],
-        confidence: 0.95,
+        customerName: "Sample Customer",
+        totalAmount: 1180.00,
+        taxAmount: 180.00,
+        currency: "INR",
+        items: [{ name: "Consulting", quantity: 1, rate: 1000, amount: 1000, hsn: "998311" }],
+        taxBreakdown: { cgst: 90, sgst: 90, igst: 0, vat: 0, cess: 0, other: 0 },
+        confidence: 0.99,
         isGstReady: true
       };
     }
@@ -121,24 +125,24 @@ export class AiService {
               type: "image_url",
               image_url: {
                 url: `data:${mimetype};base64,${base64Image}`,
+                detail: "high"
               },
             },
           ],
         });
       } else {
-        // Fallback for text/PDF - For PDF, we'd ideally use a library to convert to text first
-        // But to fix the token error, we'll at least truncate or read as safe string
-        const textContent = fileBuffer.toString('utf8').slice(0, 10000); // Truncate to avoid overflow
+        const textContent = fileBuffer.toString('utf8').slice(0, 15000); 
         messages.push({
           role: "user",
-          content: `${userPrompt}\n\nInvoice Content (Truncated if too long):\n${textContent}`
+          content: `${userPrompt}\n\nInvoice Content:\n${textContent}`
         });
       }
 
       const completion = await this.openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: messages,
         response_format: { type: "json_object" },
+        temperature: 0, // Strictness
       });
 
       const content = completion.choices[0].message.content;
@@ -146,12 +150,6 @@ export class AiService {
       return JSON.parse(content);
     } catch (error: any) {
       this.logger.error('AI Extraction failed:', error.message);
-      if (error.status === 401) {
-        throw new BadRequestException('Invalid OpenAI API Key. Please check your .env file.');
-      }
-      if (error.status === 429) {
-          throw new BadRequestException('OpenAI Quota exceeded or Rate limited.');
-      }
       throw new BadRequestException('Failed to extract data. ' + (error.message || ''));
     }
   }

@@ -69,6 +69,7 @@ export default function DashboardPage() {
   const [recentDocs, setRecentDocs] = useState<any[]>([]);
   const [lastResult, setLastResult] = useState<any>(null);
   const [editableData, setEditableData] = useState<any>(null);
+  const [docHint, setDocHint] = useState<string>('Standard Invoice'); // Default hint
   const [isSaving, setIsSaving] = useState(false);
   const [fontSize, setFontSize] = useState(12);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,10 +82,15 @@ export default function DashboardPage() {
   useEffect(() => {
     if (lastResult || isUploading || isConfirming || isInsufficient) {
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
     } else {
       document.body.style.overflow = 'unset';
+      document.body.classList.remove('modal-open');
     }
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => { 
+      document.body.style.overflow = 'unset';
+      document.body.classList.remove('modal-open');
+    };
   }, [lastResult, isUploading, isConfirming, isInsufficient]);
 
   // Auto-calculate total amount based on items and taxes
@@ -178,12 +184,11 @@ export default function DashboardPage() {
 
     try {
         for (let i = 0; i < files.length; i++) {
-            setUploadProgress({ current: i, total: files.length });
-            
             const file = files[i];
             const formData = new FormData();
             formData.append('files', file);
-
+            formData.append('docHint', docHint); // Send the selected hint
+            
             const res = await fetch(`${API_URL}/documents/upload`, {
               method: 'POST',
               headers: { 
@@ -285,7 +290,7 @@ export default function DashboardPage() {
         ref={fileInputRef} 
         style={{ display: 'none' }} 
         onChange={handleFileChange}
-        accept=".pdf,.png,.jpg,.jpeg"
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
         multiple
       />
 
@@ -297,7 +302,7 @@ export default function DashboardPage() {
           { title: 'Amount Extracted', value: `₹${(stats?.totalAmount || 0).toLocaleString()}`, desc: 'Total financial data', icon: <Icons.Currency />, color: 'emerald', trend: '+8.4%' },
           { title: 'Exports Generated', value: stats?.exportsGenerated || 0, desc: 'Generated reports', icon: <Icons.Download />, color: 'violet', trend: '+22' }
         ].map((card, i) => (
-          <div key={i} className={`group relative bg-card border border-gray-100 dark:border-white/[0.08] rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:border-gray-200 dark:hover:border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
+          <div key={i} className={`group relative bg-card border border-border rounded-[2.5rem] p-9 transition-all duration-700 hover:-translate-y-2 hover:bg-muted/5 hover:border-blue-500/20 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:shadow-[0_40px_80px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden cursor-default animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${i*100}ms` }}>
             {/* Local Icon Glow */}
             <div className={`absolute left-8 top-8 w-14 h-14 blur-[30px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 ${
                 card.color === 'blue' ? 'bg-blue-500/50' : 
@@ -326,17 +331,17 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                    <p className="text-gray-500 dark:text-gray-400 text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors group-hover:text-blue-500">{card.title}</p>
+                    <p className="text-muted text-[11px] font-black uppercase tracking-[0.3em] mb-3 transition-colors group-hover:text-blue-500">{card.title}</p>
                     <div className="flex items-baseline gap-2 mb-4">
                         <h4 className="text-3xl md:text-4xl font-black text-foreground tracking-tighter leading-none group-hover:scale-[1.02] transition-transform duration-500 truncate max-w-full">
                             <CountUp value={card.value} />
                         </h4>
                     </div>
-                    <div className="pt-4 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
-                         <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
+                    <div className="pt-4 border-t border-border flex items-center justify-between">
+                         <span className="text-muted text-[10px] font-black uppercase tracking-widest">{card.desc}</span>
                          <div className="flex gap-1 animate-pulse">
-                             <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
-                             <div className="w-1 h-1 rounded-full bg-gray-200 dark:bg-white/10"></div>
+                             <div className="w-1 h-1 rounded-full bg-muted/20"></div>
+                             <div className="w-1 h-1 rounded-full bg-muted/20"></div>
                              <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,1)]"></div>
                          </div>
                     </div>
@@ -359,8 +364,8 @@ export default function DashboardPage() {
                       {item.icon}
                   </div>
                   <div className="flex flex-col">
-                      <span className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1 group-hover:text-gray-900 dark:group-hover:text-gray-300 transition-colors">{item.label}</span>
-                      <span className="text-xs font-black text-gray-400 dark:text-white/70 group-hover:text-foreground transition-colors">{item.value}</span>
+                      <span className="text-[9px] font-black text-muted uppercase tracking-widest leading-none mb-1 group-hover:text-foreground transition-colors">{item.label}</span>
+                      <span className="text-xs font-black text-muted group-hover:text-foreground transition-colors">{item.value}</span>
                   </div>
               </div>
           ))}
@@ -386,9 +391,19 @@ export default function DashboardPage() {
                             <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40" style={{ color: 'var(--foreground)' }}>High-Priority Extraction Workspace</p>
                         </div>
                     </div>
-                    <div className="flex gap-2">
-                        {['PDF', 'JPG', 'PNG'].map(fmt => (
-                            <span key={fmt} className="px-4 py-1.5 bg-gray-100 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl text-[10px] font-black text-gray-500 tracking-tighter hover:text-gray-400 dark:hover:text-gray-400 transition-colors cursor-default">{fmt}</span>
+                    <div className="flex flex-wrap gap-2 justify-end max-w-[50%]">
+                        {['Standard Invoice', 'Scanned Copy', 'Hand Written', 'Old School', 'PDF', 'PNG', 'JPEG'].map(hint => (
+                            <button 
+                                key={hint} 
+                                onClick={(e) => { e.stopPropagation(); setDocHint(hint); }}
+                                className={`px-3 py-1.5 border rounded-xl text-[9px] font-black tracking-tighter transition-all uppercase ${
+                                    docHint === hint 
+                                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105' 
+                                    : 'bg-background/50 border-border text-gray-500 hover:text-foreground hover:border-blue-500/30'
+                                }`}
+                            >
+                                {hint}
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -460,10 +475,10 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none uppercase">
+                        <h3 className="text-3xl font-black text-foreground tracking-tighter leading-none uppercase">
                             {credits <= 0 ? "You've reached your limit" : "Scale your extraction"}
                         </h3>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <p className="text-sm font-medium text-muted leading-relaxed">
                             {credits <= 0 
                                 ? "Each extraction costs 1 credit. Unlock unlimited invoice processing and continue managing your workspace instantly." 
                                 : "Upgrade today to unlock unlimited invoice processing and priority access to our Neural AI extraction queue."}
@@ -490,7 +505,7 @@ export default function DashboardPage() {
                         className={`group/btn relative w-full py-6 rounded-2xl font-black text-sm tracking-[0.4em] uppercase transition-all shadow-3xl hover:scale-[1.03] active:scale-[0.97] overflow-hidden ${
                             credits <= 5 
                             ? 'bg-blue-600 text-white shadow-blue-500/40' 
-                            : 'bg-white/5 text-white border border-white/10 hover:border-blue-500/40'
+                            : 'bg-muted/10 text-foreground border border-border hover:border-blue-500/40'
                         }`}
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
@@ -523,7 +538,7 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-white text-lg font-black tracking-tight uppercase">Stream Standby</p>
+                                <p className="text-foreground text-lg font-black tracking-tight uppercase">Stream Standby</p>
                                 <p className="text-gray-600 text-[9px] font-black uppercase tracking-[0.4em] max-w-[200px]">Awaiting next extraction sequence...</p>
                             </div>
                         </div>
@@ -531,7 +546,7 @@ export default function DashboardPage() {
                         recentDocs.slice(0, 4).map((doc, i) => {
                             const data = JSON.parse(doc.extractedData || '{}');
                             return (
-                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-white/[0.04] hover:translate-x-2 border border-transparent hover:border-[var(--border)] active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl transition-colors`} style={{ animationDelay: `${i*100}ms` }}>
+                                <div key={i} className={`flex items-center justify-between group cursor-pointer p-7 -mx-4 rounded-[2.5rem] transition-all duration-700 hover:bg-muted/5 hover:translate-x-2 border border-transparent hover:border-border active:scale-[0.98] animate-in fade-in slide-in-from-right-4 fill-mode-both shadow-sm hover:shadow-2xl transition-colors`} style={{ animationDelay: `${i*100}ms` }}>
                                      <div className="flex items-center gap-7">
                                          <div className="w-16 h-16 rounded-[1.5rem] bg-blue-600/5 border border-[var(--border)] flex items-center justify-center text-3xl shadow-xl group-hover:shadow-blue-500/20 group-hover:border-blue-500/40 transition-all duration-700 ease-out">
                                               <span className="group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">🧾</span>
@@ -571,10 +586,10 @@ export default function DashboardPage() {
                    </div>
               </div>
               <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-2 border-r border-[var(--border)]">
-                     <button onClick={() => setFontSize(f => Math.max(8, f - 1))} className="w-6 h-6 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-white font-bold transition-colors shadow-inner">-</button>
-                     <span className="text-[10px] font-black w-8 text-center text-gray-500">{fontSize}px</span>
-                     <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-6 h-6 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-white font-bold transition-colors shadow-inner">+</button>
+                  <div className="flex items-center gap-2 px-2 border-r border-border">
+                     <button onClick={() => setFontSize(f => Math.max(8, f - 1))} className="w-6 h-6 flex items-center justify-center bg-muted/10 hover:bg-muted/20 rounded-lg text-foreground font-bold transition-colors shadow-inner">-</button>
+                     <span className="text-[10px] font-black w-8 text-center text-muted">{fontSize}px</span>
+                     <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-6 h-6 flex items-center justify-center bg-muted/10 hover:bg-muted/20 rounded-lg text-foreground font-bold transition-colors shadow-inner">+</button>
                  </div>
                   <button onClick={() => router.push('/dashboard/history')} className="px-6 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/20 hover:bg-blue-600/10 text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest rounded-xl transition-all hover:text-blue-600 dark:hover:text-blue-400 group/btn shadow-inner">
                       View Full Stack 
@@ -682,330 +697,218 @@ export default function DashboardPage() {
 
       {/* RESULT MODAL (REFINED FOR CLARITY AND FOCUS) */}
       {lastResult && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-10 bg-black/60 backdrop-blur-md animate-in fade-in duration-700">
-            <div className="bg-[#ffffff] dark:bg-[#080808] border border-[var(--border)] rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col shadow-2xl backdrop-blur-3xl animate-in zoom-in-95 slide-in-from-bottom-8 duration-700 relative overflow-hidden group/modal" style={{ color: 'var(--foreground)' }}>
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-2 md:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-500 overflow-y-auto">
+            <div className="bg-white text-black w-full max-w-5xl rounded-xl shadow-2xl flex flex-col relative overflow-hidden my-auto border-2 border-gray-300">
                 
-                {/* Subtle Luminous Accent */}
-                <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 blur-[150px]"></div>
-                <div className="absolute top-0 right-0 p-10 text-gray-600 hover:text-white cursor-pointer transition-all duration-300 z-50 text-2xl" onClick={() => setLastResult(null)}>✕</div>
-                
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10 mb-8 px-12 pt-12">
-                    <div className="flex items-center gap-8">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-green-500/10 blur-2xl"></div>
-                            <div className="relative w-20 h-20 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center text-green-500 shadow-xl">
-                                <Icons.Check />
-                            </div>
-                        </div>
-                        <div>
-                            <p className="text-[9px] font-black text-green-500/60 uppercase tracking-[0.4em] mb-1">Extraction Verified</p>
-                            <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">Neural Capture 01</h3>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                         <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] shadow-inner px-5 py-2.5 rounded-xl">
-                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Confidence Score: 99.4%</span>
-                         </div>
-                    </div>
+                {/* Header Actions */}
+                <div className="absolute top-4 right-4 flex gap-4 z-50 print:hidden">
+                    <button onClick={() => setLastResult(null)} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">✕</button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-12 py-4 custom-scrollbar">
-
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
-                    {/* LEFT DATA COLUMN */}
-                    <div className="lg:col-span-12 xl:col-span-7 space-y-8">
-                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
-                                <span>Entity Profile</span>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Vendor Name</p>
-                                    <input 
-                                        value={editableData?.vendor || ''} 
-                                        onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
-                                        className="text-2xl font-black tracking-tight uppercase bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    {/* INVOICE DOCUMENT START */}
+                    <div className="border border-black p-1">
+                        <div className="border border-black flex flex-col items-center py-4 px-6 text-center">
+                            <input 
+                                value={editableData?.vendor || ''} 
+                                onChange={(e) => setEditableData({...editableData, vendor: e.target.value})}
+                                className="text-3xl font-black uppercase tracking-tighter w-full text-center bg-transparent border-none focus:outline-none"
+                                placeholder="COMPANY NAME"
+                            />
+                            <textarea 
+                                value={editableData?.storeInfo?.address || ''} 
+                                onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, address: e.target.value}})}
+                                className="text-xs font-bold w-full text-center bg-transparent border-none focus:outline-none resize-none mt-1"
+                                rows={2}
+                                placeholder="NO - 00, ABC ROAD, CHENNAI..."
+                            />
+                            <div className="flex gap-6 mt-1 text-xs font-black">
+                                <div className="flex items-center gap-1">
+                                    <span>Tel:</span>
+                                    <input value={editableData?.storeInfo?.phone || ''} onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, phone: e.target.value}})} className="bg-transparent border-none focus:outline-none w-24" />
                                 </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Invoice Date</p>
-                                    <input 
-                                        type="date"
-                                        value={editableData?.invoiceDate || editableData?.date || ''} 
-                                        onChange={(e) => setEditableData({...editableData, invoiceDate: e.target.value})}
-                                        className="text-2xl font-black tracking-tight uppercase bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
+                                <div className="flex items-center gap-1 uppercase">
+                                    <span>GSTIN:</span>
+                                    <input value={editableData?.vendorGstin || ''} onChange={(e) => setEditableData({...editableData, vendorGstin: e.target.value})} className="bg-transparent border-none focus:outline-none w-32 font-mono" />
                                 </div>
-                            </div>
-                            <div className="flex items-center gap-4 mt-6">
-                                <p className="text-xs font-mono font-bold tracking-[0.2em] uppercase py-2.5 px-5 bg-blue-500/5 rounded-xl border border-blue-500/10 text-blue-500">{lastResult.gstin || "NO_GST_DETECTED"}</p>
                             </div>
                         </div>
 
-                        {/* LINE ITEMS TABLE (ENHANCED SCAN-ABILITY) */}
-                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] transition-colors duration-500" style={{ backgroundColor: 'var(--card)' }}>
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Neural Item Log</div>
-                                <button 
-                                    onClick={handleAddItem}
-                                    className="px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-xl text-[10px] font-black text-blue-500 uppercase tracking-widest hover:bg-blue-600/20 transition-all"
-                                >
-                                    + Add Item
-                                </button>
+                        <div className="border-x border-b border-black text-center py-1 bg-gray-100">
+                            <h2 className="text-lg font-black uppercase tracking-widest">Tax Invoice</h2>
+                        </div>
+
+                        {/* Details Grid */}
+                        <div className="grid grid-cols-2 border-x border-black">
+                            <div className="border-r border-black">
+                                <div className="flex border-b border-black">
+                                    <div className="w-1/3 px-2 py-1 border-r border-black text-[10px] font-black uppercase bg-gray-50">Invoice No:</div>
+                                    <input value={editableData?.invoiceNumber || ''} onChange={(e) => setEditableData({...editableData, invoiceNumber: e.target.value})} className="w-2/3 px-2 py-1 text-[10px] font-bold focus:outline-none" />
+                                </div>
+                                <div className="flex border-b border-black">
+                                    <div className="w-1/3 px-2 py-1 border-r border-black text-[10px] font-black uppercase bg-gray-50">Invoice date:</div>
+                                    <input type="date" value={editableData?.invoiceDate || ''} onChange={(e) => setEditableData({...editableData, invoiceDate: e.target.value})} className="w-2/3 px-2 py-1 text-[10px] font-bold focus:outline-none" />
+                                </div>
+                                <div className="flex border-b border-black">
+                                    <div className="w-1/3 px-2 py-1 border-r border-black text-[10px] font-black uppercase bg-gray-50">Reverse Charge:</div>
+                                    <input value={editableData?.reverseCharge || 'N'} onChange={(e) => setEditableData({...editableData, reverseCharge: e.target.value})} className="w-2/3 px-2 py-1 text-[10px] font-bold focus:outline-none uppercase" />
+                                </div>
+                                <div className="flex">
+                                    <div className="w-1/3 px-2 py-1 border-r border-black text-[10px] font-black uppercase bg-gray-50">State Code:</div>
+                                    <input value={editableData?.stateCode || '33'} onChange={(e) => setEditableData({...editableData, stateCode: e.target.value})} className="w-2/3 px-2 py-1 text-[10px] font-bold focus:outline-none uppercase" />
+                                </div>
                             </div>
-                            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                {(editableData?.items || []).map((item: any, idx: number) => (
-                                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl border border-[var(--border)] group/item transition-all hover:bg-white/[0.03]">
-                                        <div className="flex items-center gap-6 flex-1">
-                                            <div className="w-10 h-10 rounded-xl bg-blue-600/5 flex items-center justify-center text-[10px] font-black text-blue-500">
-                                                0{idx+1}
-                                            </div>
-                                            <div className="flex flex-col gap-1 flex-1">
-                                                <input 
-                                                    value={item.name} 
-                                                    onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
-                                                    className="text-base font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                                />
-                                                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest opacity-40">
-                                                    <span>Qty: </span>
-                                                    <input 
-                                                        type="number"
-                                                        value={item.quantity} 
-                                                        onChange={(e) => handleItemChange(idx, 'quantity', parseFloat(e.target.value))}
-                                                        className="w-12 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none"
-                                                    />
-                                                    <span className="ml-2">Rate: </span>
-                                                    <input 
-                                                        type="number"
-                                                        value={item.rate || 0} 
-                                                        onChange={(e) => handleItemChange(idx, 'rate', parseFloat(e.target.value))}
-                                                        className="w-16 bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none"
-                                                    />
-                                                </div>
-                                            </div>
+                            <div className="flex flex-col">
+                                <div className="flex border-b border-black h-full">
+                                    <div className="w-1/4 px-2 py-1 border-r border-black text-[10px] font-black uppercase bg-gray-50">To</div>
+                                    <div className="w-3/4 flex flex-col p-1 gap-1">
+                                        <input value={editableData?.customerName || ''} onChange={(e) => setEditableData({...editableData, customerName: e.target.value})} className="px-1 text-[10px] font-black uppercase focus:outline-none" placeholder="Customer Name" />
+                                        <textarea value={editableData?.address || ''} onChange={(e) => setEditableData({...editableData, address: e.target.value})} className="px-1 text-[9px] font-bold focus:outline-none resize-none h-12" placeholder="Customer Address" />
+                                        <div className="flex items-center gap-1 px-1 border-t border-gray-100 pt-1">
+                                            <span className="text-[9px] font-black uppercase">GSTIN:</span>
+                                            <input value={editableData?.customerGstin || ''} onChange={(e) => setEditableData({...editableData, customerGstin: e.target.value})} className="text-[9px] font-bold focus:outline-none uppercase font-mono w-full" />
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-lg font-black tracking-tighter">₹</span>
-                                            <input 
-                                                type="number"
-                                                value={item.amount} 
-                                                onChange={(e) => handleItemChange(idx, 'amount', parseFloat(e.target.value))}
-                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-24 text-right"
-                                            />
-                                            <button 
-                                                onClick={() => {
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Items Table */}
+                        <div className="border border-black mt-[-1px]">
+                            <table className="w-full border-collapse text-[10px]">
+                                <thead className="bg-orange-50 border-b border-black">
+                                    <tr>
+                                        <th className="border-r border-black px-1 py-1 w-8 text-center font-black">S.No</th>
+                                        <th className="border-r border-black px-2 py-1 text-left font-black">Product Description</th>
+                                        <th className="border-r border-black px-1 py-1 w-16 text-center font-black">HSN Code</th>
+                                        <th className="border-r border-black px-1 py-1 w-12 text-center font-black">Qty</th>
+                                        <th className="border-r border-black px-1 py-1 w-16 text-center font-black">Rate</th>
+                                        <th className="border-r border-black px-1 py-1 w-20 text-right font-black">Amount</th>
+                                        <th className="border-r border-black px-1 py-1 w-16 text-right font-black">Taxable Val</th>
+                                        <th className="px-1 py-1 w-8 text-center print:hidden"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(editableData?.items || []).map((item: any, idx: number) => (
+                                        <tr key={idx} className="border-b border-black last:border-b-0 hover:bg-blue-50 transition-colors group">
+                                            <td className="border-r border-black px-1 py-1 text-center font-bold">{idx + 1}</td>
+                                            <td className="border-r border-black px-2 py-1">
+                                                <input value={item.name} onChange={(e) => handleItemChange(idx, 'name', e.target.value)} className="w-full bg-transparent focus:outline-none font-bold uppercase" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1">
+                                                <input value={item.hsn || ''} onChange={(e) => handleItemChange(idx, 'hsn', e.target.value)} className="w-full text-center bg-transparent focus:outline-none font-bold font-mono" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1">
+                                                <input type="number" value={item.quantity} onChange={(e) => handleItemChange(idx, 'quantity', parseFloat(e.target.value))} className="w-full text-center bg-transparent focus:outline-none font-bold" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1">
+                                                <input type="number" value={item.rate || 0} onChange={(e) => handleItemChange(idx, 'rate', parseFloat(e.target.value))} className="w-full text-center bg-transparent focus:outline-none font-bold" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1">
+                                                <input type="number" value={item.amount} onChange={(e) => handleItemChange(idx, 'amount', parseFloat(e.target.value))} className="w-full text-right bg-transparent focus:outline-none font-black" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1 text-right font-black">
+                                                ₹{(parseFloat(item.amount) || 0).toLocaleString()}
+                                            </td>
+                                            <td className="text-center print:hidden">
+                                                <button onClick={() => {
                                                     const newItems = editableData.items.filter((_: any, i: number) => i !== idx);
                                                     setEditableData({...editableData, items: newItems});
-                                                }}
-                                                className="text-red-500/40 hover:text-red-500 p-2 transition-colors"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                                }} className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {/* Empty rows to maintain structure */}
+                                    {[...Array(Math.max(0, 8 - (editableData?.items?.length || 0)))].map((_, i) => (
+                                        <tr key={`empty-${i}`} className="border-b border-black last:border-b-0 h-8">
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td className="border-r border-black"></td>
+                                            <td></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot className="border-t border-black bg-gray-50 font-black">
+                                    <tr>
+                                        <td colSpan={5} className="border-r border-black px-2 py-1 text-right uppercase">Total</td>
+                                        <td className="border-r border-black px-1 py-1 text-right">
+                                            ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
+                                        </td>
+                                        <td className="border-r border-black px-1 py-1 text-right">
+                                            ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
 
-                        {/* STORE INFORMATION */}
-                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
-                                <span>Store Information</span>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Address</p>
-                                    <input 
-                                        value={editableData?.storeInfo?.address || ''} 
-                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, address: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
+                        {/* Bottom Sections */}
+                        <div className="grid grid-cols-2 border-x border-b border-black">
+                            <div className="border-r border-black flex flex-col justify-between">
+                                <div className="p-2 border-b border-black h-12">
+                                    <p className="text-[8px] font-black uppercase opacity-60">Total Invoice amount in words</p>
+                                    <p className="text-[10px] font-black uppercase">Rupees {editableData?.totalAmount ? '...' : ''} Only</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">MSME / Udyam No</p>
-                                    <input 
-                                        value={editableData?.storeInfo?.msme || ''} 
-                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, msme: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Email</p>
-                                    <input 
-                                        value={editableData?.storeInfo?.email || ''} 
-                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, email: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Website</p>
-                                    <input 
-                                        value={editableData?.storeInfo?.website || ''} 
-                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, website: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Mobile No</p>
-                                    <input 
-                                        value={editableData?.storeInfo?.phone || ''} 
-                                        onChange={(e) => setEditableData({...editableData, storeInfo: {...editableData.storeInfo, phone: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
+                                <div className="p-2 bg-orange-50">
+                                    <p className="text-[10px] font-black uppercase border-b border-black mb-2">Bank Details</p>
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] font-bold">
+                                        <span>Bank A/C No:</span>
+                                        <input value={editableData?.bankDetails?.accountNumber || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountNumber: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
+                                        <span>Bank Name:</span>
+                                        <input value={editableData?.bankDetails?.bankName || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, bankName: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
+                                        <span>Branch Name:</span>
+                                        <input value={editableData?.bankDetails?.branch || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, branch: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
+                                        <span>Bank IFSC Code:</span>
+                                        <input value={editableData?.bankDetails?.ifscCode || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})} className="bg-transparent focus:outline-none font-black uppercase font-mono" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div className="flex flex-col">
+                                <div className="grid grid-cols-2 text-[10px] font-black">
+                                    <div className="border-r border-b border-black px-2 py-1 bg-gray-50">Total Amount before Tax:</div>
+                                    <div className="border-b border-black px-2 py-1 text-right">
+                                        ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
+                                    </div>
+                                    
+                                    <div className="border-r border-b border-black px-2 py-1">Add: CGST %</div>
+                                    <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
+                                        <input type="number" value={editableData?.taxBreakdown?.cgst || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: {...editableData.taxBreakdown, cgst: parseFloat(e.target.value)}})} className="w-16 bg-transparent text-right focus:outline-none" />
+                                    </div>
+                                    
+                                    <div className="border-r border-b border-black px-2 py-1">Add: SGST %</div>
+                                    <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
+                                        <input type="number" value={editableData?.taxBreakdown?.sgst || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: {...editableData.taxBreakdown, sgst: parseFloat(e.target.value)}})} className="w-16 bg-transparent text-right focus:outline-none" />
+                                    </div>
 
-                        {/* BANK DETAILS */}
-                        <div className="rounded-[2.5rem] p-10 border border-[var(--border)] shadow-sm group/card hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
-                            <div className="flex items-center justify-between mb-8 text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
-                                <span>Bank Details</span>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c Name</p>
-                                    <input 
-                                        value={editableData?.bankDetails?.accountName || ''} 
-                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountName: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Bank Name</p>
-                                    <input 
-                                        value={editableData?.bankDetails?.bankName || ''} 
-                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, bankName: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">A/c No</p>
-                                    <input 
-                                        value={editableData?.bankDetails?.accountNumber || ''} 
-                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountNumber: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Branch</p>
-                                    <input 
-                                        value={editableData?.bankDetails?.branch || ''} 
-                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, branch: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-40">IFS Code</p>
-                                    <input 
-                                        value={editableData?.bankDetails?.ifscCode || ''} 
-                                        onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})}
-                                        className="text-sm font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* RIGHT TOTAL COLUMN */}
-                    <div className="lg:col-span-12 xl:col-span-5 flex flex-col gap-8">
-                        <div className="rounded-[3rem] p-12 border border-[var(--border)] relative group/amount h-full flex flex-col justify-between shadow-sm transition-all duration-500" style={{ backgroundColor: 'var(--card)' }}>
-                            <div>
-                                <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] mb-10 opacity-60">Verified Payable</p>
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">₹</h2>
-                                        <input 
-                                            type="number"
-                                            value={editableData?.totalAmount || 0} 
-                                            onChange={(e) => setEditableData({...editableData, totalAmount: parseFloat(e.target.value)})}
-                                            className="text-3xl md:text-5xl font-black tracking-tighter leading-none bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full overflow-hidden"
-                                        />
-                                    </div>
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Confirmed Amount Node</p>
-                                </div>
-                               <div className="pt-10 border-t border-[var(--border)] space-y-8">
-                                <div className="space-y-6">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Tax Breakdown</p>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">CGST</p>
-                                            <input 
-                                                type="number"
-                                                value={editableData?.taxBreakdown?.cgst || 0}
-                                                onChange={(e) => setEditableData({
-                                                    ...editableData, 
-                                                    taxBreakdown: { ...editableData.taxBreakdown, cgst: parseFloat(e.target.value) }
-                                                })}
-                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">SGST</p>
-                                            <input 
-                                                type="number"
-                                                value={editableData?.taxBreakdown?.sgst || 0}
-                                                onChange={(e) => setEditableData({
-                                                    ...editableData, 
-                                                    taxBreakdown: { ...editableData.taxBreakdown, sgst: parseFloat(e.target.value) }
-                                                })}
-                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <p className="text-[9px] font-black uppercase tracking-widest opacity-40">IGST</p>
-                                            <input 
-                                                type="number"
-                                                value={editableData?.taxBreakdown?.igst || 0}
-                                                onChange={(e) => setEditableData({
-                                                    ...editableData, 
-                                                    taxBreakdown: { ...editableData.taxBreakdown, igst: parseFloat(e.target.value) }
-                                                })}
-                                                className="text-lg font-black tracking-tighter bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
-                                            />
-                                        </div>
+                                    <div className="border-r border-black px-2 py-4 bg-orange-50 text-base">Grand Total:</div>
+                                    <div className="px-2 py-4 text-right bg-orange-50 text-lg font-black text-blue-600">
+                                        ₹{(editableData?.totalAmount || 0).toLocaleString()}
                                     </div>
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-8 border-t border-[var(--border)] pt-8">
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Tax Net</p>
-                                        <p className="text-xl font-black tracking-tighter text-blue-500">
-                                            ₹{((editableData?.taxBreakdown?.cgst || 0) + (editableData?.taxBreakdown?.sgst || 0) + (editableData?.taxBreakdown?.igst || 0)).toLocaleString()}
-                                        </p>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Log Date</p>
-                                        <p className="text-xl font-black tracking-tighter">{new Date(lastResult.processedAt).toLocaleDateString('en-GB')}</p>
-                                    </div>
-                                </div>
-                             </div>
-                                <div className="flex items-center gap-5 px-6 py-5 rounded-[2rem] border border-[var(--border)] group/export cursor-pointer hover:bg-blue-600/5 transition-all" style={{ backgroundColor: 'var(--background)' }}>
-                                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                                        <Icons.Download />
-                                    </div>
-                                    <div>
-                                         <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-0.5">Binary Export</p>
-                                         <p className="text-[9px] font-black uppercase tracking-widest opacity-40">Neural PDF + Excel</p>
+                                <div className="border-t border-black p-4 text-center mt-auto">
+                                    <p className="text-[8px] font-black mb-8">Certified that the particulars given above are true and correct</p>
+                                    <p className="text-[10px] font-black uppercase">For {editableData?.vendor || 'ABC & CO'}</p>
+                                    <div className="mt-6 border-t border-dashed border-gray-300 pt-1">
+                                        <p className="text-[8px] font-bold opacity-40 italic uppercase">Authorised signatory</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <p className="text-center text-[8px] font-black uppercase opacity-40 mt-4 tracking-widest">Computer Generated Invoice</p>
                 </div>
 
-                </div>
-
-                <div className="relative z-10 flex gap-6 px-12 pb-12 pt-6 border-t border-[var(--border)] bg-inherit">
-                    <button 
-                        onClick={handleSave} 
-                        disabled={isSaving}
-                        className="flex-1 py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-sm tracking-[0.4em] uppercase transition-all shadow-xl hover:translate-y-[-1px] active:translate-y-0 disabled:opacity-50"
-                    >
+                <div className="p-6 bg-gray-50 border-t-2 border-gray-200 flex gap-4 print:hidden">
+                    <button onClick={handleSave} disabled={isSaving} className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-sm tracking-widest uppercase transition-all shadow-lg active:scale-95 disabled:opacity-50">
                         {isSaving ? 'Saving...' : 'Confirm & Save Changes'}
                     </button>
-                    <button onClick={() => setLastResult(null)} className="px-12 py-6 bg-white/[0.02] border border-white/[0.08] text-white rounded-[2rem] font-black text-xs tracking-widest uppercase hover:bg-white/[0.05] transition-all">
-                        Abort
+                    <button onClick={handleAddItem} className="px-8 py-4 bg-white border border-blue-600 text-blue-600 rounded-xl font-black text-sm tracking-widest uppercase hover:bg-blue-50 transition-all">
+                        + Item
                     </button>
                 </div>
             </div>
@@ -1013,46 +916,46 @@ export default function DashboardPage() {
       )}
 
       {/* CONFIRMATION & ERROR MODALS REFINED (ULTRA POLISHED) */}
-      {isConfirming && (
-        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 bg-[#050505]/95 backdrop-blur-[40px] animate-in fade-in duration-500">
-            <div className="bg-[#0f0f0f] border border-white/[0.08] shadow-2xl rounded-[3.5rem] p-16 max-w-xl w-full animate-in zoom-in-95 duration-500 relative overflow-hidden">
+    {isConfirming && (
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 bg-background/95 backdrop-blur-[40px] animate-in fade-in duration-500">
+            <div className="bg-card border border-border shadow-2xl rounded-[3.5rem] p-16 max-w-xl w-full animate-in zoom-in-95 duration-500 relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-600/10 blur-3xl"></div>
                 
                 <div className="relative z-10 space-y-10">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <span className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-black">!</span>
-                            <h3 className="text-3xl font-black text-white mb-2 tracking-tighter uppercase">Initiate Extraction</h3>
+                            <h3 className="text-3xl font-black text-foreground mb-2 tracking-tighter uppercase">Initiate Extraction</h3>
                         </div>
-                        <p className="text-gray-500 leading-relaxed font-bold text-base">
-                            Ready to analyze <span className="text-white">{pendingFiles.length} invoices</span>. This batch will consume <span className="text-blue-500">{totalCreditsRequired} processing units</span> from your balance.
+                        <p className="text-muted leading-relaxed font-bold text-base">
+                            Ready to analyze <span className="text-foreground">{pendingFiles.length} invoices</span>. This batch will consume <span className="text-blue-500">{totalCreditsRequired} processing units</span> from your balance.
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-4">
                         <button onClick={processUploads} className="w-full py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black tracking-[0.3em] text-xs uppercase transition-all shadow-lg shadow-blue-500/20 hover:scale-[1.02]">Execute Analysis</button>
-                        <button onClick={() => setIsConfirming(false)} className="w-full py-4 text-gray-700 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.4em]">Abort Procedure</button>
+                        <button onClick={() => setIsConfirming(false)} className="w-full py-4 text-muted hover:text-foreground transition-colors text-[10px] font-black uppercase tracking-[0.4em]">Abort Procedure</button>
                     </div>
                 </div>
             </div>
         </div>
-      )}
+    )}
 
       {isInsufficient && (
         <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4 bg-red-950/20 backdrop-blur-[60px] animate-in fade-in duration-500">
-            <div className="bg-[#0f0f0f] border border-red-500/30 rounded-[3.5rem] p-16 max-w-xl w-full shadow-2xl animate-in zoom-in-95 duration-500 text-center relative overflow-hidden">
+            <div className="bg-card border border-red-500/30 rounded-[3.5rem] p-16 max-w-xl w-full shadow-2xl animate-in zoom-in-95 duration-500 text-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-red-600/[0.02] pointer-events-none"></div>
                 <div className="relative z-10">
                     <div className="w-24 h-24 bg-red-500/10 border border-red-500/20 rounded-[2rem] flex items-center justify-center text-4xl mb-10 mx-auto text-red-500 shadow-inner">⚠️</div>
                     <div className="space-y-4 mb-12">
-                        <h3 className="text-3xl font-black text-white tracking-tighter uppercase leading-none">Quota Exhausted</h3>
-                        <p className="text-gray-500 leading-relaxed font-bold text-base px-4">
-                            Analysis requires <span className="text-white">{totalCreditsRequired} credits</span>, but your balance is insufficient for this batch.
+                        <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase leading-none">Quota Exhausted</h3>
+                        <p className="text-muted leading-relaxed font-bold text-base px-4">
+                            Analysis requires <span className="text-foreground">{totalCreditsRequired} credits</span>, but your balance is insufficient for this batch.
                         </p>
                     </div>
                     <div className="flex flex-col gap-4">
                         <button onClick={() => window.location.href='/dashboard/pricing'} className="w-full py-6 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black tracking-[0.3em] text-xs uppercase shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02]">Recharge Account</button>
-                        <button onClick={() => setIsInsufficient(false)} className="py-2 text-gray-700 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.4em]">Dismiss</button>
+                        <button onClick={() => setIsInsufficient(false)} className="py-2 text-muted hover:text-foreground transition-colors text-[10px] font-black uppercase tracking-[0.4em]">Dismiss</button>
                     </div>
                 </div>
             </div>

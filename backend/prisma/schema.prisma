@@ -90,6 +90,7 @@ model DocumentProcess {
   cgst          Float?
   sgst          Float?
   igst          Float?
+  currency      String?   @default("INR")
   totalAmount   Float?
   confidence    Float?
   extractedData String?

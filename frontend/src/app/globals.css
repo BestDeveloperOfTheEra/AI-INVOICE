@@ -9,6 +9,8 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-sidebar: var(--sidebar);
   --color-accent: var(--accent);
 }
 
@@ -61,4 +63,9 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
+}
+
+/* Modal Lock & Navigation Visibility Management */
+body.modal-open nav {
+  display: none !important;
 }
