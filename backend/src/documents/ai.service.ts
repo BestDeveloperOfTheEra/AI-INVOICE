@@ -86,6 +86,7 @@ export class AiService {
         currency: "INR",
         items: [{ name: "Consulting", quantity: 1, rate: 1000, amount: 1000, hsn: "998311" }],
         taxBreakdown: { cgst: 90, sgst: 90, igst: 0, vat: 0, cess: 0, other: 0 },
+        roundOff: 0,
         confidence: 0.99,
         isGstReady: true
       };

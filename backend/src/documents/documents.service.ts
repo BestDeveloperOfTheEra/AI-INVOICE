@@ -45,6 +45,7 @@ export class DocumentsService {
     let fileUrl = file.path;
     let fileKey = null;
     let currency = 'INR';
+    let roundOff = 0;
 
     if (!isSandbox) {
         // 1. Upload to Persistent Storage (Cloudflare R2/S3)
@@ -67,7 +68,7 @@ export class DocumentsService {
         gstin = aiResult.vendorGstin || null;
         taxBreakdown = aiResult.taxBreakdown || taxBreakdown;
         currency = aiResult.currency || 'INR';
-        const roundOff = aiResult.roundOff || 0;
+        roundOff = aiResult.roundOff || 0;
 
         // Cleanup local temp file ONLY if it was successfully moved to persistent cloud storage
         if (fileKey && !fileKey.startsWith('local-') && fs.existsSync(file.path)) {
