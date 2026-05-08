@@ -709,6 +709,16 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    {/* EXTRACTION WARNING BANNER */}
+                    {editableData?.extractionWarning && (
+                        <div className="mb-4 p-3 bg-orange-50 border border-orange-400 rounded-lg flex items-start gap-3">
+                            <span className="text-orange-600 text-lg">⚠️</span>
+                            <div>
+                                <p className="text-[10px] font-black uppercase text-orange-700 mb-0.5">Review Required</p>
+                                <p className="text-[9px] font-bold text-orange-600">{editableData.extractionWarning}</p>
+                            </div>
+                        </div>
+                    )}
                     {/* INVOICE DOCUMENT START */}
                     <div className="border border-black p-1">
                         <div className="border border-black flex flex-col items-center py-4 px-6 text-center">
@@ -784,9 +794,10 @@ export default function DashboardPage() {
                                         <th className="border-r border-black px-1 py-1 w-8 text-center font-black">S.No</th>
                                         <th className="border-r border-black px-2 py-1 text-left font-black">Product Description</th>
                                         <th className="border-r border-black px-1 py-1 w-16 text-center font-black">HSN Code</th>
-                                        <th className="border-r border-black px-1 py-1 w-12 text-center font-black">Qty</th>
-                                        <th className="border-r border-black px-1 py-1 w-16 text-center font-black">Rate</th>
-                                        <th className="border-r border-black px-1 py-1 w-24 text-right font-black">Amount</th>
+                                        <th className="border-r border-black px-1 py-1 w-10 text-center font-black">Qty</th>
+                                        <th className="border-r border-black px-1 py-1 w-14 text-center font-black">Rate</th>
+                                        <th className="border-r border-black px-1 py-1 w-12 text-center font-black">Disc %</th>
+                                        <th className="border-r border-black px-1 py-1 w-20 text-right font-black">Amount</th>
                                         <th className="px-1 py-1 w-8 text-center print:hidden"></th>
                                     </tr>
                                 </thead>
@@ -807,6 +818,9 @@ export default function DashboardPage() {
                                                 <input type="number" value={item.rate || 0} onChange={(e) => handleItemChange(idx, 'rate', parseFloat(e.target.value))} className="w-full text-center bg-transparent focus:outline-none font-bold" />
                                             </td>
                                             <td className="border-r border-black px-1 py-1">
+                                                <input type="number" value={item.discountPercent || 0} onChange={(e) => handleItemChange(idx, 'discountPercent', parseFloat(e.target.value))} className="w-full text-center bg-transparent focus:outline-none font-bold text-red-600" />
+                                            </td>
+                                            <td className="border-r border-black px-1 py-1">
                                                 <input type="number" value={item.amount} onChange={(e) => handleItemChange(idx, 'amount', parseFloat(e.target.value))} className="w-full text-right bg-transparent focus:outline-none font-black" />
                                             </td>
                                             <td className="text-center print:hidden">
@@ -818,8 +832,9 @@ export default function DashboardPage() {
                                         </tr>
                                     ))}
                                     {/* Empty rows to maintain structure */}
-                                    {[...Array(Math.max(0, 8 - (editableData?.items?.length || 0)))].map((_, i) => (
+                                    {[...Array(Math.max(0, 6 - (editableData?.items?.length || 0)))].map((_, i) => (
                                         <tr key={`empty-${i}`} className="border-b border-black last:border-b-0 h-8">
+                                            <td className="border-r border-black"></td>
                                             <td className="border-r border-black"></td>
                                             <td className="border-r border-black"></td>
                                             <td className="border-r border-black"></td>
@@ -832,7 +847,7 @@ export default function DashboardPage() {
                                 </tbody>
                                 <tfoot className="border-t border-black bg-gray-50 font-black">
                                     <tr>
-                                        <td colSpan={5} className="border-r border-black px-2 py-1 text-right uppercase">Total</td>
+                                        <td colSpan={6} className="border-r border-black px-2 py-1 text-right uppercase">Total</td>
                                         <td className="border-r border-black px-1 py-1 text-right">
                                             ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
                                         </td>

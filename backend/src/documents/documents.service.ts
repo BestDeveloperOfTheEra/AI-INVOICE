@@ -70,6 +70,11 @@ export class DocumentsService {
         currency = aiResult.currency || 'INR';
         roundOff = aiResult.roundOff || 0;
 
+        // Log if there was an extraction warning (total mismatch)
+        if (aiResult.extractionWarning) {
+          console.warn('[Documents] Extraction warning:', aiResult.extractionWarning);
+        }
+
         // Cleanup local temp file ONLY if it was successfully moved to persistent cloud storage
         if (fileKey && !fileKey.startsWith('local-') && fs.existsSync(file.path)) {
             fs.unlinkSync(file.path);
