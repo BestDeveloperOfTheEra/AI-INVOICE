@@ -850,14 +850,18 @@ export default function DashboardPage() {
                                 <div className="p-2 bg-orange-50">
                                     <p className="text-[10px] font-black uppercase border-b border-black mb-2">Bank Details</p>
                                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] font-bold">
+                                        <span>Account Name:</span>
+                                        <input value={editableData?.bankDetails?.accountName || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountName: e.target.value}})} className="bg-transparent focus:outline-none font-black uppercase" />
                                         <span>Bank A/C No:</span>
                                         <input value={editableData?.bankDetails?.accountNumber || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, accountNumber: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
                                         <span>Bank Name:</span>
                                         <input value={editableData?.bankDetails?.bankName || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, bankName: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
                                         <span>Branch Name:</span>
                                         <input value={editableData?.bankDetails?.branch || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, branch: e.target.value}})} className="bg-transparent focus:outline-none font-black" />
-                                        <span>Bank IFSC Code:</span>
+                                        <span>IFSC / Routing:</span>
                                         <input value={editableData?.bankDetails?.ifscCode || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})} className="bg-transparent focus:outline-none font-black uppercase font-mono" />
+                                        <span>SWIFT Code:</span>
+                                        <input value={editableData?.bankDetails?.swiftCode || ''} onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, swiftCode: e.target.value}})} className="bg-transparent focus:outline-none font-black uppercase font-mono" />
                                     </div>
                                 </div>
                             </div>

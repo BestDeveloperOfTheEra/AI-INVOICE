@@ -517,11 +517,52 @@ export default function HistoryPage() {
                                             />
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">IFS Code</p>
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">IFS / Routing</p>
                                             <input 
                                                 value={editableData?.bankDetails?.ifscCode || ''} 
                                                 onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, ifscCode: e.target.value}})}
                                                 className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">SWIFT Code</p>
+                                            <input 
+                                                value={editableData?.bankDetails?.swiftCode || ''} 
+                                                onChange={(e) => setEditableData({...editableData, bankDetails: {...editableData.bankDetails, swiftCode: e.target.value}})}
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* CUSTOMER INFORMATION */}
+                                <div className="rounded-[1.5rem] p-6 border border-[var(--border)] shadow-sm hover:bg-white/[0.02] transition-all duration-700" style={{ backgroundColor: 'var(--card)' }}>
+                                    <div className="flex items-center justify-between mb-4 text-[9px] font-black uppercase tracking-[0.4em] opacity-40">
+                                        <span>Customer Information</span>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Customer Name</p>
+                                            <input 
+                                                value={editableData?.customerName || ''} 
+                                                onChange={(e) => setEditableData({...editableData, customerName: e.target.value})}
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Customer GSTIN</p>
+                                            <input 
+                                                value={editableData?.customerGstin || ''} 
+                                                onChange={(e) => setEditableData({...editableData, customerGstin: e.target.value})}
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full"
+                                            />
+                                        </div>
+                                        <div className="col-span-2 space-y-1">
+                                            <p className="text-[8px] font-black uppercase tracking-widest opacity-40">Full Address</p>
+                                            <textarea 
+                                                value={editableData?.address || ''} 
+                                                onChange={(e) => setEditableData({...editableData, address: e.target.value})}
+                                                className="text-xs font-bold bg-transparent border-b border-transparent hover:border-blue-500/30 focus:border-blue-500 focus:outline-none w-full resize-none h-12"
                                             />
                                         </div>
                                     </div>

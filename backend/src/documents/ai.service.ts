@@ -45,6 +45,11 @@ export class AiService {
       2. Full Tax Breakdown (CGST, SGST, IGST).
       3. Adjustments (Round Off).
       4. Grand Total and Invoice Date.
+      5. Vendor Contact: Phone (Tel), Email, Website.
+      6. Bank Details: Search for "Payment Information", "Bank Transfer", "Account Name/Number", "Routing/IFSC", "SWIFT".
+      7. Customer Info: Extract "Bill To" or "Ship To" name AND FULL ADDRESS.
+
+      CRITICAL: For dates like "12/21/2025", verify if it is MM/DD/YYYY or DD/MM/YYYY based on the day value (>12 is definitely day). Return in YYYY-MM-DD.
 
       Return JSON Structure:
       {
@@ -52,8 +57,23 @@ export class AiService {
         "invoiceNumber": "string",
         "vendor": "string",
         "vendorGstin": "string",
+        "storeInfo": {
+          "phone": "string",
+          "email": "string",
+          "website": "string",
+          "address": "string"
+        },
         "customerName": "string",
         "customerGstin": "string",
+        "address": "string",
+        "bankDetails": {
+          "accountName": "string",
+          "bankName": "string",
+          "accountNumber": "string",
+          "ifscCode": "string (or Routing Number)",
+          "swiftCode": "string",
+          "branch": "string"
+        },
         "invoiceDate": "string (YYYY-MM-DD)",
         "currency": "string",
         "totalAmount": number,
