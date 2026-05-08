@@ -65,7 +65,7 @@ export default function HistoryPage() {
         const history = data.map(doc => {
             try {
                 const parsed = JSON.parse(doc.extractedData);
-                return { ...parsed, id: doc.id, fileName: doc.fileName, status: doc.status, processedAt: doc.processedAt };
+                return { ...parsed, id: doc.id, fileName: doc.fileName, status: doc.status, processedAt: doc.processedAt, roundOff: doc.roundOff || parsed.roundOff || 0 };
             } catch (e) { return null; }
         }).filter(Boolean);
         setExtractedData(history);
@@ -195,12 +195,13 @@ export default function HistoryPage() {
       const taxTotal = (editableData.taxBreakdown?.cgst || 0) + 
                        (editableData.taxBreakdown?.sgst || 0) + 
                        (editableData.taxBreakdown?.igst || 0);
-      const newTotal = itemsTotal + taxTotal;
+      const roundOff = parseFloat(editableData.roundOff) || 0;
+      const newTotal = itemsTotal + taxTotal + roundOff;
       if (Math.abs(newTotal - (editableData.totalAmount || 0)) > 0.01) {
         setEditableData({ ...editableData, totalAmount: newTotal });
       }
     }
-  }, [editableData?.items, editableData?.taxBreakdown]);
+  }, [editableData?.items, editableData?.taxBreakdown, editableData?.roundOff]);
 
   useEffect(() => {
     if (editingDoc) {
@@ -316,7 +317,7 @@ export default function HistoryPage() {
                                  </div>
                              </td>
                              <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-blue-500">{data.invoiceNumber || 'SIG_PENDING'}</td>
-                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount - ((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0))).toLocaleString()}</td>
+                             <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount - ((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0)) - (data.roundOff || 0)).toLocaleString()}</td>
                              <td className="px-4 py-2 border border-border whitespace-nowrap font-mono text-right text-red-500/80">₹{((data.taxBreakdown?.cgst || 0) + (data.taxBreakdown?.sgst || 0) + (data.taxBreakdown?.igst || 0)).toLocaleString()}</td>
                              <td className="px-4 py-2 border border-border whitespace-nowrap font-mono font-black italic text-right bg-muted/5" style={{ color: 'var(--foreground)' }}>₹{(data.totalAmount || 0).toLocaleString()}</td>
                              <td className="px-4 py-1.5 border border-border whitespace-nowrap text-center">
@@ -549,6 +550,13 @@ export default function HistoryPage() {
                                                        </div>
                                                    </div>
                                                ))}
+                                               <div className="flex items-center justify-between px-3 py-2 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+                                                   <p className="text-[8px] font-black uppercase tracking-widest text-blue-500">ROUND OFF</p>
+                                                   <div className="flex items-center gap-1 text-blue-500">
+                                                       <span className="text-[10px] font-black">₹</span>
+                                                       <input type="number" step="0.01" value={editableData?.roundOff || 0} onChange={(e) => setEditableData({...editableData, roundOff: parseFloat(e.target.value)})} className="text-sm font-black tracking-tighter bg-transparent border-none outline-none w-16 text-right" />
+                                                   </div>
+                                               </div>
                                            </div>
                                        </div>
                                        <div className="grid grid-cols-2 gap-4 border-t border-[var(--border)] pt-6">

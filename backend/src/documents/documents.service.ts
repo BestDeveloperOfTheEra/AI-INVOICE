@@ -67,6 +67,7 @@ export class DocumentsService {
         gstin = aiResult.vendorGstin || null;
         taxBreakdown = aiResult.taxBreakdown || taxBreakdown;
         currency = aiResult.currency || 'INR';
+        const roundOff = aiResult.roundOff || 0;
 
         // Cleanup local temp file ONLY if it was successfully moved to persistent cloud storage
         if (fileKey && !fileKey.startsWith('local-') && fs.existsSync(file.path)) {
@@ -122,6 +123,7 @@ export class DocumentsService {
         igst: taxBreakdown.igst,
         currency: currency,
         totalAmount: totalAmount,
+        roundOff: roundOff,
         confidence: confidence,
         extractedData: extractedData,
         processedAt: new Date()
@@ -168,6 +170,7 @@ export class DocumentsService {
       data: {
         extractedData: JSON.stringify(newExtractedData),
         totalAmount: updateData.totalAmount !== undefined ? updateData.totalAmount : document.totalAmount,
+        roundOff: updateData.roundOff !== undefined ? updateData.roundOff : document.roundOff,
         gstin: updateData.vendorGstin !== undefined ? updateData.vendorGstin : document.gstin,
         cgst: updateData.taxBreakdown?.cgst !== undefined ? updateData.taxBreakdown.cgst : document.cgst,
         sgst: updateData.taxBreakdown?.sgst !== undefined ? updateData.taxBreakdown.sgst : document.sgst,

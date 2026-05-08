@@ -100,14 +100,15 @@ export default function DashboardPage() {
       const taxTotal = (editableData.taxBreakdown?.cgst || 0) + 
                        (editableData.taxBreakdown?.sgst || 0) + 
                        (editableData.taxBreakdown?.igst || 0);
-      const newTotal = itemsTotal + taxTotal;
+      const roundOff = parseFloat(editableData.roundOff) || 0;
+      const newTotal = itemsTotal + taxTotal + roundOff;
       
       // Only update if the difference is significant (to avoid float issues)
       if (Math.abs(newTotal - (editableData.totalAmount || 0)) > 0.01) {
         setEditableData({ ...editableData, totalAmount: newTotal });
       }
     }
-  }, [editableData?.items, editableData?.taxBreakdown]);
+  }, [editableData?.items, editableData?.taxBreakdown, editableData?.roundOff]);
 
   const fetchStats = async () => {
     try {
@@ -646,7 +647,7 @@ export default function DashboardPage() {
                                   <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-black uppercase opacity-40 group-hover/row:opacity-100" style={{ color: 'var(--foreground)' }}>
                                       {new Date(doc.processedAt).toLocaleDateString('en-GB')}
                                   </td>
-                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount - (data.taxAmount || 0)).toLocaleString()}</td>
+                                  <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono text-right" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount - (data.taxAmount || 0) - (doc.roundOff || 0)).toLocaleString()}</td>
                                   <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono text-right text-red-500/80" style={{ color: '' }}>₹{(data.taxAmount || 0).toLocaleString()}</td>
                                   <td className="px-4 py-2 border border-[var(--border)] whitespace-nowrap font-mono font-black italic text-right bg-white/[0.02]" style={{ color: 'var(--foreground)' }}>₹{(doc.totalAmount || 0).toLocaleString()}</td>
                                   <td className="px-4 py-1.5 border border-[var(--border)] whitespace-nowrap text-center">
@@ -783,8 +784,7 @@ export default function DashboardPage() {
                                         <th className="border-r border-black px-1 py-1 w-16 text-center font-black">HSN Code</th>
                                         <th className="border-r border-black px-1 py-1 w-12 text-center font-black">Qty</th>
                                         <th className="border-r border-black px-1 py-1 w-16 text-center font-black">Rate</th>
-                                        <th className="border-r border-black px-1 py-1 w-20 text-right font-black">Amount</th>
-                                        <th className="border-r border-black px-1 py-1 w-16 text-right font-black">Taxable Val</th>
+                                        <th className="border-r border-black px-1 py-1 w-24 text-right font-black">Amount</th>
                                         <th className="px-1 py-1 w-8 text-center print:hidden"></th>
                                     </tr>
                                 </thead>
@@ -807,9 +807,6 @@ export default function DashboardPage() {
                                             <td className="border-r border-black px-1 py-1">
                                                 <input type="number" value={item.amount} onChange={(e) => handleItemChange(idx, 'amount', parseFloat(e.target.value))} className="w-full text-right bg-transparent focus:outline-none font-black" />
                                             </td>
-                                            <td className="border-r border-black px-1 py-1 text-right font-black">
-                                                ₹{(parseFloat(item.amount) || 0).toLocaleString()}
-                                            </td>
                                             <td className="text-center print:hidden">
                                                 <button onClick={() => {
                                                     const newItems = editableData.items.filter((_: any, i: number) => i !== idx);
@@ -827,7 +824,6 @@ export default function DashboardPage() {
                                             <td className="border-r border-black"></td>
                                             <td className="border-r border-black"></td>
                                             <td className="border-r border-black"></td>
-                                            <td className="border-r border-black"></td>
                                             <td></td>
                                         </tr>
                                     ))}
@@ -835,9 +831,6 @@ export default function DashboardPage() {
                                 <tfoot className="border-t border-black bg-gray-50 font-black">
                                     <tr>
                                         <td colSpan={5} className="border-r border-black px-2 py-1 text-right uppercase">Total</td>
-                                        <td className="border-r border-black px-1 py-1 text-right">
-                                            ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
-                                        </td>
                                         <td className="border-r border-black px-1 py-1 text-right">
                                             ₹{(editableData?.items || []).reduce((s: number, i: any) => s + (parseFloat(i.amount) || 0), 0).toLocaleString()}
                                         </td>
@@ -883,6 +876,11 @@ export default function DashboardPage() {
                                     <div className="border-r border-b border-black px-2 py-1">Add: SGST %</div>
                                     <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
                                         <input type="number" value={editableData?.taxBreakdown?.sgst || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: {...editableData.taxBreakdown, sgst: parseFloat(e.target.value)}})} className="w-16 bg-transparent text-right focus:outline-none" />
+                                    </div>
+
+                                    <div className="border-r border-b border-black px-2 py-1">Round Off:</div>
+                                    <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
+                                        <input type="number" step="0.01" value={editableData?.roundOff || 0} onChange={(e) => setEditableData({...editableData, roundOff: parseFloat(e.target.value)})} className="w-16 bg-transparent text-right focus:outline-none font-bold" />
                                     </div>
 
                                     <div className="border-r border-black px-2 py-4 bg-orange-50 text-base">Grand Total:</div>

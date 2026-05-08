@@ -21,75 +21,56 @@ export class AiService {
     this.logger.log(`Extracting data from: ${fileName} (${mimetype}) using hint: ${docHint}`);
 
     const systemPrompt = `
-      You are an elite AI Invoice Extractor specialized in Global Tax Compliance (GST, VAT, Sales Tax). 
-      Your goal is 100% accuracy in financial data extraction.
+      You are a World-Class Vision AI specializing in Financial Document Digitization.
+      Your mandate is 100% accuracy for business-critical tax data.
       
-      CRITICAL INSTRUCTIONS:
-      1. Extract EVERY single line item exactly as it appears. Do NOT merge rows.
-      2. Capture the HSN/SAC code if available.
-      3. For rates and amounts, use the EXACT numbers printed. Do NOT round or estimate.
-      4. Distinguish between Taxable Value (Base) and Total Value (including Tax).
-      5. Capture full Tax Breakdowns (CGST, SGST, IGST, VAT, CESS).
-      6. Support hand-written receipts by carefully analyzing strokes.
-      7. Handle multi-lingual invoices (e.g., French, Hindi, Arabic) by translating labels to the target JSON schema.
-      8. Detect the Currency Code (e.g., INR, USD, EUR, PKR).
-      9. If a value is missing but can be calculated (e.g., Total = Base + Tax), do the math to ensure consistency.
-      10. Confidence score must reflect the legibility of the document.
+      VISION ANALYSIS STRATEGY:
+      1. GRID DETECTION: First, identify the table's grid structure. Trace the vertical lines separating [Description], [HSN], [Qty], [Rate], [SGST%], [CGST%], and [Amount].
+      2. SPATIAL REASONING: Note that columns are very narrow. A number directly below the "HSN" header is the HSN, even if it's close to the description.
+      3. CHARACTER PRECISION: Read digits one by one. Do not confuse '0' with '8', or '6' with '5'.
+      4. RECONCILIATION & VALIDATION:
+         - TOTALS: The sum of line item Amounts MUST equal the 'Taxable Value' in the tax summary at the bottom.
+         - MATH: For EVERY row, Quantity x Rate MUST equal Amount. If it doesn't, you have misaligned the columns.
+         - TAXES: SGST + CGST + IGST + RoundOff + TaxableValue must equal the Grand Total.
+      5. HSN CODES: These are vital. Extract exactly as printed (usually 4, 6, or 8 digits).
+      
+      INTERNAL REASONING: Before outputting the final JSON, mentally transcribe the table row-by-row to ensure vertical alignment is preserved.
       
       Return ONLY a clean JSON object.
     `;
 
     const userPrompt = `
-      DOCUMENT CONTEXT: This is a ${docHint}. Please optimize your extraction strategy for this type.
-      
-      Analyze the attached invoice image and return a JSON object with this EXACT structure:
+      EXTRACT WITH 100% ACCURACY:
+      1. Table Line Items (Name, HSN, Qty, Rate, Amount, Tax Rate).
+      2. Full Tax Breakdown (CGST, SGST, IGST).
+      3. Adjustments (Round Off).
+      4. Grand Total and Invoice Date.
+
+      Return JSON Structure:
       {
+        "analysis": "Brief spatial analysis of the table layout",
         "invoiceNumber": "string",
         "vendor": "string",
-        "vendorGstin": "string (Tax ID / GSTIN / VAT ID)",
+        "vendorGstin": "string",
         "customerName": "string",
         "customerGstin": "string",
-        "address": "string (Full billing address)",
-        "email": "string",
-        "phone": "string",
         "invoiceDate": "string (YYYY-MM-DD)",
-        "currency": "string (ISO code, e.g., INR, USD)",
-        "bankDetails": {
-          "accountName": "string",
-          "bankName": "string",
-          "accountNumber": "string",
-          "branch": "string",
-          "ifscCode": "string"
-        },
-        "storeInfo": {
-          "address": "string",
-          "msme": "string",
-          "email": "string",
-          "website": "string",
-          "phone": "string"
-        },
-        "totalAmount": number (The final payable amount),
-        "taxAmount": number (Total tax sum),
-        "taxBreakdown": { 
-          "cgst": number, 
-          "sgst": number, 
-          "igst": number,
-          "vat": number,
-          "cess": number,
-          "other": number
-        },
+        "currency": "string",
+        "totalAmount": number,
+        "taxAmount": number,
+        "roundOff": number,
+        "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
         "items": [
           { 
             "name": "string", 
             "hsn": "string",
             "quantity": number, 
             "rate": number, 
-            "taxRate": number (percentage),
-            "amount": number (Total for this item, usually Qty * Rate)
+            "taxRate": number,
+            "amount": number
           }
         ],
-        "confidence": number (0.0 to 1.0),
-        "isGstReady": boolean
+        "confidence": number
       }
     `;
 
