@@ -21,81 +21,69 @@ export class AiService {
     this.logger.log(`Extracting data from: ${fileName} (${mimetype}) using hint: ${docHint}`);
 
     const systemPrompt = `
-      You are a World-Class Vision AI specializing in Financial Document Digitization.
-      Your mandate is 100% accuracy for business-critical tax data.
-      
-      VISION ANALYSIS STRATEGY:
-      1. GRID DETECTION: First, identify the table's grid structure. Trace the vertical lines separating [Description], [HSN], [Qty], [Rate], [SGST%], [CGST%], and [Amount].
-      2. SPATIAL REASONING: Note that columns are very narrow. A number directly below the "HSN" header is the HSN, even if it's close to the description.
-      3. CHARACTER PRECISION: Read digits one by one. Do not confuse '0' with '8', or '6' with '5'.
-      4. RECONCILIATION & VALIDATION:
-         - TOTALS: The sum of line item Amounts MUST equal the 'Taxable Value' in the tax summary at the bottom.
-         - MATH: For EVERY row, Quantity x Rate MUST equal Amount. If it doesn't, you have misaligned the columns.
-         - TAXES: SGST + CGST + IGST + RoundOff + TaxableValue must equal the Grand Total.
-      5. HSN CODES: These are vital. Extract exactly as printed (usually 4, 6, or 8 digits).
-      
-      INTERNAL REASONING: Before outputting the final JSON, mentally transcribe the table row-by-row to ensure vertical alignment is preserved.
-      
+      YOU ARE THE WORLD'S MOST ACCURATE VISION AI FOR FINANCIAL DATA. 
+      YOUR OUTPUT IS USED FOR ACCOUNTING. ZERO ERROR TOLERANCE.
+
+      CORE EXTRACTION PROTOCOLS:
+      1. SPATIAL ANCHORING:
+         - Locate the Main Table. Trace headers: [Style/SKU], [Item #], [Qty], [Description], [Price], [Total].
+         - DO NOT skip columns. If a column is "STYLE", map it to "hsn" if that's the only code field, but DO NOT lose the "ITEM #" if present.
+         - DESCRIPTION: Capture the FULL text in the description block. If it says "vnk cuffed slv butter knit tee: Ideal Black:L", extract that ENTIRE string.
+
+      2. FINANCIAL RECONCILIATION (MANDATORY):
+         - SUBTOTAL: The sum of all line item amounts.
+         - TAX: Look for "TAX" or "GST/VAT".
+         - SHIPPING/HANDLING: Look for shipping costs.
+         - GRAND TOTAL: MUST equal Subtotal + Tax + Shipping. If your extraction doesn't add up, RE-READ THE IMAGE.
+
+      3. LOCALE & DATE LOGIC:
+         - If Currency is "USD" or Address is "USA/US", use MM/DD/YYYY format.
+         - If Currency is "INR" or Address is "India", use DD/MM/YYYY format.
+         - Output MUST be YYYY-MM-DD.
+
+      4. HEADER MAPPING:
+         - Vendor info is usually at the TOP.
+         - Customer info follows "BILL TO", "SHIP TO", or "ORDERED BY".
+         - Bank details are usually at the BOTTOM in a "Payment Information" or "Bank Transfer" section.
+
+      DO NOT HALLUCINATE. If a field is not present, return null.
       Return ONLY a clean JSON object.
     `;
 
     const userPrompt = `
-      EXTRACT WITH 100% ACCURACY:
-      1. Table Line Items (Name, HSN, Qty, Rate, Amount, Tax Rate).
-      2. Full Tax Breakdown (CGST, SGST, IGST).
-      3. Adjustments (Round Off).
-      4. Grand Total and Invoice Date.
-      5. Vendor Contact: Phone (Tel), Email, Website.
-      6. Bank Details: Search for "Payment Information", "Bank Transfer", "Account Name/Number", "Routing/IFSC", "SWIFT".
-      7. Customer Info: Extract "Bill To" or "Ship To" name AND FULL ADDRESS.
-
-      CRITICAL: For dates like "12/21/2025", verify if it is MM/DD/YYYY or DD/MM/YYYY based on the day value (>12 is definitely day). Return in YYYY-MM-DD.
-
-      Return JSON Structure:
+      EXTRACT WITH RUTHLESS ACCURACY:
       {
-        "analysis": "Brief spatial analysis of the table layout",
-        "invoiceNumber": "string",
-        "vendor": "string",
-        "vendorGstin": "string",
-        "storeInfo": {
-          "phone": "string",
-          "email": "string",
-          "website": "string",
-          "address": "string"
-        },
-        "customerName": "string",
+        "analysis": "Spatial breakdown of headers and footer totals",
+        "invoiceNumber": "Exact string",
+        "vendor": "Full Legal Name",
+        "vendorGstin": "GSTIN or Tax ID",
+        "storeInfo": { "phone": "string", "email": "string", "website": "string", "address": "string" },
+        "customerName": "Full Name",
         "customerGstin": "string",
-        "address": "string",
-        "bankDetails": {
-          "accountName": "string",
-          "bankName": "string",
-          "accountNumber": "string",
-          "ifscCode": "string (or Routing Number)",
-          "swiftCode": "string",
-          "branch": "string"
-        },
-        "invoiceDate": "string (YYYY-MM-DD)",
-        "currency": "string",
-        "totalAmount": number,
+        "address": "Full Shipping/Billing Address",
+        "bankDetails": { "accountName": "string", "bankName": "string", "accountNumber": "string", "ifscCode": "string", "swiftCode": "string" },
+        "invoiceDate": "YYYY-MM-DD",
+        "currency": "USD/INR/etc",
+        "subtotal": number,
+        "shippingAmount": number,
         "taxAmount": number,
         "roundOff": number,
+        "totalAmount": number,
         "taxBreakdown": { "cgst": number, "sgst": number, "igst": number },
         "items": [
           { 
-            "name": "string", 
-            "hsn": "string",
+            "name": "FULL DESCRIPTION FROM DOCUMENT", 
+            "hsn": "Style or Item # code",
             "quantity": number, 
             "rate": number, 
-            "taxRate": number,
             "amount": number
           }
         ],
-        "confidence": number
+        "confidence": 1.0
       }
     `;
 
     if (!this.openai || process.env.USE_AI_MOCK === 'true') {
-      // Mock remains same but updated to new schema if needed
       return {
         invoiceNumber: "INV-SAMPLE-001",
         vendor: "Mock Vendor",
@@ -104,11 +92,10 @@ export class AiService {
         totalAmount: 1180.00,
         taxAmount: 180.00,
         currency: "INR",
-        items: [{ name: "Consulting", quantity: 1, rate: 1000, amount: 1000, hsn: "998311" }],
-        taxBreakdown: { cgst: 90, sgst: 90, igst: 0, vat: 0, cess: 0, other: 0 },
+        items: [{ name: "Consulting Services", quantity: 1, rate: 1000, amount: 1000, hsn: "998311" }],
+        taxBreakdown: { cgst: 90, sgst: 90, igst: 0 },
         roundOff: 0,
-        confidence: 0.99,
-        isGstReady: true
+        confidence: 0.99
       };
     }
 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useDashboard } from '@/context/DashboardContext';
 import { PDFDocument } from 'pdf-lib';
 import { API_URL } from '@/lib/constants';
+import { numberToWords } from '@/lib/utils';
 import Link from 'next/link';
 
 // --- UTILITIES ---
@@ -100,8 +101,9 @@ export default function DashboardPage() {
       const taxTotal = (editableData.taxBreakdown?.cgst || 0) + 
                        (editableData.taxBreakdown?.sgst || 0) + 
                        (editableData.taxBreakdown?.igst || 0);
+      const shipping = parseFloat(editableData.shippingAmount) || 0;
       const roundOff = parseFloat(editableData.roundOff) || 0;
-      const newTotal = itemsTotal + taxTotal + roundOff;
+      const newTotal = itemsTotal + taxTotal + shipping + roundOff;
       
       // Only update if the difference is significant (to avoid float issues)
       if (Math.abs(newTotal - (editableData.totalAmount || 0)) > 0.01) {
@@ -843,9 +845,11 @@ export default function DashboardPage() {
                         {/* Bottom Sections */}
                         <div className="grid grid-cols-2 border-x border-b border-black">
                             <div className="border-r border-black flex flex-col justify-between">
-                                <div className="p-2 border-b border-black h-12">
+                                <div className="p-2 border-b border-black h-12 overflow-hidden">
                                     <p className="text-[8px] font-black uppercase opacity-60">Total Invoice amount in words</p>
-                                    <p className="text-[10px] font-black uppercase">Rupees {editableData?.totalAmount ? '...' : ''} Only</p>
+                                    <p className="text-[9px] font-black uppercase leading-tight">
+                                        {editableData?.totalAmount ? numberToWords(editableData.totalAmount, editableData.currency || 'INR') : 'N/A'}
+                                    </p>
                                 </div>
                                 <div className="p-2 bg-orange-50">
                                     <p className="text-[10px] font-black uppercase border-b border-black mb-2">Bank Details</p>
@@ -880,6 +884,11 @@ export default function DashboardPage() {
                                     <div className="border-r border-b border-black px-2 py-1">Add: SGST %</div>
                                     <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
                                         <input type="number" value={editableData?.taxBreakdown?.sgst || 0} onChange={(e) => setEditableData({...editableData, taxBreakdown: {...editableData.taxBreakdown, sgst: parseFloat(e.target.value)}})} className="w-16 bg-transparent text-right focus:outline-none" />
+                                    </div>
+
+                                    <div className="border-r border-b border-black px-2 py-1">Shipping:</div>
+                                    <div className="border-b border-black px-2 py-1 text-right flex items-center justify-end gap-2">
+                                        <input type="number" step="0.01" value={editableData?.shippingAmount || 0} onChange={(e) => setEditableData({...editableData, shippingAmount: parseFloat(e.target.value)})} className="w-16 bg-transparent text-right focus:outline-none" />
                                     </div>
 
                                     <div className="border-r border-b border-black px-2 py-1">Round Off:</div>

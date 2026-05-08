@@ -195,13 +195,14 @@ export default function HistoryPage() {
       const taxTotal = (editableData.taxBreakdown?.cgst || 0) + 
                        (editableData.taxBreakdown?.sgst || 0) + 
                        (editableData.taxBreakdown?.igst || 0);
+      const shipping = parseFloat(editableData.shippingAmount) || 0;
       const roundOff = parseFloat(editableData.roundOff) || 0;
-      const newTotal = itemsTotal + taxTotal + roundOff;
+      const newTotal = itemsTotal + taxTotal + shipping + roundOff;
       if (Math.abs(newTotal - (editableData.totalAmount || 0)) > 0.01) {
         setEditableData({ ...editableData, totalAmount: newTotal });
       }
     }
-  }, [editableData?.items, editableData?.taxBreakdown, editableData?.roundOff]);
+  }, [editableData?.items, editableData?.taxBreakdown, editableData?.roundOff, editableData?.shippingAmount]);
 
   useEffect(() => {
     if (editingDoc) {
@@ -591,6 +592,13 @@ export default function HistoryPage() {
                                                        </div>
                                                    </div>
                                                ))}
+                                                <div className="flex items-center justify-between px-3 py-2 bg-white/[0.02] border border-[var(--border)] rounded-lg">
+                                                   <p className="text-[8px] font-black uppercase tracking-widest opacity-40">SHIPPING</p>
+                                                   <div className="flex items-center gap-1">
+                                                       <span className="text-[10px] font-black">₹</span>
+                                                       <input type="number" step="0.01" value={editableData?.shippingAmount || 0} onChange={(e) => setEditableData({...editableData, shippingAmount: parseFloat(e.target.value)})} className="text-sm font-black tracking-tighter bg-transparent border-none outline-none w-16 text-right" />
+                                                   </div>
+                                               </div>
                                                <div className="flex items-center justify-between px-3 py-2 bg-blue-500/5 border border-blue-500/20 rounded-lg">
                                                    <p className="text-[8px] font-black uppercase tracking-widest text-blue-500">ROUND OFF</p>
                                                    <div className="flex items-center gap-1 text-blue-500">
